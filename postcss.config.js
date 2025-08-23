@@ -5,6 +5,7 @@ import autoprefixer from 'autoprefixer';
 
 export default {
   plugins: [
+    //tailwindcss({}),
     // https://github.com/postcss/autoprefixer
     autoprefixer({
       overrideBrowserslist: [
@@ -26,4 +27,5 @@ export default {
     // 3. uncomment the following line (and its import statement above):
     // rtlcss()
   ],
+  
 };

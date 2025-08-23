@@ -1,43 +1,6 @@
-# Quasar App (gestao-de-acessos)
+## Protótipo das Telas
 
-A Quasar Project
+As telas foram prototipadas no Figma e estão disponíveis no arquivo abaixo:
 
-## Install the dependencies
+- [Prototipo no Figma (PDF)](./design/prototipo-figma.pdf)
 
-```bash
-yarn
-# or
-npm install
-```
-
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
-
-```bash
-quasar dev
-```
-
-### Lint the files
-
-```bash
-yarn lint
-# or
-npm run lint
-```
-
-### Format the files
-
-```bash
-yarn format
-# or
-npm run format
-```
-
-### Build the app for production
-
-```bash
-quasar build
-```
-
-### Customize the configuration
-
-See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).
