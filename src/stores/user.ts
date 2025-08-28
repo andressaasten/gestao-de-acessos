@@ -35,6 +35,13 @@ export const useUserStore = defineStore('user', {
             email: 'admin@teste.com',
             password: CryptoJS.SHA256('123456').toString(),
             role: 'admin'
+          },
+          {
+            id: 2,
+            name: 'Usuário',
+            email: 'user@teste.com',
+            password: CryptoJS.SHA256('123456').toString(),
+            role: 'user'
           }
         ]
         this.save()

@@ -1,199 +1,202 @@
 import { defineStore } from 'pinia'
 import { useUserStore } from './user'
 
-export interface Permission {
-  userId: number
-  canRead: boolean
-  canComment: boolean
-  canEdit: boolean
-  expiresAt: number
-}
-
 export interface Attachment {
   id: number
-  url: string
   type: 'image' | 'pdf'
+  url: string
+}
+
+export interface Comment {
+  userId: number
+  text: string
+  date: number
+}
+
+
+export interface Permission {
+  userId: number
+  docId: number
+  perms: ('read' | 'comment' | 'edit')[]
+  expiresAt: number // timestamp
 }
 
 export interface Document {
   id: number
   title: string
   text: string
-  ownerId: number
   attachments: Attachment[]
-  permissions: Permission[]
-  comments: { userId: number; text: string; date: string }[]
+  comments: Comment[]
 }
 
 export const useDocumentsStore = defineStore('documents', {
   state: () => ({
     documents: [] as Document[],
+    permissions: [] as Permission[]
   }),
 
   actions: {
     init() {
-      const saved = localStorage.getItem('documents')
-      if (saved) {
-        this.documents = JSON.parse(saved)
+      const savedDocs = localStorage.getItem('documents')
+      const savedPerms = localStorage.getItem('permissions')
+
+      if (savedDocs) {
+        this.documents = JSON.parse(savedDocs)
+      } else {
+        this.documents = [
+          {
+            id: 1,
+            title: 'Política da Empresa',
+            text: 'Documento oficial com regras e políticas internas.',
+            attachments: [],
+            comments: []
+          },
+          {
+            id: 2,
+            title: 'Guia do Funcionário',
+            text: 'Manual com orientações para novos colaboradores.',
+            attachments: [],
+            comments: []
+          },
+          {
+            id: 3,
+            title: 'Relatório Financeiro',
+            text: 'Dados financeiros do último trimestre.',
+            attachments: [],
+            comments: []
+          }
+        ]
       }
+
+      this.permissions = savedPerms ? JSON.parse(savedPerms) : []
+
+      this.save()
     },
 
     save() {
       localStorage.setItem('documents', JSON.stringify(this.documents))
+      localStorage.setItem('permissions', JSON.stringify(this.permissions))
     },
 
     addDocument(title: string, text: string, attachments: Attachment[] = []) {
-      const userStore = useUserStore()
-      if (!userStore.currentUser || userStore.currentUser.role !== 'admin') {
-        throw new Error('Apenas admins podem criar documentos')
-      }
-
       const newDoc: Document = {
         id: Date.now(),
         title,
         text,
-        ownerId: userStore.currentUser.id,
         attachments,
-        permissions: [],
-        comments: [],
+        comments: []
       }
       this.documents.push(newDoc)
       this.save()
     },
 
-    editDocument(docId: number, newData: { title?: string; text?: string; attachments?: Attachment[] }) {
-      const userStore = useUserStore()
-      const u = userStore.currentUser
-      if (!u) throw new Error('Usuário não autenticado')
-
+    editDocument(docId: number, newData: Partial<Document>) {
       const doc = this.documents.find(d => d.id === docId)
-      if (!doc) throw new Error('Documento não encontrado')
-
-      const hasEditPerm = 
-        u.role === 'admin' || 
-        doc.permissions.some(p => p.userId === u.id && p.canEdit && p.expiresAt > Date.now())
-
-      if (!hasEditPerm) {
-        throw new Error('Sem permissão para editar este documento')
-      }
-
-      if (newData.title) doc.title = newData.title
-      if (newData.text) doc.text = newData.text
-      if (newData.attachments) doc.attachments = newData.attachments
-
-      this.save()
-    },
-
-    setPermission(docId: number, userId: number, perms: Partial<Permission>, durationMs: number) {
-      const doc = this.documents.find(d => d.id === docId)
-      if (!doc) return
-      const existing = doc.permissions.find(p => p.userId === userId)
-
-      const expiresAt = Date.now() + durationMs
-
-      if (existing) {
-        Object.assign(existing, perms, { expiresAt })
-      } else {
-        doc.permissions.push({
-          userId,
-          canRead: perms.canRead ?? false,
-          canComment: perms.canComment ?? false,
-          canEdit: perms.canEdit ?? false,
-          expiresAt,
-        })
-      }
-      this.save()
-    },
-
-    extendPermission(docId: number, userId: number, extraMs: number) {
-      const doc = this.documents.find(d => d.id === docId)
-      if (!doc) return
-      const perm = doc.permissions.find(p => p.userId === userId)
-      if (perm) {
-        perm.expiresAt = Math.max(perm.expiresAt, Date.now()) + extraMs
+      if (doc) {
+        Object.assign(doc, newData)
         this.save()
       }
     },
 
+    deleteDocument(docId: number) {
+      this.documents = this.documents.filter(d => d.id !== docId)
+      this.permissions = this.permissions.filter(p => p.docId !== docId)
+      this.save()
+    },
+
+    // ----- PERMISSÕES -----
+    setPermission(
+      docId: number,
+      userId: number,
+      perms: ('read' | 'comment' | 'edit')[],
+      expiresAt?: number
+    ) {
+      const expiration = expiresAt ?? (Date.now() + 24 * 60 * 60 * 1000)
+
+      const existing = this.permissions.find(p => p.docId === docId && p.userId === userId)
+      if (existing) {
+        existing.perms = perms
+        existing.expiresAt = expiration
+      } else {
+        this.permissions.push({ docId, userId, perms, expiresAt: expiration })
+      }
+      this.save()
+    },
+
+
     removePermission(docId: number, userId: number) {
-      const doc = this.documents.find(d => d.id === docId)
-      if (!doc) return
-      doc.permissions = doc.permissions.filter(p => p.userId !== userId)
+      this.permissions = this.permissions.filter(p => !(p.docId === docId && p.userId === userId))
       this.save()
     },
 
     removeAllPermissions(userId: number) {
-      this.documents.forEach(doc => {
-        doc.permissions = doc.permissions.filter(p => p.userId !== userId)
-      })
+      this.permissions = this.permissions.filter(p => p.userId !== userId)
       this.save()
     },
 
+    extendPermission(docId: number, userId: number, durationMs: number) {
+      const p = this.permissions.find(p => p.docId === docId && p.userId === userId)
+      if (p) {
+        p.expiresAt += durationMs
+        this.save()
+      }
+    },
+
     getPermissionsByUser(userId: number) {
-      return this.documents.flatMap(doc =>
-        doc.permissions
-          .filter(p => p.userId === userId)
-          .map(p => ({
-            docId: doc.id,
-            perms: { canRead: p.canRead, canComment: p.canComment, canEdit: p.canEdit },
-            expiresAt: p.expiresAt
-          }))
-      )
+      return this.permissions.filter(p => p.userId === userId)
     },
 
     getDocTitle(docId: number) {
-      return this.documents.find(d => d.id === docId)?.title || 'Documento desconhecido'
+      const doc = this.documents.find(d => d.id === docId)
+      return doc ? doc.title : ''
     },
 
+    // ----- ACESSO -----
     canRead(doc: Document) {
       const userStore = useUserStore()
-      const u = userStore.currentUser
-      if (!u) return false
-      if (u.role === 'admin') return true
-      const perm = doc.permissions.find(p => p.userId === u.id)
-      return !!(perm?.canRead && perm.expiresAt > Date.now())
+      const user = userStore.currentUser
+      if (!user) return false
+      if (user.role === 'admin') return true
+      const perm = this.permissions.find(p => p.docId === doc.id && p.userId === user.id)
+      return !!perm && perm.perms.includes('read') && perm.expiresAt > Date.now()
     },
 
     canComment(doc: Document) {
       const userStore = useUserStore()
-      const u = userStore.currentUser
-      if (!u) return false
-      if (u.role === 'admin') return true
-      const perm = doc.permissions.find(p => p.userId === u.id)
-      return !!(perm?.canComment && perm.expiresAt > Date.now())
+      const user = userStore.currentUser
+      if (!user) return false
+      if (user.role === 'admin') return true
+      const perm = this.permissions.find(p => p.docId === doc.id && p.userId === user.id)
+      return !!perm && perm.perms.includes('comment') && perm.expiresAt > Date.now()
     },
 
-    getTimeStatus(doc: Document): 'red' | 'yellow' | 'green' | 'grey' {
-      const userStore = useUserStore()
-      const u = userStore.currentUser
-      if (!u) return 'grey'
-      const perm = doc.permissions.find(p => p.userId === u.id)
-      if (!perm) return 'grey'
-
-      const remaining = perm.expiresAt - Date.now()
-      if (remaining <= 0) return 'grey'
-      if (remaining < 60 * 60 * 1000) return 'red'
-      if (remaining < 24 * 60 * 60 * 1000) return 'yellow'
-      return 'green'
-    },
-
+    // ----- COMENTÁRIOS -----
     addComment(docId: number, text: string) {
       const userStore = useUserStore()
-      const u = userStore.currentUser
+      const user = userStore.currentUser
+      if (!user) return
       const doc = this.documents.find(d => d.id === docId)
-      if (!doc || !u) return
-      if (!this.canComment(doc)) return
+      if (doc) {
+        doc.comments.push({
+          userId: user.id,
+          text,
+          date: Date.now()
+        })
+        this.save()
+      }
+    },
 
-      doc.comments.push({
-        userId: u.id,
-        text,
-        date: new Date().toISOString(),
-      })
-      this.save()
-    },
-    deleteDocument(docId: number) {
-    this.documents = this.documents.filter(d => d.id !== docId)
-    this.save()
-    },
-  },
+    // ----- STATUS DE TEMPO -----
+    getTimeStatus(doc: Document): 'red' | 'yellow' | 'green' {
+      const userStore = useUserStore()
+      const user = userStore.currentUser
+      if (!user) return 'red'
+      const perm = this.permissions.find(p => p.docId === doc.id && p.userId === user.id)
+      if (!perm) return 'red'
+      const remaining = perm.expiresAt - Date.now()
+      if (remaining <= 0) return 'red'
+      if (remaining < 60 * 60 * 1000) return 'yellow'
+      return 'green'
+    }
+  }
 })

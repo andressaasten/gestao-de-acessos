@@ -1,0 +1,42 @@
+export default {
+  hello: 'Olá Mundo',
+  login: {
+    title: 'Entrar',
+    email: 'E-mail',
+    password: 'Senha',
+    button: 'Entrar',
+    logout: 'Sair'
+  },
+  register: {
+    title: 'Cadastrar',
+    name: 'Nome',
+    email: 'E-mail',
+    password: 'Senha',
+    button: 'Criar Conta',
+    edition: 'Editar'
+  },
+  documents: {
+    sistem: 'Gestor de Acessos',
+    title: 'Documentos',
+    new: 'Novo Documento',
+    edit: 'Editar Documento',
+    save: 'Salvar',
+    cancel: 'Cancelar',
+    comments: 'Ver Comentários',
+    delete: 'Excluir'
+  },
+  permission:{
+    title: 'Gerenciamento de Permissões',
+    manage: 'Gerenciar Permissões',
+    searchUser: 'Buscar Usuário',
+    read:'Ler',
+    comment: 'Comentar',
+    edit: 'Editar',
+    date: 'Data',
+    time: 'Hora'
+  },
+  common:{
+    cancel: 'Cancelar',
+    save: 'Salvar'
+  }
+}

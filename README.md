@@ -2,5 +2,5 @@
 
 As telas foram prototipadas no Figma e estão disponíveis no arquivo abaixo:
 
-- [Prototipo no Figma (PDF)](./design/prototipo-figma.pdf)
+- [Prototipo no Figma (PDF)](./public/design/prototipo-figma.pdf)
 

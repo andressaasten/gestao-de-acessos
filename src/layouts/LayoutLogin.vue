@@ -8,7 +8,7 @@
 
 <script setup lang="ts"></script>
 
-<style scoped>
+<style>
 .bg-page {
   background: url('/docs/images/wallpaper-login.png') no-repeat center center;
   background-size: cover;

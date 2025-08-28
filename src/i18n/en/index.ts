@@ -1,0 +1,42 @@
+export default {
+  hello: 'Hello World',
+  login: {
+    title: 'Sign In',
+    email: 'Email',
+    password: 'Password',
+    button: 'Sign In',
+    logout: 'Logout'
+  },
+  register: {
+    title: 'Register',
+    name: 'Name',
+    email: 'Email',
+    password: 'Password',
+    button: 'Create Account',
+    edition: 'Edition'
+  },
+  documents: {
+    sistem: 'Access Manager',
+    title: 'Documents',
+    new: 'New Document',
+    edit: 'Edit Document',
+    save: 'Save',
+    cancel: 'Cancel',
+    comments: 'See Comments',
+    delete: 'Delete'
+  },
+  permission:{
+    title: 'Permissions Management',
+    manage: 'Manage Permissions',
+    searchUser: 'Search User',
+    read:'Read',
+    comment: 'Comment',
+    edit: 'Edit',
+    date: 'Date',
+    time: 'Time'
+  },
+  common:{
+    cancel: 'Cancel',
+    save: 'Save'
+  }
+}

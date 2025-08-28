@@ -1,10 +1,10 @@
 <template>
   <q-page class="q-pa-lg">
     <div class="row items-center justify-between q-mb-lg">
-      <h4>Documentos</h4>
+      <h4>{{ $t('documents.title') }}</h4>
       <q-btn
         v-if="userStore.currentUser?.role === 'admin'"
-        label="Novo documento"
+        :label="$t('documents.new')"
         color="dark"
         @click="showPopup = true"
       />
@@ -55,7 +55,7 @@
             flat
             color="primary"
             icon="comment"
-            label="Ver comentários"
+            :label="$t('documents.comments')"
             @click="openComments(doc)"
           />
 
@@ -68,7 +68,7 @@
             />
             <q-btn
               flat
-              label="Comentar"
+              :label="$t('permission.comment')"
               color="primary"
               class="q-mt-sm"
               @click="addComment(doc)"
@@ -87,15 +87,15 @@
           <q-menu>
             <q-list>
               <q-item clickable v-ripple @click="editPerms(doc)">
-                <q-item-section>Gerenciar permissões</q-item-section>
+                <q-item-section>{{ $t('permission.manage') }}</q-item-section>
               </q-item>
 
               <q-item clickable v-ripple @click="openEditDoc(doc)">
-                <q-item-section>Editar documento</q-item-section>
+                <q-item-section>{{ $t('documents.edit') }}</q-item-section>
               </q-item>
 
               <q-item clickable v-ripple class="text-negative" @click="confirmDelete(doc)">
-                <q-item-section>Excluir documento</q-item-section>
+                <q-item-section>{{ $t('documents.delete') }}</q-item-section>
               </q-item>
             </q-list>
           </q-menu>
@@ -159,6 +159,7 @@ import PermissaoPopup from 'src/components/PermissaoPopup.vue'
 
 const userStore = useUserStore()
 const documentsStore = useDocumentsStore()
+documentsStore.init()
 
 const showPopup = ref(false)
 const showEditPopup = ref(false)
