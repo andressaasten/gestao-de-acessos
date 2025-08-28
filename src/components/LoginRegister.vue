@@ -54,27 +54,32 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useUserStore } from 'src/stores/user'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const router = useRouter() 
+
 const isLoginActive = ref(true)
 const isLargeScreen = ref(window.innerWidth >= 800)
 
 const loginForm = ref({ email: '', password: '' })
 const registerForm = ref({ name: '', email: '', password: '' })
 
-function handleLogin() {
+async function handleLogin() {
   if (userStore.login(loginForm.value.email, loginForm.value.password)) {
     alert(`Bem-vindo ${userStore.currentUser?.name}! Role: ${userStore.currentUser?.role}`)
+    await router.push('/documents') 
   } else {
     alert('Credenciais inválidas!')
   }
 }
 
-function handleRegister() {
+async function handleRegister() {
   try {
     userStore.register(registerForm.value.name, registerForm.value.email, registerForm.value.password)
     alert('Conta criada com sucesso!')
     isLoginActive.value = true
+    await router.push('/documents') 
   } catch (e: unknown) {
     if (e instanceof Error) {
       alert(e.message)
@@ -83,6 +88,7 @@ function handleRegister() {
     }
   }
 }
+
 
 function checkScreen() {
   isLargeScreen.value = window.innerWidth >= 1200
@@ -96,6 +102,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', checkScreen)
 })
 </script>
+
 
 
 <style scoped>

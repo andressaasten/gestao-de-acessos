@@ -1,48 +1,36 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh lpR fFf">
+    <q-header class="bg-dark text-white">
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
-        <q-toolbar-title> Documentos </q-toolbar-title>
-
-        <div>Quasar </div>
+        <q-toolbar-title>Gestão de Acessos</q-toolbar-title>
+        <q-btn flat label="Documentos" to="/documents" />
+        <q-btn v-if="userStore.currentUser?.role === 'admin'" flat label="Gerenciamento de Permissões" to="/permissions" />
+        <q-btn flat label="Configurações" @click="showProfile = true" />
+        <q-btn color="grey-8" flat label="Sair" @click="logout" />
       </q-toolbar>
     </q-header>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> Recursos </q-item-label>
-
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <profile-popup v-model="showProfile" />
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import EssentialLink, { type EssentialLinkProps } from 'components/EssentialLink.vue';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from 'src/stores/user'
+import ProfilePopup from 'src/components/EditorPopup.vue'
 
-const linksList: EssentialLinkProps[] = [
-  {
-    title: 'Documentos',
-    icon: 'school',
-    link: '',
-  },
-  {
-    title: 'Gerenciamento de Permissões',
-    icon: 'dashboard',
-  },
-];
+const userStore = useUserStore()
+const router = useRouter()
+const showProfile = ref(false)
 
-const leftDrawerOpen = ref(false);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
+async function logout() {
+  userStore.logout()
+  await router.push('/') 
 }
+
 </script>

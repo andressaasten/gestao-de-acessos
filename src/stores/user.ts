@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import CryptoJS from 'crypto-js'
 
-interface User {
+export interface User {
   id: number
   name: string
   email: string
