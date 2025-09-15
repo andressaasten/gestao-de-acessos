@@ -43,7 +43,6 @@
           :icon="uiStore.darkMode ? 'dark_mode' : 'light_mode'"
           @click="uiStore.toggleDark"
         />
-
     </q-footer>
 
     <profile-popup v-model="showProfile" />
