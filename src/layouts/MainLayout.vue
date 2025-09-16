@@ -22,6 +22,7 @@
       <router-view />
     </q-page-container>
 
+
     <q-footer :class="uiStore.darkMode ? 'bg-dark text-white' : 'bg-grey-9 text-white'">
       <q-btn flat dense round icon="language">
           <q-menu>
