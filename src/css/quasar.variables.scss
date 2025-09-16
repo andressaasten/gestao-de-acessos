@@ -13,17 +13,29 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 :root {
-  --primary: #807474;
+  --primary: #ebebeb;
+  --secondary: #272023;
+  --accent: #3e84be;
+
+  --dark: #232420;
+  --dark-page: #242933;
+
+  --text: #d1a325;
+  --positive: #21ba45;
+  --negative: #c10015;
+  --info: #31ccec;
+  --warning: #f2c037;
 }
 
 $primary: var(--primary);
-$secondary: #26a69a;
-$accent: #9c27b0;
+$secondary: var(--secondary);
+$accent: var(--accent);
 
-$dark: #1d1d1d;
-$dark-page: #121212;
+$dark: var(--dark);
+$dark-page: var(--dark-page);
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+$text: var(--text);
+$positive: var(--positive);
+$negative: var(--negative);
+$info: var(--info);
+$warning: var(--warning);

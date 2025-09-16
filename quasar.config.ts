@@ -8,19 +8,13 @@ export default defineConfig((ctx) => {
   return {
     // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: [
-      'i18n',
-      'pinia'
-    ],
+    boot: ['i18n', 'pinia'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
     css: ['app.scss'],
 
     // https://github.com/quasarframework/quasar/tree/dev/extras
-    extras: [
-      'roboto-font',
-      'material-icons', 
-    ],
+    extras: ['roboto-font', 'material-icons'],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
     build: {
@@ -69,18 +63,14 @@ export default defineConfig((ctx) => {
     framework: {
       config: {},
 
-      plugins: [
-        'Dialog'
-      ],
+      plugins: ['Dialog', 'Notify'],
     },
-
 
     animations: [],
 
-
     // https://v2.quasar.dev/quasar-cli-vite/developing-ssr/configuring-ssr
     ssr: {
-      prodPort: 3000, 
+      prodPort: 3000,
 
       middlewares: [
         'render', // keep this as last one
@@ -91,7 +81,7 @@ export default defineConfig((ctx) => {
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
-      workboxMode: 'GenerateSW', 
+      workboxMode: 'GenerateSW',
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-cordova-apps/configuring-cordova

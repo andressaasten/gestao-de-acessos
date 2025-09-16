@@ -1,21 +1,17 @@
 <template>
   <q-page class="q-pa-lg">
     <div class="row items-center justify-between q-mb-lg">
-      <h4>{{ $t('documents.title') }}</h4>
+      <h2>{{ $t('documents.title') }}</h2>
       <q-btn
         v-if="userStore.currentUser?.role === 'admin'"
         :label="$t('documents.new')"
-        color="dark"
+        color="accent"
         @click="showPopup = true"
       />
     </div>
 
-    <div class="row q-col-gutter-md">
-      <q-card
-        v-for="doc in readableDocs"
-        :key="doc.id"
-        class="col-12 col-sm-4 relative-position"
-      >
+    <div class="row q-col-gutter-md q-pa-sm">
+      <q-card v-for="doc in readableDocs" :key="doc.id" class="col-12 col-sm-4 relative-position">
         <div
           v-if="userStore.currentUser?.role === 'user'"
           class="absolute-top-right q-ma-sm"
@@ -23,7 +19,7 @@
             width: '16px',
             height: '16px',
             borderRadius: '50%',
-            backgroundColor: statusColor(doc)
+            backgroundColor: statusColor(doc),
           }"
         />
 
@@ -34,11 +30,7 @@
 
         <q-card-section>
           <div v-for="a in doc.attachments" :key="a.id" class="q-mb-sm">
-            <q-img
-              v-if="a.type === 'image'"
-              :src="a.url"
-              style="max-height: 120px"
-            />
+            <q-img v-if="a.type === 'image'" :src="a.url" style="max-height: 120px" />
             <q-btn
               v-else
               icon="picture_as_pdf"
@@ -53,7 +45,7 @@
         <q-card-section>
           <q-btn
             flat
-            color="primary"
+            color="accent"
             icon="comment"
             :label="$t('documents.comments')"
             @click="openComments(doc)"
@@ -69,7 +61,7 @@
             <q-btn
               flat
               :label="$t('permission.comment')"
-              color="primary"
+              color="accent"
               class="q-mt-sm"
               @click="addComment(doc)"
             />
@@ -121,9 +113,7 @@
               square
             >
               {{ getUserById(c.userId)?.name }}
-              <span class="text-caption q-ml-sm">
-                ({{ new Date(c.date).toLocaleString() }})
-              </span>
+              <span class="text-caption q-ml-sm"> ({{ new Date(c.date).toLocaleString() }}) </span>
             </q-chip>
             <div class="q-ml-md">{{ c.text }}</div>
           </div>
@@ -151,74 +141,73 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useUserStore } from 'src/stores/user'
-import { useDocumentsStore, type Document } from 'src/stores/documents'
-import NewDocument from 'src/components/NewDocument.vue'
-import PermissaoPopup from 'src/components/PermissaoPopup.vue'
+import { ref, computed } from 'vue';
+import { useUserStore } from 'src/stores/user';
+import { useDocumentsStore, type Document } from 'src/stores/documents';
+import NewDocument from 'src/components/NewDocument.vue';
+import PermissaoPopup from 'src/components/PermissaoPopup.vue';
 
-const userStore = useUserStore()
-const documentsStore = useDocumentsStore()
-documentsStore.init()
+const userStore = useUserStore();
+const documentsStore = useDocumentsStore();
+documentsStore.init();
 
-const showPopup = ref(false)
-const showEditPopup = ref(false)
-const showPermissaoPopup = ref(false)
-const showCommentsPopup = ref(false)
-const confirmDeletePopup = ref(false)
+const showPopup = ref(false);
+const showEditPopup = ref(false);
+const showPermissaoPopup = ref(false);
+const showCommentsPopup = ref(false);
+const confirmDeletePopup = ref(false);
 
-const selectedDoc = ref<Document | null>(null)
-const editingDoc = ref<Document | null>(null)
-const newComment = ref<Record<number, string>>({})
+const selectedDoc = ref<Document | null>(null);
+const editingDoc = ref<Document | null>(null);
+const newComment = ref<Record<number, string>>({});
 
 const readableDocs = computed(() =>
-  documentsStore.documents.filter(d => documentsStore.canRead(d))
-)
-
+  documentsStore.documents.filter((d) => documentsStore.canRead(d)),
+);
 
 function addComment(doc: Document) {
-  const text = newComment.value[doc.id]
-  if (!text || !text.trim()) return
-  documentsStore.addComment(doc.id, text)
-  newComment.value[doc.id] = ''
+  const text = newComment.value[doc.id];
+  if (!text || !text.trim()) return;
+  documentsStore.addComment(doc.id, text);
+  newComment.value[doc.id] = '';
 }
 
 function statusColor(doc: Document) {
-  const status = documentsStore.getTimeStatus(doc)
-  if (status === 'red') return 'red'
-  if (status === 'yellow') return 'gold'
-  if (status === 'green') return 'green'
-  return 'grey'
+  const status = documentsStore.getTimeStatus(doc);
+  if (status === 'red') return 'red';
+  if (status === 'yellow') return 'gold';
+  if (status === 'green') return 'green';
+  return 'grey';
 }
 
 function editPerms(doc: Document) {
-  selectedDoc.value = doc
-  showPermissaoPopup.value = true
+  selectedDoc.value = doc;
+  showPermissaoPopup.value = true;
 }
 
 function openComments(doc: Document) {
-  selectedDoc.value = doc
-  showCommentsPopup.value = true
+  selectedDoc.value = doc;
+  showCommentsPopup.value = true;
 }
 
 function openEditDoc(doc: Document) {
-  editingDoc.value = doc
-  showEditPopup.value = true
+  editingDoc.value = doc;
+  showEditPopup.value = true;
 }
 
 function confirmDelete(doc: Document) {
-  selectedDoc.value = doc
-  confirmDeletePopup.value = true
+  selectedDoc.value = doc;
+  confirmDeletePopup.value = true;
 }
 
 function deleteDoc() {
   if (selectedDoc.value) {
-    documentsStore.deleteDocument(selectedDoc.value.id)
-    confirmDeletePopup.value = false
+    documentsStore.deleteDocument(selectedDoc.value.id);
+    confirmDeletePopup.value = false;
   }
 }
 
 function getUserById(id: number) {
-  return userStore.users.find(u => u.id === id) || null
+  return userStore.users.find((u) => u.id === id) || null;
 }
 </script>

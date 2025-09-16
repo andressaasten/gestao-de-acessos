@@ -1,22 +1,22 @@
 <template>
   <div class="row items-center justify-evenly full-width q-col-gutter-md">
     <!-- LOGIN -->
-    <div
+    <q-form
       v-show="isLargeScreen || isLoginActive"
-      class="column q-pa-lg rounded-borders shadow-5 transition-all duration-500"
+      class="column q-pa-lg rounded-borders shadow-5 transition-all duration-300"
       style="width: 600px; height: 500px"
-      :class="isLoginActive ? 'bg-black text-white' : 'bg-white text-black'"
+      :class="isLoginActive ? 'bg-dark text-primary' : 'bg-primary text-accent'"
     >
       <h2 class="text-center text-h5 q-mx-lg cursor-pointer" @click="isLoginActive = true">
         Entrar
       </h2>
-
       <q-input
         filled
         v-model="loginForm.email"
         label="E-mail"
+        :label-color="isLoginActive ? 'accent' : 'secondary'"
         class="q-my-md"
-        :color="isLoginActive ? 'black bg-white' : 'grey-7'"
+        :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
         :disable="!isLoginActive"
       />
 
@@ -25,34 +25,28 @@
         type="password"
         v-model="loginForm.password"
         label="Senha"
+        :label-color="isLoginActive ? 'accent' : 'secondary'"
         class="q-my-md"
-        :color="isLoginActive ? 'black bg-white' : 'grey-7'"
+        :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
         :disable="!isLoginActive"
       />
 
       <q-btn
         label="Entrar"
-        :color="isLoginActive ? 'white text-black' : 'grey-7'"
+        :color="isLoginActive ? 'primary bg-accent' : 'secondary'"
         class="full-width q-my-md"
         @click="handleLogin"
         :disable="!isLoginActive"
       />
-
-      <q-btn
-        flat
-        label="Criar conta"
-        color="grey-13"
-        class="full-width"
-        @click="isLoginActive = false"
-      />
-    </div>
+      <q-btn flat label="Criar conta" class="full-width" @click="isLoginActive = false" />
+    </q-form>
 
     <!-- REGISTER -->
-    <div
+    <q-form
       v-show="isLargeScreen || !isLoginActive"
-      class="column q-pa-lg rounded-borders shadow-10 transition-all duration-500"
+      class="column q-pa-lg rounded-borders shadow-10 transition-all duration-300"
       style="width: 600px; height: 500px"
-      :class="!isLoginActive ? 'bg-black text-white' : 'bg-white text-grey-9'"
+      :class="!isLoginActive ? 'bg-secondary text-primary' : 'bg-primary text-accent'"
     >
       <h2 class="text-center text-h5 q-mb-lg cursor-pointer" @click="isLoginActive = false">
         Cadastre-se
@@ -62,17 +56,19 @@
         filled
         v-model="registerForm.name"
         label="Nome"
+        :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
         :disable="isLoginActive"
-        :color="!isLoginActive ? 'black bg-white' : 'grey-7'"
+        :color="!isLoginActive ? 'secondary bg-primary' : 'accent'"
       />
 
       <q-input
         filled
         v-model="registerForm.email"
         label="E-mail"
+        :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
-        :color="!isLoginActive ? 'black bg-white' : 'grey-7'"
+        :color="!isLoginActive ? 'secondary bg-primary' : 'accent'"
         :disable="isLoginActive"
       />
 
@@ -81,32 +77,28 @@
         type="password"
         v-model="registerForm.password"
         label="Senha"
+        :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-lg"
-        :color="!isLoginActive ? 'black bg-white' : 'grey-7'"
+        :color="!isLoginActive ? 'secondary bg-primary' : 'accent '"
         :disable="isLoginActive"
       />
 
       <q-btn
         label="Cadastrar"
-        :color="!isLoginActive ? 'white text-black' : 'grey-7'"
+        :color="!isLoginActive ? 'primary bg-accent' : 'secondary'"
         class="full-width q-mb-md"
         @click="handleRegister"
         :disable="isLoginActive"
       />
 
-      <q-btn
-        flat
-        label="Já tenho conta"
-        color="grey-7"
-        class="full-width"
-        @click="isLoginActive = true"
-      />
-    </div>
+      <q-btn flat label="Já tenho conta" class="full-width" @click="isLoginActive = true" />
+    </q-form>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
+import { Notify } from 'quasar';
 import { useUserStore } from 'src/stores/user';
 import { useRouter } from 'vue-router';
 
@@ -121,10 +113,13 @@ const registerForm = ref({ name: '', email: '', password: '' });
 
 async function handleLogin() {
   if (userStore.login(loginForm.value.email, loginForm.value.password)) {
-    alert(`Bem-vindo ${userStore.currentUser?.name}! Role: ${userStore.currentUser?.role}`);
+    Notify.create(
+      `Bem-vindo ${userStore.currentUser?.name}! Acesso: ${userStore.currentUser?.role}`,
+    );
     await router.push('/documents');
   } else {
-    alert('Credenciais inválidas!');
+    //https://quasar.dev/quasar-plugins/notify/#example--positioning-and-different-options
+    Notify.create('Credenciais inválidas!');
   }
 }
 
@@ -159,10 +154,3 @@ onUnmounted(() => {
   window.removeEventListener('resize', checkScreen);
 });
 </script>
-
-<style scoped>
-.bg-opacity-50 {
-  background-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(6px);
-}
-</style>
