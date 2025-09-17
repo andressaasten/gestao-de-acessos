@@ -22,16 +22,12 @@
     />
   </q-footer>
 </template>
-
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useUiStore } from 'src/stores/ui';
 import { useI18n } from 'vue-i18n';
 
 const uiStore = useUiStore();
 const { locale } = useI18n();
-
-const showProfile = ref(false);
 
 function changeLang(lang: 'pt' | 'en') {
   uiStore.setLocale(lang);

@@ -22,28 +22,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer :class="uiStore.darkMode ? 'bg-secondary text-primary' : 'bg-accent'">
-      <q-btn flat dense round icon="language">
-        <q-menu>
-          <q-list>
-            <q-item clickable v-ripple @click="changeLang('pt')">
-              <q-item-section>🇧🇷 Português</q-item-section>
-            </q-item>
-            <q-item clickable v-ripple @click="changeLang('en')">
-              <q-item-section>🇺🇸 English</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-
-      <q-btn
-        flat
-        dense
-        round
-        :icon="uiStore.darkMode ? 'dark_mode' : 'light_mode'"
-        @click="uiStore.toggleDark"
-      />
-    </q-footer>
+    <footer-component v-model="FooterComponent" />
 
     <profile-popup v-model="showProfile" />
   </q-layout>
@@ -54,23 +33,17 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/stores/user';
 import { useUiStore } from 'src/stores/ui';
-import { useI18n } from 'vue-i18n';
 import ProfilePopup from 'src/components/EditorPopup.vue';
+import FooterComponent from 'src/components/FooterComponent.vue';
 
 const router = useRouter();
 const userStore = useUserStore();
 const uiStore = useUiStore();
-const { locale } = useI18n();
 
 const showProfile = ref(false);
 
 async function logout() {
   userStore.logout();
   await router.push('/');
-}
-
-function changeLang(lang: 'pt' | 'en') {
-  uiStore.setLocale(lang);
-  locale.value = lang;
 }
 </script>

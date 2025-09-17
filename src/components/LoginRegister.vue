@@ -2,6 +2,8 @@
   <div class="row items-center justify-evenly full-width q-col-gutter-md">
     <!-- LOGIN -->
     <q-form
+      ref="form"
+      @submit.prevent="handleLogin"
       v-show="isLargeScreen || isLoginActive"
       class="column q-pa-lg rounded-borders shadow-5 transition-all duration-300"
       style="width: 600px; height: 500px"
@@ -13,11 +15,14 @@
       <q-input
         filled
         v-model="loginForm.email"
+        type="email"
         label="E-mail"
         :label-color="isLoginActive ? 'accent' : 'secondary'"
         class="q-my-md"
         :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
         :disable="!isLoginActive"
+        lazy-rules
+        :rules="[validateEmail]"
       />
 
       <q-input
@@ -29,20 +34,24 @@
         class="q-my-md"
         :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
         :disable="!isLoginActive"
+        lazy-rules
+        :rules="[validateSenha]"
       />
 
       <q-btn
         label="Entrar"
         :color="isLoginActive ? 'primary bg-accent' : 'secondary'"
         class="full-width q-my-md"
-        @click="handleLogin"
         :disable="!isLoginActive"
+        type="submit"
       />
       <q-btn flat label="Criar conta" class="full-width" @click="isLoginActive = false" />
     </q-form>
 
     <!-- REGISTER -->
     <q-form
+      ref="form"
+      @submit.prevent="handleRegister"
       v-show="isLargeScreen || !isLoginActive"
       class="column q-pa-lg rounded-borders shadow-10 transition-all duration-300"
       style="width: 600px; height: 500px"
@@ -65,11 +74,14 @@
       <q-input
         filled
         v-model="registerForm.email"
+        type="email"
         label="E-mail"
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
         :color="!isLoginActive ? 'secondary bg-primary' : 'accent'"
         :disable="isLoginActive"
+        lazy-rules
+        :rules="[validateEmail]"
       />
 
       <q-input
@@ -81,13 +93,15 @@
         class="q-mb-lg"
         :color="!isLoginActive ? 'secondary bg-primary' : 'accent '"
         :disable="isLoginActive"
+        lazy-rules
+        :rules="[validateSenha]"
       />
 
       <q-btn
         label="Cadastrar"
+        type="submit"
         :color="!isLoginActive ? 'primary bg-accent' : 'secondary'"
         class="full-width q-mb-md"
-        @click="handleRegister"
         :disable="isLoginActive"
       />
 
@@ -101,7 +115,6 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { Notify } from 'quasar';
 import { useUserStore } from 'src/stores/user';
 import { useRouter } from 'vue-router';
-
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -110,6 +123,16 @@ const isLargeScreen = ref(window.innerWidth >= 800);
 
 const loginForm = ref({ email: '', password: '' });
 const registerForm = ref({ name: '', email: '', password: '' });
+
+const validateEmail = (val: string): true | string => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(val) || 'E-mail inválido';
+};
+
+const validateSenha = (val: string): true | string => {
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{5,}$/;
+  return regex.test(val) || 'Senha inválida';
+};
 
 async function handleLogin() {
   if (userStore.login(loginForm.value.email, loginForm.value.password)) {
@@ -135,9 +158,9 @@ async function handleRegister() {
     await router.push('/documents');
   } catch (e: unknown) {
     if (e instanceof Error) {
-      alert(e.message);
+      Notify.create(e.message);
     } else {
-      alert('Ocorreu um erro inesperado');
+      Notify.create('Ocorreu um erro inesperado');
     }
   }
 }
