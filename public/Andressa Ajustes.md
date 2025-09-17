@@ -36,31 +36,33 @@
 ### Tela de login
 
 - [*] Não há transição de cor ao trocar a funcionalidade
-- [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header)
+- [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header) - favicon
   - - [ ] Não utilizou notificações próprias - [ ] Não validou senhas fortes
           -> [ ] Não armazenou idioma e tema ao atualizar a página - [ ] Não há formulário `<q-form>` onde deveria
   - - [ ] No modo dark, os inputs ficam sem contraste
 
 ### Tela home User
 
-     - [ ] Não há formulário `<q-form>` no editar
+- - [ ] Não há formulário `<q-form>` no editar
 
 1 -> [ ] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
 2 -> [ ] Cards de recursos grudados sem gap entre eles
 2 -> [ ] Pouco padding na seção main
 3 -> [ ] O indicativo de expiração não possui legenda
-4 -> [ ] No editar, as informações de senha permanecem ao salvar ou cancelar
 
-5 -> [ ] Não há Sidebar
--> [ ] Header quebra muito em telas menores
--> Component Header
--> [ ] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
+- - [ ] No editar, as informações de senha permanecem ao salvar ou cancelar
+        5 -> [ ] Não há Sidebar
+        -> [ ] Header quebra muito em telas menores
+        -> Component Header
+        -> [ ] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
 
 ### Tela home Admin
 
 °-° [ ] A responsividade com os cards não fica legal em alguns momentos ao redimencionar a tela
-°-° [ ] No modal de permissões não há indicativo para o usuário sobre o que a data e hora se referem
-[ ] Modal de criação com pouco gap entre alguns elementos
+
+- - [ ] No modal de permissões não há indicativo para o usuário sobre o que a data e hora se referem
+
+- [ ] Modal de criação com pouco gap entre alguns elementos
 
 1 -> [ ] Funcionalidade de adicionar comentários poderia estar no modal de comentários. Não fica legal o usuário adicionar um comentário fora e ter que abrir o modal pra visualizar.
 2 -> [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy

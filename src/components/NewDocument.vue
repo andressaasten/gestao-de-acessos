@@ -18,6 +18,7 @@
           @added="onFilesAdded"
           :auto-upload="false"
           class="q-mt-md"
+          color="secondary"
         />
 
         <div v-if="form.attachments.length" class="q-mt-md">
@@ -29,10 +30,11 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancelar" color="grey" @click="close" />
+        <q-btn flat label="Cancelar" color="negative" @click="close" />
         <q-btn
+          flat
           :label="editMode ? 'Salvar Alterações' : 'Criar'"
-          color="primary"
+          color="positive"
           @click="save"
         />
       </q-card-actions>
@@ -41,71 +43,74 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useDocumentsStore, type Document, type Attachment } from 'src/stores/documents'
+import { ref, watch } from 'vue';
+import { useDocumentsStore, type Document, type Attachment } from 'src/stores/documents';
 
 const props = defineProps<{
-  modelValue: boolean
-  editMode?: boolean
-  doc?: Document | null
-}>()
+  modelValue: boolean;
+  editMode?: boolean;
+  doc?: Document | null;
+}>();
 
-const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>()
+const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>();
 
-const internalModel = ref(props.modelValue)
-watch(() => props.modelValue, v => (internalModel.value = v))
-watch(internalModel, v => emit('update:modelValue', v))
+const internalModel = ref(props.modelValue);
+watch(
+  () => props.modelValue,
+  (v) => (internalModel.value = v),
+);
+watch(internalModel, (v) => emit('update:modelValue', v));
 
-const documentsStore = useDocumentsStore()
+const documentsStore = useDocumentsStore();
 
 const form = ref<{ title: string; text: string; attachments: Attachment[] }>({
   title: '',
   text: '',
-  attachments: []
-})
+  attachments: [],
+});
 
 watch(
   () => props.doc,
-  doc => {
+  (doc) => {
     if (doc && props.editMode) {
       form.value = {
         title: doc.title,
         text: doc.text,
-        attachments: [...doc.attachments]
-      }
+        attachments: [...doc.attachments],
+      };
     } else {
-      form.value = { title: '', text: '', attachments: [] }
+      form.value = { title: '', text: '', attachments: [] };
     }
   },
-  { immediate: true }
-)
+  { immediate: true },
+);
 
 function save() {
   if (props.editMode && props.doc) {
     documentsStore.editDocument(props.doc.id, {
       title: form.value.title,
       text: form.value.text,
-      attachments: form.value.attachments
-    })
+      attachments: form.value.attachments,
+    });
   } else {
-    documentsStore.addDocument(form.value.title, form.value.text, form.value.attachments)
+    documentsStore.addDocument(form.value.title, form.value.text, form.value.attachments);
   }
-  internalModel.value = false
+  internalModel.value = false;
 }
 
 function onFilesAdded(files: readonly File[]) {
   for (const f of files) {
-    const url = URL.createObjectURL(f)
-    const type = f.type.includes('pdf') ? 'pdf' : 'image'
+    const url = URL.createObjectURL(f);
+    const type = f.type.includes('pdf') ? 'pdf' : 'image';
     form.value.attachments.push({
       id: Date.now() + Math.random(),
       url,
-      type
-    })
+      type,
+    });
   }
 }
 
 function close() {
-  internalModel.value = false
+  internalModel.value = false;
 }
 </script>

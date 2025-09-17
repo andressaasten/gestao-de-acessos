@@ -5,7 +5,7 @@ export default {
     email: 'Email',
     password: 'Password',
     button: 'Sign In',
-    logout: 'Logout'
+    logout: 'Logout',
   },
   register: {
     title: 'Register',
@@ -13,7 +13,7 @@ export default {
     email: 'Email',
     password: 'Password',
     button: 'Create Account',
-    edition: 'Edition'
+    edition: 'Edition',
   },
   documents: {
     sistem: 'Access Manager',
@@ -23,20 +23,20 @@ export default {
     save: 'Save',
     cancel: 'Cancel',
     comments: 'See Comments',
-    delete: 'Delete'
+    delete: 'Delete',
   },
-  permission:{
+  permission: {
     title: 'Permissions Management',
     manage: 'Manage Permissions',
     searchUser: 'Search User',
-    read:'Read',
+    read: 'Read',
     comment: 'Comment',
-    edit: 'Edit',
-    date: 'Date',
-    time: 'Time'
+    edit: 'Expiration Edit',
+    date: 'Expiration date',
+    time: 'Time',
   },
-  common:{
+  common: {
     cancel: 'Cancel',
-    save: 'Save'
-  }
-}
+    save: 'Save',
+  },
+};

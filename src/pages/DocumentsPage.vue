@@ -11,7 +11,11 @@
     </div>
 
     <div class="row q-col-gutter-md q-pa-sm">
-      <q-card v-for="doc in readableDocs" :key="doc.id" class="col-12 col-sm-4 relative-position">
+      <q-card
+        v-for="doc in readableDocs"
+        :key="doc.id"
+        class="col-12 col-sm-4 relative-position justify-around"
+      >
         <div
           v-if="userStore.currentUser?.role === 'user'"
           class="absolute-top-right q-ma-sm"
@@ -21,8 +25,7 @@
             borderRadius: '50%',
             backgroundColor: statusColor(doc),
           }"
-        />
-
+        ></div>
         <q-card-section>
           <div class="text-h6">{{ doc.title }}</div>
           <div class="text-subtitle2">{{ doc.text }}</div>
@@ -108,8 +111,8 @@
         <q-card-section>
           <div v-for="c in selectedDoc?.comments" :key="c.date" class="q-mb-sm">
             <q-chip
-              :color="getUserById(c.userId)?.role === 'admin' ? 'red' : 'blue'"
-              text-color="white"
+              :color="getUserById(c.userId)?.role === 'admin' ? 'negative' : 'positive'"
+              text-color="primary"
               square
             >
               {{ getUserById(c.userId)?.name }}
@@ -120,7 +123,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Fechar" color="grey" v-close-popup />
+          <q-btn flat label="Fechar" color="secondary" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -132,7 +135,7 @@
           <div>Tem certeza que deseja excluir o documento "{{ selectedDoc?.title }}"?</div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="grey" v-close-popup />
+          <q-btn flat label="Cancelar" color="secondary" v-close-popup />
           <q-btn label="Excluir" color="negative" @click="deleteDoc" />
         </q-card-actions>
       </q-card>

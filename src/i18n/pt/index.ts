@@ -5,7 +5,7 @@ export default {
     email: 'E-mail',
     password: 'Senha',
     button: 'Entrar',
-    logout: 'Sair'
+    logout: 'Sair',
   },
   register: {
     title: 'Cadastrar',
@@ -13,7 +13,7 @@ export default {
     email: 'E-mail',
     password: 'Senha',
     button: 'Criar Conta',
-    edition: 'Editar'
+    edition: 'Editar',
   },
   documents: {
     sistem: 'Gestor de Acessos',
@@ -23,20 +23,20 @@ export default {
     save: 'Salvar',
     cancel: 'Cancelar',
     comments: 'Ver Comentários',
-    delete: 'Excluir'
+    delete: 'Excluir',
   },
-  permission:{
+  permission: {
     title: 'Gerenciamento de Permissões',
     manage: 'Gerenciar Permissões',
     searchUser: 'Buscar Usuário',
-    read:'Ler',
+    read: 'Ler',
     comment: 'Comentar',
     edit: 'Editar',
-    date: 'Data',
-    time: 'Hora'
+    date: 'Data de expiração',
+    time: 'Hora de expiração',
   },
-  common:{
+  common: {
     cancel: 'Cancelar',
-    save: 'Salvar'
-  }
-}
+    save: 'Salvar',
+  },
+};

@@ -6,7 +6,7 @@
       </q-card-section>
 
       <q-card-section>
-        <q-form>
+        <q-form @submit="save">
           <div class="text-subtitle2 q-mb-sm">Dados Principais</div>
           <q-input v-model="form.name" label="Nome" label-color="accent" outlined class="q-mb-sm" />
 
@@ -36,6 +36,8 @@
             label-color="accent"
             outlined
             class="q-mb-sm"
+            lazy-rules
+            :rules="[validateSenha]"
           />
           <q-input
             v-model="form.confirmPassword"
@@ -43,14 +45,16 @@
             label="Confirmar nova senha"
             label-color="accent"
             outlined
+            lazy-rules
+            :rules="[validateSenha]"
           />
+
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="negative" @click="close" />
+            <q-btn flat label="Salvar" color="positive" type="submit" />
+          </q-card-actions>
         </q-form>
       </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn flat label="Cancelar" color="negative" @click="close" />
-        <q-btn flat label="Salvar" color="positive" @click="save" />
-      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
@@ -72,6 +76,11 @@ watch(
   (val) => (internalModel.value = val),
 );
 watch(internalModel, (val) => emit('update:modelValue', val));
+
+const validateSenha = (val: string): true | string => {
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{5,}$/;
+  return regex.test(val) || 'Senha inválida';
+};
 
 const form = ref({
   name: userStore.currentUser?.name || '',
@@ -110,6 +119,9 @@ function save() {
     userStore.updateProfile(payload);
     internalModel.value = false;
     Notify.create('Perfil atualizado com sucesso!');
+    form.value.confirmPassword = '';
+    form.value.newPassword = '';
+    form.value.oldPassword = '';
   } catch (e: unknown) {
     if (e instanceof Error) {
       Notify.create(e.message);
@@ -121,5 +133,8 @@ function save() {
 
 function close() {
   internalModel.value = false;
+  form.value.confirmPassword = '';
+  form.value.newPassword = '';
+  form.value.oldPassword = '';
 }
 </script>
