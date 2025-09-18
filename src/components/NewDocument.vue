@@ -94,6 +94,7 @@ function save() {
     });
   } else {
     documentsStore.addDocument(form.value.title, form.value.text, form.value.attachments);
+    form.value = { title: '', text: '', attachments: [] };
   }
   internalModel.value = false;
 }

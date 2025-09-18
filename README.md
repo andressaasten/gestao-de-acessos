@@ -8,7 +8,9 @@ Documento técnico completo: [`public/doc_tec.pdf`](./public/doc_tec.pdf)
 ---
 
 ## Objetivo do Projeto
+
 O sistema busca oferecer uma forma simples e eficiente de:
+
 - Cadastrar usuários e documentos;
 - Conceder permissões específicas (leitura, comentário, edição);
 - Controlar o tempo de validade de cada permissão, destacando acessos prestes a expirar;
@@ -28,6 +30,7 @@ As telas foram prototipadas no Figma e estão disponíveis no arquivo abaixo:
 ---
 
 ## Funcionalidades Implementadas
+
 - **Autenticação de usuários**
   - Login e cadastro
   - Perfis distintos: **Admin** e **User**
@@ -54,13 +57,13 @@ As telas foram prototipadas no Figma e estão disponíveis no arquivo abaixo:
 ---
 
 ## Usuários de exemplo
+
 O sistema já vem com usuários pré-configurados para teste:
 
 - **Admin**
   - Email: `admin@teste.com`
-  - Senha: `123456`
+  - Senha: `Teste@1`
 
 - **User**
   - Email: `user@teste.com`
-  - Senha: `123456`
-
+  - Senha: `Teste@1`

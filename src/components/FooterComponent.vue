@@ -1,5 +1,5 @@
 <template>
-  <q-footer :class="uiStore.darkMode ? 'bg-dark text-white' : 'bg-grey-9 text-white'">
+  <q-footer :class="uiStore.darkMode ? 'bg-secondary text-primary' : 'bg-accent text-primary'">
     <q-btn flat dense round icon="language">
       <q-menu>
         <q-list>

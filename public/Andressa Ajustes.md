@@ -36,9 +36,10 @@
 ### Tela de login
 
 - [*] Não há transição de cor ao trocar a funcionalidade
-- [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header) - favicon
+- [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header)
   - - [ ] Não utilizou notificações próprias - [ ] Não validou senhas fortes
-          -> [ ] Não armazenou idioma e tema ao atualizar a página - [ ] Não há formulário `<q-form>` onde deveria
+          -> [ ] Não armazenou idioma e tema ao atualizar a página
+  - - [ ] Não há formulário `<q-form>` onde deveria
   - - [ ] No modo dark, os inputs ficam sem contraste
 
 ### Tela home User
@@ -64,9 +65,9 @@
 
 - [ ] Modal de criação com pouco gap entre alguns elementos
 
-1 -> [ ] Funcionalidade de adicionar comentários poderia estar no modal de comentários. Não fica legal o usuário adicionar um comentário fora e ter que abrir o modal pra visualizar.
-2 -> [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy
-2 -> [ ] O sistema permite colocar expiração em datas anteriores ao dia atual
+- - [ ] Funcionalidade de adicionar comentários poderia estar no modal de comentários. Não fica legal o usuário adicionar um comentário fora e ter que abrir o modal pra visualizar.
+        2 -> [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy
+        2 -> [ ] O sistema permite colocar expiração em datas anteriores ao dia atual
 
 ### Gerenciamento de Permissões
 
@@ -76,7 +77,7 @@
 
 ### Pasta Public
 
-- [ ] Não alterou favicon
+- - [ ] Não alterou favicon
 
 ### Pasta SRC
 
@@ -100,7 +101,7 @@
 #### Layouts
 
 - [ ] uiStore pra dark mode é totalmente incorreto. O Quasar já fornece acesso se o tema está dark ou light com $dark.isActive. Além disso, ele deveria estar no localStorage.
-- [ ] q-header e q-footer poderiam estar separados em outros componentes
+- - [ ] q-header e q-footer poderiam estar separados em outros componentes
 
 #### Pages
 

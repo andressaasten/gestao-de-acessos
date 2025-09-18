@@ -24,7 +24,6 @@
           <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
           <q-checkbox v-model="perms.canEdit" :label="$t('permission.edit')" color="accent" />
 
-          <!-- Novo: seleção de data/hora personalizada -->
           <div class="q-mt-md">
             <q-input filled v-model="expirationDate" :label="$t('permission.date')">
               <template v-slot:append>
@@ -93,10 +92,8 @@ function savePerms() {
   if (!props.doc || !selectedUser.value) return;
   if (!expirationDate.value || !expirationTime.value) return;
 
-  // monta o timestamp da data/hora escolhida
   const expiresAt = new Date(`${expirationDate.value}T${expirationTime.value}:59`).getTime();
 
-  // corrige o filtro para pegar os valores dos checkboxes
   const selectedPerms: ('read' | 'comment' | 'edit')[] = [];
   if (perms.value.canRead) selectedPerms.push('read');
   if (perms.value.canComment) selectedPerms.push('comment');

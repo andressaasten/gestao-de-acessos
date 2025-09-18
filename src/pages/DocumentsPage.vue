@@ -11,11 +11,7 @@
     </div>
 
     <div class="row q-col-gutter-md q-pa-sm">
-      <q-card
-        v-for="doc in readableDocs"
-        :key="doc.id"
-        class="col-12 col-sm-4 relative-position justify-around"
-      >
+      <q-card v-for="doc in readableDocs" :key="doc.id" class="col-12 col-sm-4 relative-position">
         <div
           v-if="userStore.currentUser?.role === 'user'"
           class="absolute-top-right q-ma-sm"
@@ -53,22 +49,6 @@
             :label="$t('documents.comments')"
             @click="openComments(doc)"
           />
-
-          <div v-if="documentsStore.canComment(doc)" class="q-mt-sm">
-            <q-input
-              dense
-              outlined
-              v-model="newComment[doc.id]"
-              placeholder="Escreva um comentário"
-            />
-            <q-btn
-              flat
-              :label="$t('permission.comment')"
-              color="accent"
-              class="q-mt-sm"
-              @click="addComment(doc)"
-            />
-          </div>
         </q-card-section>
 
         <q-btn
@@ -101,32 +81,7 @@
     <new-document v-model="showPopup" />
     <new-document v-model="showEditPopup" :doc="editingDoc" edit-mode />
     <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc!" />
-
-    <q-dialog v-model="showCommentsPopup" persistent>
-      <q-card style="min-width: 500px">
-        <q-card-section>
-          <div class="text-h6">Comentários de {{ selectedDoc?.title }}</div>
-        </q-card-section>
-
-        <q-card-section>
-          <div v-for="c in selectedDoc?.comments" :key="c.date" class="q-mb-sm">
-            <q-chip
-              :color="getUserById(c.userId)?.role === 'admin' ? 'negative' : 'positive'"
-              text-color="primary"
-              square
-            >
-              {{ getUserById(c.userId)?.name }}
-              <span class="text-caption q-ml-sm"> ({{ new Date(c.date).toLocaleString() }}) </span>
-            </q-chip>
-            <div class="q-ml-md">{{ c.text }}</div>
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Fechar" color="secondary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <comments-popup v-model="showCommentsPopup" />
 
     <q-dialog v-model="confirmDeletePopup" persistent>
       <q-card>
@@ -149,6 +104,7 @@ import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore, type Document } from 'src/stores/documents';
 import NewDocument from 'src/components/NewDocument.vue';
 import PermissaoPopup from 'src/components/PermissaoPopup.vue';
+import CommentsPopup from 'src/components/CommentsPopup.vue';
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
@@ -162,18 +118,10 @@ const confirmDeletePopup = ref(false);
 
 const selectedDoc = ref<Document | null>(null);
 const editingDoc = ref<Document | null>(null);
-const newComment = ref<Record<number, string>>({});
 
 const readableDocs = computed(() =>
-  documentsStore.documents.filter((d) => documentsStore.canRead(d)),
+  documentsStore.documents.filter((d) => documentsStore.canComment(d)),
 );
-
-function addComment(doc: Document) {
-  const text = newComment.value[doc.id];
-  if (!text || !text.trim()) return;
-  documentsStore.addComment(doc.id, text);
-  newComment.value[doc.id] = '';
-}
 
 function statusColor(doc: Document) {
   const status = documentsStore.getTimeStatus(doc);
@@ -208,9 +156,5 @@ function deleteDoc() {
     documentsStore.deleteDocument(selectedDoc.value.id);
     confirmDeletePopup.value = false;
   }
-}
-
-function getUserById(id: number) {
-  return userStore.users.find((u) => u.id === id) || null;
 }
 </script>
