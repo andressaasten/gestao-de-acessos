@@ -57,12 +57,8 @@ const selectedDoc = ref<Document | null>(null);
 const newComment = ref<Record<number, string>>({});
 
 const readableDocs = computed(() =>
-  documentsStore.documents.filter((d) => documentsStore.canComment(d)),
+  documentsStore.documents.filter((d) => documentsStore.canRead(d)),
 );
-
-function openComments(doc: Document) {
-  selectedDoc.value = doc;
-}
 
 function addComment(doc: Document) {
   const text = newComment.value[doc.id];

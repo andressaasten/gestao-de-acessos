@@ -1,7 +1,10 @@
 <template>
-  <q-page class="q-pa-lg">
+  <q-page :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
     <div class="row items-center justify-between q-mb-lg">
-      <h2>{{ $t('documents.title') }}</h2>
+      <title :class="$q.dark.isActive ? 'text-accent' : 'text-primary'">
+        {{ $t('documents.title') }}
+      </title>
+
       <q-btn
         v-if="userStore.currentUser?.role === 'admin'"
         :label="$t('documents.new')"
@@ -10,8 +13,13 @@
       />
     </div>
 
-    <div class="row q-col-gutter-md q-pa-sm">
-      <q-card v-for="doc in readableDocs" :key="doc.id" class="col-12 col-sm-4 relative-position">
+    <div class="row q-col-gutter-sm q-ma-sm justify-between">
+      <q-card
+        v-for="doc in readableDocs"
+        :key="doc.id"
+        class="q-mt-md q-mr-sm"
+        style="max-width: 400px"
+      >
         <div
           v-if="userStore.currentUser?.role === 'user'"
           class="absolute-top-right q-ma-sm"

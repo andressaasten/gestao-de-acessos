@@ -37,25 +37,23 @@
 
 - [*] Não há transição de cor ao trocar a funcionalidade
 - [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header)
-  - - [ ] Não utilizou notificações próprias - [ ] Não validou senhas fortes
-          -> [ ] Não armazenou idioma e tema ao atualizar a página
-  - - [ ] Não há formulário `<q-form>` onde deveria
-  - - [ ] No modo dark, os inputs ficam sem contraste
+- - [ ] Não utilizou notificações próprias
+- - [ ] Não validou senhas fortes
+- [ ] Não armazenou idioma e tema ao atualizar a página
+- - [ ] Não há formulário `<q-form>` onde deveria
+- - [ ] No modo dark, os inputs ficam sem contraste
 
 ### Tela home User
 
 - - [ ] Não há formulário `<q-form>` no editar
-
-1 -> [ ] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
-2 -> [ ] Cards de recursos grudados sem gap entre eles
-2 -> [ ] Pouco padding na seção main
-3 -> [ ] O indicativo de expiração não possui legenda
-
+- [ ] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
+- [ ] Cards de recursos grudados sem gap entre eles
+- [ ] Pouco padding na seção main
+- [ ] O indicativo de expiração não possui legenda
 - - [ ] No editar, as informações de senha permanecem ao salvar ou cancelar
-        5 -> [ ] Não há Sidebar
-        -> [ ] Header quebra muito em telas menores
-        -> Component Header
-        -> [ ] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
+- - [ ] Não há Sidebar
+- - [ ] Header quebra muito em telas menores
+- [ ] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
 
 ### Tela home Admin
 
@@ -66,8 +64,8 @@
 - [ ] Modal de criação com pouco gap entre alguns elementos
 
 - - [ ] Funcionalidade de adicionar comentários poderia estar no modal de comentários. Não fica legal o usuário adicionar um comentário fora e ter que abrir o modal pra visualizar.
-        2 -> [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy
-        2 -> [ ] O sistema permite colocar expiração em datas anteriores ao dia atual
+- [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy
+- [ ] O sistema permite colocar expiração em datas anteriores ao dia atual
 
 ### Gerenciamento de Permissões
 
@@ -87,8 +85,8 @@
 
 #### Components
 
-    - [ ] `EditorPopup.vue` não utiliza `<q-form>` com submit
-    - [ ] `LoginRegister.vue` não utiliza `<q-form>` com submit
+- - [ ] `EditorPopup.vue` não utiliza `<q-form>` com submit
+- - [ ] `LoginRegister.vue` não utiliza `<q-form>` com submit
 
 - [ ] `isLargeScreen` utilizando v-show, o ideal é v-if para remover da DOM, mas tudo depende do caso, não está errado.
 - [ ] Não usou `defineOptions` em nenhum arquivo do projeto
@@ -96,11 +94,11 @@
 #### CSS
 
 - [ ] `app.scss` vazio, mas pelo visto não foi necessário
-- [ ] `quasar.variables` não modificado
+- - [ ] `quasar.variables` não modificado
 
 #### Layouts
 
-- [ ] uiStore pra dark mode é totalmente incorreto. O Quasar já fornece acesso se o tema está dark ou light com $dark.isActive. Além disso, ele deveria estar no localStorage.
+- - [ ] uiStore pra dark mode é totalmente incorreto. O Quasar já fornece acesso se o tema está dark ou light com $dark.isActive. Além disso, ele deveria estar no localStorage.
 - - [ ] q-header e q-footer poderiam estar separados em outros componentes
 
 #### Pages
@@ -144,5 +142,13 @@ Neste último caso o Tanstack poderia ser uma alternativa
 
 ### Arquivos de configuração
 
-- [*] Lendo `postcss.config.js` e `tailwind.config.ts` acredito que o Tailwind não funcione no projeto.
-- [*] Em `quasar.config.ts` poderia utilizar `vueRouterMode: 'history'` para remover a hashtag da URL.
+- - [*] Lendo `postcss.config.js` e `tailwind.config.ts` acredito que o Tailwind não funcione no projeto.
+- - [*] Em `quasar.config.ts` poderia utilizar `vueRouterMode: 'history'` para remover a hashtag da URL.
+
+- [ ] Responsividade e acessibilidade
+- [ ] Dark Mode
+- [ ] Comments
+- [ ] Date
+- [ ] Aviso User
+- [ ] legenda expiração
+- [ ] armazenar config lang e mode

@@ -1,5 +1,5 @@
 <template>
-  <q-footer :class="uiStore.darkMode ? 'bg-secondary text-primary' : 'bg-accent text-primary'">
+  <q-footer :class="$q.dark.isActive ? 'bg-secondary text-primary' : 'bg-accent text-primary'">
     <q-btn flat dense round icon="language">
       <q-menu>
         <q-list>
@@ -13,24 +13,15 @@
       </q-menu>
     </q-btn>
 
-    <q-btn
-      flat
-      dense
-      round
-      :icon="uiStore.darkMode ? 'dark_mode' : 'light_mode'"
-      @click="uiStore.toggleDark"
-    />
+    <q-btn flat dense round />
   </q-footer>
 </template>
 <script setup lang="ts">
-import { useUiStore } from 'src/stores/ui';
 import { useI18n } from 'vue-i18n';
 
-const uiStore = useUiStore();
 const { locale } = useI18n();
 
 function changeLang(lang: 'pt' | 'en') {
-  uiStore.setLocale(lang);
   locale.value = lang;
 }
 </script>

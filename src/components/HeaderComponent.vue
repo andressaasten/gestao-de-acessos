@@ -1,18 +1,50 @@
 <template>
-  <q-toolbar :class="uiStore.darkMode ? 'bg-secondary text-primary' : 'bg-accent '">
+  <q-toolbar elevated :class="$q.dark.isActive ? 'bg-dark' : 'bg-accent'">
+    <q-btn
+      flat
+      @click="drawerRight = !drawerRight"
+      round
+      dense
+      icon="menu"
+      aria-label="Menu"
+      v-if="!$q.screen.gt.sm"
+    />
     <q-toolbar-title>{{ $t('documents.sistem') }}</q-toolbar-title>
 
     <div class="row items-center q-gutter-sm">
-      <q-btn flat :label="$t('documents.title')" to="/documents" />
+      <q-btn flat :label="$t('documents.title')" to="/documents" v-if="$q.screen.gt.sm" />
       <q-btn
-        v-if="userStore.currentUser?.role === 'admin'"
+        v-if="userStore.currentUser?.role === 'admin' && $q.screen.gt.sm"
         flat
         :label="$t('permission.title')"
         to="/permissions"
       />
-      <q-btn flat :label="$t('register.edition')" @click="showProfile = true" />
+      <q-btn
+        flat
+        :label="$t('register.edition')"
+        @click="showProfile = true"
+        v-if="$q.screen.gt.sm"
+      />
       <q-btn color="accent bg-primary" flat :label="$t('login.logout')" @click="logout" />
     </div>
+
+    <q-drawer
+      side="left"
+      v-model="drawerRight"
+      no-swipe-backdrop
+      bordered
+      overlay
+      :width="200"
+      :breakpoint="500"
+      :class="$q.dark.isActive ? 'bg-secondary' : 'bg-accent'"
+    >
+      <q-btn flat @click="drawerRight = false" round dense icon="close" aria-label="close" />
+      <q-list class="q-pt-md">
+        <q-item clickable v-ripple to="/documents">{{ $t('documents.title') }}</q-item>
+        <q-item clickable v-ripple to="/permissions">{{ $t('permission.title') }}</q-item>
+        <q-item clickable @click="showProfile = true">{{ $t('register.edition') }} perfil</q-item>
+      </q-list>
+    </q-drawer>
   </q-toolbar>
 </template>
 
@@ -20,11 +52,10 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/stores/user';
-import { useUiStore } from 'src/stores/ui';
 
 const router = useRouter();
 const userStore = useUserStore();
-const uiStore = useUiStore();
+const drawerRight = ref(false);
 
 const showProfile = ref(false);
 
