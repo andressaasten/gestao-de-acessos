@@ -46,8 +46,8 @@
 ### Tela home User
 
 - - [ ] Não há formulário `<q-form>` no editar
-- [ ] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
-- [ ] Cards de recursos grudados sem gap entre eles
+- - [ ] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
+- - [ ] Cards de recursos grudados sem gap entre eles
 - [ ] Pouco padding na seção main
 - [ ] O indicativo de expiração não possui legenda
 - - [ ] No editar, as informações de senha permanecem ao salvar ou cancelar
@@ -57,7 +57,7 @@
 
 ### Tela home Admin
 
-°-° [ ] A responsividade com os cards não fica legal em alguns momentos ao redimencionar a tela
+- - [ ] A responsividade com os cards não fica legal em alguns momentos ao redimencionar a tela
 
 - - [ ] No modal de permissões não há indicativo para o usuário sobre o que a data e hora se referem
 
@@ -70,7 +70,7 @@
 ### Gerenciamento de Permissões
 
 - [ ] A tabela fica quebrada quando 1 usuário tem muitas permissões
-- [ ] No expirar quando são muitas horas poderia se transformar em dias, semanas, meses e anos
+- - [ ] No expirar quando são muitas horas poderia se transformar em dias, semanas, meses e anos
 - [ ] O expirar em 1 min ficou 0 min
 
 ### Pasta Public
@@ -145,10 +145,9 @@ Neste último caso o Tanstack poderia ser uma alternativa
 - - [*] Lendo `postcss.config.js` e `tailwind.config.ts` acredito que o Tailwind não funcione no projeto.
 - - [*] Em `quasar.config.ts` poderia utilizar `vueRouterMode: 'history'` para remover a hashtag da URL.
 
-- [ ] Responsividade e acessibilidade
-- [ ] Dark Mode
-- [ ] Comments
-- [ ] Date
-- [ ] Aviso User
-- [ ] legenda expiração
-- [ ] armazenar config lang e mode
+- [ ] Responsividade e acessibilidade - popup em telas pequenas
+- [ ] Comments - nao esta abrindo o popup
+- [ ] Date - terminar de ajustar
+- [ ] legenda expiração para o user
+
+- https://medium.com/@luismigueldev/zod-o-poder-de-valida%C3%A7%C3%A3o-e-transforma%C3%A7%C3%A3o-de-dados-365197d03e7f

@@ -13,15 +13,22 @@
       </q-menu>
     </q-btn>
 
-    <q-btn flat dense round />
+    <q-btn flat dense round :icon="darkMode ? 'dark_mode' : 'light_mode'" @click="toggleDark" />
   </q-footer>
 </template>
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
+import { Dark } from 'quasar';
 
 const { locale } = useI18n();
+let darkMode = Dark.isActive;
 
 function changeLang(lang: 'pt' | 'en') {
   locale.value = lang;
+}
+
+function toggleDark() {
+  darkMode = !darkMode;
+  Dark.set(darkMode);
 }
 </script>

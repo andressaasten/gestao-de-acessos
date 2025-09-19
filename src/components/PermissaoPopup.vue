@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="internalModel" persistent>
+  <q-dialog v-model="internalModel">
     <q-card style="min-width: 450px">
       <q-card-section>
         <div class="text-h6">{{ $t('permission.manage') }}</div>
@@ -19,32 +19,30 @@
           </q-item>
         </q-list>
 
-        <div v-if="selectedUser" class="q-mt-md">
-          <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
-          <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
-          <q-checkbox v-model="perms.canEdit" :label="$t('permission.edit')" color="accent" />
+        <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" />
+        <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" />
+        <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" />
 
-          <div class="q-mt-md">
-            <q-input filled v-model="expirationDate" :label="$t('permission.date')">
-              <template v-slot:append>
-                <q-icon name="event" class="cursor-pointer" color="accent">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="expirationDate" mask="YYYY-MM-DD" />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
+        <div class="q-mt-md grid grid-cols-1 gap-2">
+          <q-input filled v-model="expirationDate" :label="$t('permission.date')" readonly>
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="expirationDate" mask="YYYY-MM-DD" @input="expirationDate" />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
 
-            <q-input filled v-model="expirationTime" :label="$t('permission.time')">
-              <template v-slot:append>
-                <q-icon name="schedule" class="cursor-pointer" color="accent">
-                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-time v-model="expirationTime" mask="HH:mm" format24h />
-                  </q-popup-proxy>
-                </q-icon>
-              </template>
-            </q-input>
-          </div>
+          <q-input filled v-model="expirationTime" :label="$t('permission.time')">
+            <template v-slot:append>
+              <q-icon name="schedule" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="expirationTime" mask="HH:mm" format24h />
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
         </div>
       </q-card-section>
 
@@ -60,6 +58,7 @@
 import { ref, watch, computed } from 'vue';
 import { useUserStore, type User } from 'src/stores/user';
 import { useDocumentsStore, type Document } from 'src/stores/documents';
+import { Notify } from 'quasar';
 
 const props = defineProps<{ modelValue: boolean; doc: Document }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
@@ -78,7 +77,6 @@ const search = ref('');
 const selectedUser = ref<User | null>(null);
 const perms = ref({ canRead: true, canComment: false, canEdit: false });
 
-// novos campos p/ expiração personalizada
 const expirationDate = ref('');
 const expirationTime = ref('');
 
@@ -94,12 +92,27 @@ function savePerms() {
 
   const expiresAt = new Date(`${expirationDate.value}T${expirationTime.value}:59`).getTime();
 
+  const now = Date.now();
+
+  if (expiresAt <= now) {
+    console.warn('A data de expiração deve ser no futuro.');
+    Notify.create({
+      type: 'negative',
+      message: 'A data de expiração deve ser no futuro.',
+    });
+    return;
+  }
+
   const selectedPerms: ('read' | 'comment' | 'edit')[] = [];
   if (perms.value.canRead) selectedPerms.push('read');
   if (perms.value.canComment) selectedPerms.push('comment');
   if (perms.value.canEdit) selectedPerms.push('edit');
 
   documentsStore.setPermission(props.doc.id, selectedUser.value.id, selectedPerms, expiresAt);
+  selectedUser.value = null;
+  perms.value = { canComment: false, canEdit: false, canRead: true };
+  expirationDate.value = '';
+  expirationTime.value = '';
 
   internalModel.value = false;
 }

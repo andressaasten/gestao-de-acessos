@@ -3,16 +3,16 @@
     <q-card style="min-width: 500px">
       <q-card-section>
         <div class="text-h6">
-          {{ editMode ? 'Editar Documento' : 'Novo Documento' }}
+          {{ editMode ? $t('documents.edit') : 'documents.new' }}
         </div>
       </q-card-section>
 
       <q-card-section>
-        <q-input v-model="form.title" label="Título" outlined />
-        <q-input v-model="form.text" label="Texto" type="textarea" outlined />
+        <q-input v-model="form.title" :label="$t('common.title')" outlined />
+        <q-input v-model="form.text" :label="$t('common.text')" type="textarea" outlined />
 
         <q-uploader
-          label="Anexos"
+          :label="$t('common.attached')"
           multiple
           accept=".jpg,.jpeg,.png,.pdf"
           @added="onFilesAdded"
@@ -30,10 +30,10 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat label="Cancelar" color="negative" @click="close" />
+        <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
         <q-btn
           flat
-          :label="editMode ? 'Salvar Alterações' : 'Criar'"
+          :label="editMode ? $t('common.save') : $t('common.create')"
           color="positive"
           @click="save"
         />

@@ -1,6 +1,6 @@
 <template>
-  <q-dialog>
-    <q-card style="min-width: 500px" v-for="doc in readableDocs" :key="doc.id">
+  <q-dialog v-model="show">
+    <q-card style="min-width: 500px">
       <q-card-section>
         <div class="text-h6">Comentários de {{ selectedDoc?.title }}</div>
       </q-card-section>
@@ -20,11 +20,11 @@
       </q-card-section>
 
       <q-card-section>
-        <div v-if="documentsStore.canComment(doc)" class="q-mt-sm">
+        <div v-if="selectedDoc && documentsStore.canComment(selectedDoc)" class="q-mt-sm">
           <q-input
             dense
             outlined
-            v-model="newComment[doc.id]"
+            v-model="newComment[selectedDoc.id]"
             placeholder="Escreva um comentário"
           />
           <q-btn
@@ -32,7 +32,7 @@
             :label="$t('permission.comment')"
             color="accent"
             class="q-mt-sm"
-            @click="addComment(doc)"
+            @click="addComment(selectedDoc)"
           />
         </div>
       </q-card-section>
@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore, type Document } from 'src/stores/documents';
 
@@ -53,12 +53,15 @@ const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
 documentsStore.init();
 
+const show = ref(false);
 const selectedDoc = ref<Document | null>(null);
 const newComment = ref<Record<number, string>>({});
 
-const readableDocs = computed(() =>
-  documentsStore.documents.filter((d) => documentsStore.canRead(d)),
-);
+function openComments(doc: Document) {
+  selectedDoc.value = doc;
+  newComment.value = '';
+  show.value = true;
+}
 
 function addComment(doc: Document) {
   const text = newComment.value[doc.id];
@@ -70,4 +73,6 @@ function addComment(doc: Document) {
 function getUserById(id: number) {
   return userStore.users.find((u) => u.id === id) || null;
 }
+
+defineExpose({ openComments });
 </script>

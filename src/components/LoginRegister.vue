@@ -9,14 +9,14 @@
       style="width: 600px; height: 500px"
       :class="isLoginActive ? 'bg-dark text-primary' : 'bg-primary text-accent'"
     >
-      <h2 class="text-center text-h5 q-mx-lg cursor-pointer" @click="isLoginActive = true">
-        Entrar
-      </h2>
+      <q-title class="text-center text-h2 q-mx-sm cursor-pointer" @click="isLoginActive = true">
+        {{ $t('login.title') }}
+      </q-title>
       <q-input
         filled
         v-model="loginForm.email"
         type="email"
-        label="E-mail"
+        :label="$t('login.email')"
         :label-color="isLoginActive ? 'accent' : 'secondary'"
         class="q-my-md"
         :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
@@ -29,7 +29,7 @@
         filled
         type="password"
         v-model="loginForm.password"
-        label="Senha"
+        :label="$t('login.password')"
         :label-color="isLoginActive ? 'accent' : 'secondary'"
         class="q-my-md"
         :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
@@ -39,13 +39,18 @@
       />
 
       <q-btn
-        label="Entrar"
+        :label="$t('login.title')"
         :color="isLoginActive ? 'primary bg-accent' : 'secondary'"
         class="full-width q-my-md"
         :disable="!isLoginActive"
         type="submit"
       />
-      <q-btn flat label="Criar conta" class="full-width" @click="isLoginActive = false" />
+      <q-btn
+        flat
+        :label="$t('register.button')"
+        class="full-width"
+        @click="isLoginActive = false"
+      />
     </q-form>
 
     <!-- REGISTER -->
@@ -57,14 +62,14 @@
       style="width: 600px; height: 500px"
       :class="!isLoginActive ? 'bg-secondary text-primary' : 'bg-primary text-accent'"
     >
-      <h2 class="text-center text-h5 q-mb-lg cursor-pointer" @click="isLoginActive = false">
-        Cadastre-se
-      </h2>
+      <q-title class="text-center text-h2 q-mb-lg cursor-pointer" @click="isLoginActive = false">
+        {{ $t('register.title') }}
+      </q-title>
 
       <q-input
         filled
         v-model="registerForm.name"
-        label="Nome"
+        :label="$t('register.name')"
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
         :disable="isLoginActive"
@@ -75,7 +80,7 @@
         filled
         v-model="registerForm.email"
         type="email"
-        label="E-mail"
+        :label="$t('login.email')"
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
         :color="!isLoginActive ? 'secondary bg-primary' : 'accent'"
@@ -88,7 +93,7 @@
         filled
         type="password"
         v-model="registerForm.password"
-        label="Senha"
+        :label="$t('login.password')"
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-lg"
         :color="!isLoginActive ? 'secondary bg-primary' : 'accent '"
@@ -98,14 +103,19 @@
       />
 
       <q-btn
-        label="Cadastrar"
+        :label="$t('register.title')"
         type="submit"
         :color="!isLoginActive ? 'primary bg-accent' : 'secondary'"
         class="full-width q-mb-md"
         :disable="isLoginActive"
       />
 
-      <q-btn flat label="Já tenho conta" class="full-width" @click="isLoginActive = true" />
+      <q-btn
+        flat
+        :label="$t('register.register')"
+        class="full-width"
+        @click="isLoginActive = true"
+      />
     </q-form>
   </div>
 </template>
@@ -153,7 +163,7 @@ async function handleRegister() {
       registerForm.value.email,
       registerForm.value.password,
     );
-    alert('Conta criada com sucesso!');
+    Notify.create('Conta criada com sucesso!');
     isLoginActive.value = true;
     await router.push('/documents');
   } catch (e: unknown) {

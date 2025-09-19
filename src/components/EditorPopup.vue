@@ -2,37 +2,43 @@
   <q-dialog v-model="internalModel" persistent>
     <q-card style="min-width: 400px">
       <q-card-section>
-        <div class="text-h6 text-center">Editar perfil</div>
+        <div class="text-h6 text-center">{{ $t('register.edition') }}</div>
       </q-card-section>
 
       <q-card-section>
         <q-form @submit="save">
-          <div class="text-subtitle2 q-mb-sm">Dados Principais</div>
-          <q-input v-model="form.name" label="Nome" label-color="accent" outlined class="q-mb-sm" />
+          <div class="text-subtitle2 q-mb-sm">{{ $t('register.data') }}</div>
+          <q-input
+            v-model="form.name"
+            :label="$t('register.name')"
+            label-color="accent"
+            outlined
+            class="q-mb-sm"
+          />
 
           <q-input
             v-model="form.email"
-            label="E-mail"
+            :label="$t('register.email')"
             label-color="accent"
             outlined
             class="q-mb-md"
           />
 
-          <div class="text-subtitle2 q-mb-sm">Confirme sua senha atual</div>
+          <div class="text-subtitle2 q-mb-sm"></div>
           <q-input
             v-model="form.oldPassword"
             type="password"
-            label="Senha atual"
+            :label="$t('register.currentPassword')"
             label-color="accent"
             outlined
             class="q-mb-md"
           />
 
-          <div class="text-subtitle2 q-mb-sm">Alterar senha (opcional)</div>
+          <div class="text-subtitle2 q-mb-sm">{{ $t('register.change') }}</div>
           <q-input
             v-model="form.newPassword"
             type="password"
-            label="Nova senha"
+            :label="$t('register.newPassword')"
             label-color="accent"
             outlined
             class="q-mb-sm"
@@ -42,7 +48,7 @@
           <q-input
             v-model="form.confirmPassword"
             type="password"
-            label="Confirmar nova senha"
+            :label="$t('register.confirmPassword')"
             label-color="accent"
             outlined
             lazy-rules
@@ -50,8 +56,8 @@
           />
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancelar" color="negative" @click="close" />
-            <q-btn flat label="Salvar" color="positive" type="submit" />
+            <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
+            <q-btn flat :label="$t('common.save')" color="positive" type="submit" />
           </q-card-actions>
         </q-form>
       </q-card-section>

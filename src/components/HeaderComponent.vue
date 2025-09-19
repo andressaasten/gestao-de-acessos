@@ -28,6 +28,8 @@
       <q-btn color="accent bg-primary" flat :label="$t('login.logout')" @click="logout" />
     </div>
 
+    <profile-popup v-model="showProfile" />
+
     <q-drawer
       side="left"
       v-model="drawerRight"
@@ -52,6 +54,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUserStore } from 'src/stores/user';
+import ProfilePopup from 'src/components/EditorPopup.vue';
 
 const router = useRouter();
 const userStore = useUserStore();

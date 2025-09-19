@@ -1,7 +1,7 @@
 <template>
-  <q-page :class="$q.dark.isActive ? 'bg-dark' : 'bg-primary'">
+  <q-page :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
     <div class="row items-center justify-between q-mb-lg">
-      <h4>Gerenciamento de Permissões</h4>
+      <q-title class="text-lg q-ml-md">{{ $t('permission.title') }}</q-title>
     </div>
 
     <q-table :rows="userRows" :columns="columns" row-key="id" flat bordered>
@@ -23,17 +23,21 @@
                 color="primary"
                 text-color="white"
                 size="sm"
-                >Leitura</q-chip
+                >{{ $t('permission.read') }}</q-chip
               >
               <q-chip
                 v-if="perm.perms.includes('comment')"
                 color="orange"
                 text-color="white"
                 size="sm"
-                >Comentar</q-chip
+                >{{ $t('permission.comment') }}</q-chip
               >
-              <q-chip v-if="perm.perms.includes('edit')" color="teal" text-color="white" size="sm"
-                >Editar</q-chip
+              <q-chip
+                v-if="perm.perms.includes('edit')"
+                color="teal"
+                text-color="white"
+                size="sm"
+                >{{ $t('permission.edit') }}</q-chip
               >
             </div>
             <div class="q-mt-sm row q-gutter-sm">
@@ -41,14 +45,14 @@
                 dense
                 flat
                 color="accent"
-                label="Editar"
+                :label="$t('permission.edit')"
                 @click="openEditPermission(props.row.id, perm)"
               />
               <q-btn
                 dense
                 flat
                 color="negative"
-                label="Excluir"
+                :label="$t('documents.delete')"
                 @click="confirmRescind(props.row.id, perm.docId)"
               />
             </div>
@@ -62,7 +66,7 @@
             flat
             dense
             color="negative"
-            label="Revogar tudo"
+            :label="$t('permission.revoke')"
             @click="confirmRescindAll(props.row.id)"
           />
         </q-td>
@@ -73,44 +77,52 @@
     <q-dialog v-model="confirmDialog">
       <q-card>
         <q-card-section>
-          <div class="text-h6">Confirmação</div>
+          <q-title class="text-h6">{{ $t('common.confirm') }}</q-title>
           <div>{{ confirmMessage }}</div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup />
-          <q-btn flat label="Confirmar" color="negative" @click="rescindConfirmed" />
+          <q-btn flat :label="$t('documents.delete')" v-close-popup />
+          <q-btn flat :label="$t('common.confirm')" color="negative" @click="rescindConfirmed" />
         </q-card-actions>
       </q-card>
     </q-dialog>
 
     <!-- EDITAR PERMISSÕES -->
-    <!-- EDITAR PERMISSÕES -->
     <q-dialog v-model="editDialog">
       <q-card style="min-width: 450px">
         <q-card-section>
-          <div class="text-h6">Editar Permissões</div>
+          <div class="text-h6">{{ $t('permission.edit') }}</div>
           <div>{{ editDoc?.docTitle }}</div>
         </q-card-section>
 
         <q-card-section>
           <!-- Checkboxes -->
-          <q-checkbox v-model="editForm.perms.canRead" label="Leitura" />
-          <q-checkbox v-model="editForm.perms.canComment" label="Comentar" />
-          <q-checkbox v-model="editForm.perms.canEdit" label="Editar" />
+          <q-checkbox v-model="editForm.perms.canRead" :label="$t('permission.read')" />
+          <q-checkbox v-model="editForm.perms.canComment" :label="$t('permission.comment')" />
+          <q-checkbox v-model="editForm.perms.canEdit" :label="$t('documents.edit')" />
 
           <!-- Date / Time Picker -->
-          <div class="q-mt-md">
-            <q-input filled v-model="editForm.expirationDate" label="Data de expiração">
+          <div class="q-mt-md grid grid-cols-1 gap-2">
+            <q-input
+              filled
+              v-model="editForm.expirationDateDisplay"
+              :label="$t('permission.date')"
+              readonly
+            >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-date v-model="editForm.expirationDate" mask="YYYY-MM-DD" />
+                    <q-date
+                      v-model="editForm.expirationDateIso"
+                      mask="YYYY-MM-DD"
+                      @input="onEditDate"
+                    />
                   </q-popup-proxy>
                 </q-icon>
               </template>
             </q-input>
 
-            <q-input filled v-model="editForm.expirationTime" label="Hora de expiração">
+            <q-input filled v-model="editForm.expirationTime" :label="$t('permission.time')">
               <template v-slot:append>
                 <q-icon name="schedule" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -135,6 +147,9 @@
 import { ref, computed } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore } from 'src/stores/documents';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
@@ -162,30 +177,53 @@ const editUserId = ref<number | null>(null);
 
 const editForm = ref({
   perms: { canRead: false, canComment: false, canEdit: false },
-  expirationDate: '',
+  expirationDateIso: '',
+  expirationDateDisplay: '',
   expirationTime: '',
 });
 
 function openEditPermission(userId: number, perm: PermissionDisplay) {
   editUserId.value = userId;
   editDoc.value = perm;
+  const iso = new Date(perm.expiresAt).toISOString().slice(0, 10); // YYYY-MM-DD
+  const time = new Date(perm.expiresAt).toISOString().slice(11, 16); // HH:mm
   editForm.value = {
     perms: {
       canRead: perm.perms.includes('read'),
       canComment: perm.perms.includes('comment'),
       canEdit: perm.perms.includes('edit'),
     },
-    expirationDate: new Date(perm.expiresAt).toISOString().slice(0, 10), // YYYY-MM-DD
-    expirationTime: new Date(perm.expiresAt).toISOString().slice(11, 16), // HH:mm
+    expirationDateIso: iso,
+    expirationDateDisplay: iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : '',
+    expirationTime: time,
   };
   editDialog.value = true;
 }
 
+function onEditDate(val: string) {
+  editForm.value.expirationDateIso = val;
+  if (val) {
+    const [y, m, d] = val.split('-');
+    editForm.value.expirationDateDisplay = `${d}/${m}/${y}`;
+  } else {
+    editForm.value.expirationDateDisplay = '';
+  }
+}
+
 function savePermissionEdit() {
   if (editUserId.value && editDoc.value) {
+    if (!editForm.value.expirationDateIso || !editForm.value.expirationTime) {
+      $q.notify({ type: 'negative', message: 'Preencha data e hora' });
+      return;
+    }
     const expiresAt = new Date(
-      `${editForm.value.expirationDate}T${editForm.value.expirationTime}:00`,
+      `${editForm.value.expirationDateIso}T${editForm.value.expirationTime}:59`,
     ).getTime();
+
+    if (expiresAt <= Date.now()) {
+      $q.notify({ type: 'negative', message: 'A data de expiração deve ser no futuro' });
+      return;
+    }
 
     const selectedPerms: ('read' | 'comment' | 'edit')[] = [];
     if (editForm.value.perms.canRead) selectedPerms.push('read');
@@ -193,6 +231,7 @@ function savePermissionEdit() {
     if (editForm.value.perms.canEdit) selectedPerms.push('edit');
 
     documentsStore.setPermission(editDoc.value.docId, editUserId.value, selectedPerms, expiresAt);
+    $q.notify({ type: 'positive', message: 'Permissão atualizada' });
   }
   editDialog.value = false;
 }
@@ -219,11 +258,39 @@ function rescindConfirmed() {
 }
 
 function formatDate(ts: number) {
-  return new Date(ts).toLocaleString();
+  const d = new Date(ts);
+  // DD/MM/YYYY HH:mm
+  const ds = d.toLocaleDateString('pt-BR');
+  const tsPart = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  return `${ds} ${tsPart}`;
+}
+
+function formatRemaining(ms: number) {
+  if (ms <= 0) return 'Expirado';
+  const sec = Math.floor(ms / 1000);
+  if (ms < 60 * 1000) {
+    return `${sec} segundos`;
+  }
+  const min = Math.floor(ms / (60 * 1000));
+  if (ms < 60 * 60 * 1000) {
+    return `${min} minutos`;
+  }
+  const hrs = Math.floor(ms / (60 * 60 * 1000));
+  if (ms < 24 * 60 * 60 * 1000) {
+    return `${hrs} horas`;
+  }
+  const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+  if (days < 30) return `${days} dias`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months} meses`;
+  const years = Math.floor(days / 365);
+  return `${years} anos`;
 }
 
 function timeColor(perm: PermissionDisplay) {
-  if (perm.remainingMs < 60 * 60 * 1000) return 'text-negative text-bold';
+  if (perm.remainingMs <= 0) return 'text-negative text-bold';
+  // less than 1 hour => warning (yellow)
+  if (perm.remainingMs < 60 * 60 * 1000) return 'text-yellow-600 text-bold';
   return 'text-positive';
 }
 
@@ -241,12 +308,7 @@ const userRows = computed(() =>
           expiresAt: p.expiresAt,
           isValid: remainingMs > 0,
           remainingMs,
-          remaining:
-            remainingMs > 0
-              ? remainingMs < 60 * 60 * 1000
-                ? `Expira em ${Math.floor(remainingMs / 60000)} min`
-                : `Expira em ${Math.floor(remainingMs / 3600000)} h`
-              : 'Expirado',
+          remaining: remainingMs > 0 ? formatRemaining(remainingMs) : 'Expirado',
         };
       });
       return {
@@ -265,3 +327,12 @@ const columns = [
   { name: 'actions', label: 'Ações', field: 'actions', align: 'center' as const },
 ];
 </script>
+
+<style scoped>
+.min-w-\[220px\] {
+  min-width: 220px;
+}
+.max-w-\[320px\] {
+  max-width: 320px;
+}
+</style>
