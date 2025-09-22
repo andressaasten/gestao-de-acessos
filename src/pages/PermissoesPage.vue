@@ -20,14 +20,14 @@
             <div class="q-mt-xs">
               <q-chip
                 v-if="perm.perms.includes('read')"
-                color="primary"
+                color="purple"
                 text-color="white"
                 size="sm"
                 >{{ $t('permission.read') }}</q-chip
               >
               <q-chip
                 v-if="perm.perms.includes('comment')"
-                color="orange"
+                color="blue"
                 text-color="white"
                 size="sm"
                 >{{ $t('permission.comment') }}</q-chip
@@ -97,9 +97,21 @@
 
         <q-card-section>
           <!-- Checkboxes -->
-          <q-checkbox v-model="editForm.perms.canRead" :label="$t('permission.read')" />
-          <q-checkbox v-model="editForm.perms.canComment" :label="$t('permission.comment')" />
-          <q-checkbox v-model="editForm.perms.canEdit" :label="$t('documents.edit')" />
+          <q-checkbox
+            v-model="editForm.perms.canRead"
+            :label="$t('permission.read')"
+            color="accent"
+          />
+          <q-checkbox
+            v-model="editForm.perms.canComment"
+            :label="$t('permission.comment')"
+            color="accent"
+          />
+          <q-checkbox
+            v-model="editForm.perms.canEdit"
+            :label="$t('documents.edit')"
+            color="accent"
+          />
 
           <!-- Date / Time Picker -->
           <div class="q-mt-md grid grid-cols-1 gap-2">
@@ -107,7 +119,7 @@
               filled
               v-model="editForm.expirationDateDisplay"
               :label="$t('permission.date')"
-              readonly
+              label-color="accent"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -116,17 +128,28 @@
                       v-model="editForm.expirationDateIso"
                       mask="YYYY-MM-DD"
                       @input="onEditDate"
+                      color="accent"
                     />
                   </q-popup-proxy>
                 </q-icon>
               </template>
             </q-input>
 
-            <q-input filled v-model="editForm.expirationTime" :label="$t('permission.time')">
+            <q-input
+              filled
+              v-model="editForm.expirationTime"
+              :label="$t('permission.time')"
+              label-color="accent"
+            >
               <template v-slot:append>
                 <q-icon name="schedule" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                    <q-time v-model="editForm.expirationTime" mask="HH:mm" format24h />
+                    <q-time
+                      v-model="editForm.expirationTime"
+                      mask="HH:mm"
+                      format24h
+                      color="accent"
+                    />
                   </q-popup-proxy>
                 </q-icon>
               </template>
@@ -136,7 +159,7 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" v-close-popup />
-          <q-btn color="primary" label="Salvar" @click="savePermissionEdit" />
+          <q-btn color="secondary" label="Salvar" @click="savePermissionEdit" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -148,8 +171,10 @@ import { ref, computed } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore } from 'src/stores/documents';
 import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 
 const $q = useQuasar();
+const { t: $t } = useI18n();
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
@@ -269,27 +294,26 @@ function formatRemaining(ms: number) {
   if (ms <= 0) return 'Expirado';
   const sec = Math.floor(ms / 1000);
   if (ms < 60 * 1000) {
-    return `${sec} segundos`;
+    return `${sec} s`;
   }
   const min = Math.floor(ms / (60 * 1000));
   if (ms < 60 * 60 * 1000) {
-    return `${min} minutos`;
+    return `${min} min`;
   }
   const hrs = Math.floor(ms / (60 * 60 * 1000));
   if (ms < 24 * 60 * 60 * 1000) {
-    return `${hrs} horas`;
+    return `${hrs} h`;
   }
   const days = Math.floor(ms / (24 * 60 * 60 * 1000));
-  if (days < 30) return `${days} dias`;
+  if (days < 30) return `${days} D`;
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months} meses`;
+  if (months < 12) return `${months} M`;
   const years = Math.floor(days / 365);
-  return `${years} anos`;
+  return `${years} A`;
 }
 
 function timeColor(perm: PermissionDisplay) {
   if (perm.remainingMs <= 0) return 'text-negative text-bold';
-  // less than 1 hour => warning (yellow)
   if (perm.remainingMs < 60 * 60 * 1000) return 'text-yellow-600 text-bold';
   return 'text-positive';
 }
@@ -320,12 +344,12 @@ const userRows = computed(() =>
     }),
 );
 
-const columns = [
-  { name: 'name', label: 'Usuário', field: 'name', align: 'left' as const },
+const columns = computed(() => [
+  { name: 'name', label: $t('user'), field: 'name', align: 'left' as const },
   { name: 'email', label: 'E-mail', field: 'email', align: 'left' as const },
   { name: 'docs', label: 'Documentos e Permissões', field: 'docs', align: 'left' as const },
   { name: 'actions', label: 'Ações', field: 'actions', align: 'center' as const },
-];
+]);
 </script>
 
 <style scoped>

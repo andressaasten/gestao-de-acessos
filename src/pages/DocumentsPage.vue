@@ -1,6 +1,6 @@
 <template>
-  <q-page :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
-    <div class="row items-center justify-between q-mb-lg">
+  <q-page>
+    <section class="row items-center justify-between q-mb-lg">
       <div :class="$q.dark.isActive ? 'text-primary' : 'text-secondary'">
         <q-title class="text-lg q-ml-md">{{ $t('documents.title') }}</q-title>
       </div>
@@ -11,9 +11,9 @@
         color="accent"
         @click="showPopup = true"
       />
-    </div>
+    </section>
 
-    <div v-if="!readableDocs.length" class="flex items-center justify-center h-64">
+    <section v-if="!readableDocs.length" class="flex flex-nowrap items-center justify-center h-64">
       <q-card class="p-6 text-center shadow-md">
         <q-card-section>
           <div class="text-lg font-semibold text-gray-700">
@@ -21,9 +21,9 @@
           </div>
         </q-card-section>
       </q-card>
-    </div>
+    </section>
 
-    <div v-else class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-stretch q-ma-sm">
+    <section v-else class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-stretch p-6">
       <q-card v-for="doc in readableDocs" :key="doc.id" class="flex flex-col shadow-md relative">
         <div
           v-if="userStore.currentUser?.role === 'user'"
@@ -42,11 +42,17 @@
 
         <q-card-section>
           <div v-for="a in doc.attachments" :key="a.id" class="q-mb-sm">
-            <q-img v-if="a.type === 'image'" :src="a.url" style="max-height: 120px" />
+            <q-img
+              v-if="a.type === 'image'"
+              :src="a.url"
+              style="max-height: 120px"
+              :alt="`Anexo: ${a.id}`"
+            />
             <q-btn
               v-else
               icon="picture_as_pdf"
               label="Abrir PDF"
+              aria-label="Abrir PDF"
               flat
               :href="a.url"
               target="_blank"
@@ -60,7 +66,7 @@
             color="accent"
             icon="comment"
             :label="$t('documents.comments')"
-            @click="openDocComments(doc)"
+            @click="openComments(doc)"
           />
         </q-card-section>
 
@@ -89,12 +95,12 @@
           </q-menu>
         </q-btn>
       </q-card>
-    </div>
+    </section>
 
     <new-document v-model="showPopup" />
     <new-document v-model="showEditPopup" :doc="editingDoc" edit-mode />
     <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc!" />
-    <comments-popup v-model="showCommentsPopup" />
+    <CommentsPopup v-model="showCommentsPopup" :doc="selectedDoc" />
 
     <q-dialog v-model="confirmDeletePopup" persistent>
       <q-card>
@@ -117,7 +123,7 @@ import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore, type Document } from 'src/stores/documents';
 import NewDocument from 'src/components/NewDocument.vue';
 import PermissaoPopup from 'src/components/PermissaoPopup.vue';
-import type CommentsPopup from 'src/components/CommentsPopup.vue';
+import CommentsPopup from 'src/components/CommentsPopup.vue';
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
@@ -136,10 +142,9 @@ const readableDocs = computed(() =>
   documentsStore.documents.filter((d) => documentsStore.canComment(d)),
 );
 
-const commentsPopup = ref<InstanceType<typeof CommentsPopup> | null>(null);
-
-function openDocComments(doc: Document) {
-  commentsPopup.value?.openComments(doc);
+function openComments(doc: Document) {
+  selectedDoc.value = doc;
+  showCommentsPopup.value = true;
 }
 
 function statusColor(doc: Document) {

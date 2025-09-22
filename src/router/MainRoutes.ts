@@ -6,6 +6,7 @@ export const mainRoutes: RouteRecordRaw = {
   children: [
     {
       path: '/documents',
+      name: 'main/documents',
       component: () => import('pages/DocumentsPage.vue'),
     },
     {

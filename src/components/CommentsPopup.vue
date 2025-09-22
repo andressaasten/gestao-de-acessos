@@ -1,12 +1,12 @@
 <template>
-  <q-dialog v-model="show">
+  <q-dialog>
     <q-card style="min-width: 500px">
       <q-card-section>
-        <div class="text-h6">Comentários de {{ selectedDoc?.title }}</div>
+        <div class="text-h6">Comentários de {{ doc?.title }}</div>
       </q-card-section>
 
       <q-card-section>
-        <div v-for="c in selectedDoc?.comments" :key="c.date" class="q-mb-sm">
+        <div v-for="c in doc?.comments" :key="c.date" class="q-mb-sm">
           <q-chip
             :color="getUserById(c.userId)?.role === 'admin' ? 'negative' : 'positive'"
             text-color="secondary"
@@ -20,19 +20,21 @@
       </q-card-section>
 
       <q-card-section>
-        <div v-if="selectedDoc && documentsStore.canComment(selectedDoc)" class="q-mt-sm">
+        <div v-if="doc && documentsStore.canComment(doc)" class="flex flex-nowrap gap-4 mt-4">
           <q-input
             dense
+            hide-bottom-space
             outlined
-            v-model="newComment[selectedDoc.id]"
+            v-model="newComment[doc.id]"
             placeholder="Escreva um comentário"
+            class="flex-auto"
           />
           <q-btn
-            flat
+            outline
+            noCaps
             :label="$t('permission.comment')"
             color="accent"
-            class="q-mt-sm"
-            @click="addComment(selectedDoc)"
+            @click="addComment(doc)"
           />
         </div>
       </q-card-section>
@@ -49,19 +51,15 @@ import { ref } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore, type Document } from 'src/stores/documents';
 
+defineProps<{
+  doc: Document | null;
+}>();
+
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
 documentsStore.init();
 
-const show = ref(false);
-const selectedDoc = ref<Document | null>(null);
 const newComment = ref<Record<number, string>>({});
-
-function openComments(doc: Document) {
-  selectedDoc.value = doc;
-  newComment.value = '';
-  show.value = true;
-}
 
 function addComment(doc: Document) {
   const text = newComment.value[doc.id];
@@ -73,6 +71,4 @@ function addComment(doc: Document) {
 function getUserById(id: number) {
   return userStore.users.find((u) => u.id === id) || null;
 }
-
-defineExpose({ openComments });
 </script>

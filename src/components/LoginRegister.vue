@@ -2,12 +2,10 @@
   <div class="row items-center justify-evenly full-width q-col-gutter-md">
     <!-- LOGIN -->
     <q-form
-      ref="form"
-      @submit.prevent="handleLogin"
       v-show="isLargeScreen || isLoginActive"
-      class="column q-pa-lg rounded-borders shadow-5 transition-all duration-300"
-      style="width: 600px; height: 500px"
+      class="column q-pa-lg rounded-borders shadow-5 transition-all duration-300 w-[600px] h-[500px]"
       :class="isLoginActive ? 'bg-dark text-primary' : 'bg-primary text-accent'"
+      @submit="handleLogin"
     >
       <q-title class="text-center text-h2 q-mx-sm cursor-pointer" @click="isLoginActive = true">
         {{ $t('login.title') }}
@@ -122,9 +120,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { Notify } from 'quasar';
+import { Notify, useQuasar } from 'quasar';
 import { useUserStore } from 'src/stores/user';
 import { useRouter } from 'vue-router';
+
+const $q = useQuasar();
 const userStore = useUserStore();
 const router = useRouter();
 
@@ -133,6 +133,7 @@ const isLargeScreen = ref(window.innerWidth >= 800);
 
 const loginForm = ref({ email: '', password: '' });
 const registerForm = ref({ name: '', email: '', password: '' });
+//const formRef = useTemplateRef<QForm>('formRef');
 
 const validateEmail = (val: string): true | string => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -145,15 +146,16 @@ const validateSenha = (val: string): true | string => {
 };
 
 async function handleLogin() {
-  if (userStore.login(loginForm.value.email, loginForm.value.password)) {
-    Notify.create(
-      `Bem-vindo ${userStore.currentUser?.name}! Acesso: ${userStore.currentUser?.role}`,
-    );
-    await router.push('/documents');
-  } else {
-    //https://quasar.dev/quasar-plugins/notify/#example--positioning-and-different-options
+  if (!userStore.login(loginForm.value.email, loginForm.value.password)) {
     Notify.create('Credenciais inválidas!');
+    return;
   }
+
+  $q.notify({
+    message: `Bem-vindo ${userStore.currentUser?.name}! Acesso: ${userStore.currentUser?.role}`,
+    color: 'positive',
+  });
+  await router.push('/documents');
 }
 
 async function handleRegister() {

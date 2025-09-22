@@ -37,16 +37,16 @@
 
 - [*] Não há transição de cor ao trocar a funcionalidade
 - [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header)
-- - [ ] Não utilizou notificações próprias
-- - [ ] Não validou senhas fortes
+- - [*] Não utilizou notificações próprias
+- - [*] Não validou senhas fortes
 - [ ] Não armazenou idioma e tema ao atualizar a página
-- - [ ] Não há formulário `<q-form>` onde deveria
+- - [*] Não há formulário `<q-form>` onde deveria
 - - [ ] No modo dark, os inputs ficam sem contraste
 
 ### Tela home User
 
-- - [ ] Não há formulário `<q-form>` no editar
-- - [ ] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
+- - [*] Não há formulário `<q-form>` no editar
+- - [*] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
 - - [ ] Cards de recursos grudados sem gap entre eles
 - [ ] Pouco padding na seção main
 - [ ] O indicativo de expiração não possui legenda
@@ -151,3 +151,5 @@ Neste último caso o Tanstack poderia ser uma alternativa
 - [ ] legenda expiração para o user
 
 - https://medium.com/@luismigueldev/zod-o-poder-de-valida%C3%A7%C3%A3o-e-transforma%C3%A7%C3%A3o-de-dados-365197d03e7f
+
+https://quasar.dev/vue-components/popup-edit#example--click-on-text

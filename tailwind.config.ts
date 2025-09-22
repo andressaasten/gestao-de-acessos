@@ -4,7 +4,24 @@ const config = {
   content: ['./public/**/*.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: ['class', '.body--dark'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: 'var(--primary)',
+        secondary: 'var(--secondary)',
+        accent: 'var(--accent)',
+        foreground: 'var(--foreground)',
+        background: 'var(--background)',
+        dark: {
+          DEFAULT: 'var(--dark)',
+          page: 'var(--dark-page)',
+        },
+        text: 'var(--text)',
+        positive: 'var(--positive)',
+        negative: 'var(--negative)',
+        info: 'var(--info)',
+        warning: 'var(--warning)',
+      },
+    },
     screens: {
       xs: '0px',
       sm: '600px',

@@ -1,5 +1,6 @@
 export default {
   hello: 'Hello World',
+  user: 'User',
   login: {
     title: 'Sign In',
     email: 'Email',

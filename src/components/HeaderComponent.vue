@@ -1,18 +1,17 @@
 <template>
   <q-toolbar elevated :class="$q.dark.isActive ? 'bg-dark' : 'bg-accent'">
     <q-btn
+      v-if="!$q.screen.gt.sm"
       flat
-      @click="drawerRight = !drawerRight"
-      round
-      dense
+      rounded-borders
       icon="menu"
       aria-label="Menu"
-      v-if="!$q.screen.gt.sm"
+      @click="drawerRight = !drawerRight"
     />
     <q-toolbar-title>{{ $t('documents.sistem') }}</q-toolbar-title>
 
     <div class="row items-center q-gutter-sm">
-      <q-btn flat :label="$t('documents.title')" to="/documents" v-if="$q.screen.gt.sm" />
+      <q-btn v-if="$q.screen.gt.sm" flat to="/documents" :label="$t('documents.title')" />
       <q-btn
         v-if="userStore.currentUser?.role === 'admin' && $q.screen.gt.sm"
         flat
@@ -38,13 +37,15 @@
       overlay
       :width="200"
       :breakpoint="500"
-      :class="$q.dark.isActive ? 'bg-secondary' : 'bg-accent'"
+      class="bg-accent dark:!bg-secondary"
     >
       <q-btn flat @click="drawerRight = false" round dense icon="close" aria-label="close" />
       <q-list class="q-pt-md">
-        <q-item clickable v-ripple to="/documents">{{ $t('documents.title') }}</q-item>
+        <q-item clickable v-ripple :to="{ name: 'main/documents' }">{{
+          $t('documents.title')
+        }}</q-item>
         <q-item clickable v-ripple to="/permissions">{{ $t('permission.title') }}</q-item>
-        <q-item clickable @click="showProfile = true">{{ $t('register.edition') }} perfil</q-item>
+        <q-item clickable @click="handleShow">{{ $t('register.edition') }} perfil</q-item>
       </q-list>
     </q-drawer>
   </q-toolbar>
@@ -66,4 +67,8 @@ async function logout() {
   userStore.logout();
   await router.push('/');
 }
+
+const handleShow = () => {
+  showProfile.value = true;
+};
 </script>

@@ -1,35 +1,48 @@
 <template>
   <q-dialog v-model="internalModel" persistent>
-    <q-card style="min-width: 500px">
-      <q-card-section>
+    <q-card>
+      <q-card-section class="p-4">
         <div class="text-h6">
-          {{ editMode ? $t('documents.edit') : 'documents.new' }}
+          {{ editMode ? $t('documents.edit') : $t('documents.new') }}
         </div>
       </q-card-section>
 
-      <q-card-section>
-        <q-input v-model="form.title" :label="$t('common.title')" outlined />
-        <q-input v-model="form.text" :label="$t('common.text')" type="textarea" outlined />
+      <q-card-section class="p-2">
+        <q-input
+          v-model="form.title"
+          :label="$t('common.title')"
+          label-color="accent"
+          outlined
+          class="p-1"
+        />
+        <q-input
+          v-model="form.text"
+          :label="$t('common.text')"
+          label-color="accent"
+          type="textarea"
+          outlined
+          class="p-1"
+        />
 
         <q-uploader
           :label="$t('common.attached')"
           multiple
           accept=".jpg,.jpeg,.png,.pdf"
-          @added="onFilesAdded"
           :auto-upload="false"
-          class="q-mt-md"
-          color="secondary"
+          class="p-1"
+          color="accent"
+          @added="onFilesAdded"
         />
 
-        <div v-if="form.attachments.length" class="q-mt-md">
-          <div v-for="a in form.attachments" :key="a.id" class="row items-center q-mb-sm">
+        <div v-if="form.attachments.length">
+          <div v-for="a in form.attachments" :key="a.id">
             <q-chip>{{ a.type.toUpperCase() }}</q-chip>
-            <span class="q-ml-sm">{{ a.url }}</span>
+            <span>{{ a.url }}</span>
           </div>
         </div>
       </q-card-section>
 
-      <q-card-actions align="right">
+      <q-card-actions class="justify-end">
         <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
         <q-btn
           flat

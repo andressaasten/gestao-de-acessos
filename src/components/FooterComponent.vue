@@ -13,12 +13,19 @@
       </q-menu>
     </q-btn>
 
-    <q-btn flat dense round :icon="darkMode ? 'dark_mode' : 'light_mode'" @click="toggleDark" />
+    <q-btn
+      flat
+      dense
+      round
+      :icon="darkMode ? mdiWeatherNight : mdiWeatherSunny"
+      @click="toggleDark"
+    />
   </q-footer>
 </template>
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { Dark } from 'quasar';
+import { mdiWeatherNight, mdiWeatherSunny } from '@quasar/extras/mdi-v7';
 
 const { locale } = useI18n();
 let darkMode = Dark.isActive;

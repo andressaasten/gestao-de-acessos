@@ -6,7 +6,12 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input v-model="search" :label="$t('permission.searchUser')" outlined />
+        <q-input
+          v-model="search"
+          :label="$t('permission.searchUser')"
+          label-color="accent"
+          outlined
+        />
         <q-list bordered>
           <q-item
             v-for="u in filteredUsers"
@@ -19,26 +24,41 @@
           </q-item>
         </q-list>
 
-        <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" />
-        <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" />
-        <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" />
+        <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
+        <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
+        <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" color="accent" />
 
         <div class="q-mt-md grid grid-cols-1 gap-2">
-          <q-input filled v-model="expirationDate" :label="$t('permission.date')" readonly>
+          <q-input
+            filled
+            v-model="expirationDate"
+            :label="$t('permission.date')"
+            label-color="accent"
+          >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="expirationDate" mask="YYYY-MM-DD" @input="expirationDate" />
+                  <q-date
+                    v-model="expirationDate"
+                    mask="YYYY-MM-DD"
+                    @input="expirationDate"
+                    color="accent"
+                  />
                 </q-popup-proxy>
               </q-icon>
             </template>
           </q-input>
 
-          <q-input filled v-model="expirationTime" :label="$t('permission.time')">
+          <q-input
+            filled
+            v-model="expirationTime"
+            :label="$t('permission.time')"
+            label-color="accent"
+          >
             <template v-slot:append>
               <q-icon name="schedule" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-time v-model="expirationTime" mask="HH:mm" format24h />
+                  <q-time v-model="expirationTime" mask="HH:mm" format24h color="accent" />
                 </q-popup-proxy>
               </q-icon>
             </template>
@@ -59,6 +79,8 @@ import { ref, watch, computed } from 'vue';
 import { useUserStore, type User } from 'src/stores/user';
 import { useDocumentsStore, type Document } from 'src/stores/documents';
 import { Notify } from 'quasar';
+
+defineOptions({ name: 'PermissaoPopup' });
 
 const props = defineProps<{ modelValue: boolean; doc: Document }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
