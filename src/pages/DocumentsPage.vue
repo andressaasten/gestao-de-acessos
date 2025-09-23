@@ -1,22 +1,23 @@
 <template>
-  <q-page>
-    <section class="row items-center justify-between q-mb-lg">
-      <div :class="$q.dark.isActive ? 'text-primary' : 'text-secondary'">
-        <q-title class="text-lg q-ml-md">{{ $t('documents.title') }}</q-title>
+  <q-page class="bg-background dark:!bg-dark-page">
+    <section class="row items-center justify-between">
+      <div>
+        <h1 class="text-lg text-secondary dark:!text-text p-6">{{ $t('documents.title') }}</h1>
       </div>
 
       <q-btn
         v-if="userStore.currentUser?.role === 'admin'"
         :label="$t('documents.new')"
-        color="accent"
+        color="primary dark:!bg-secondary"
+        class="p-3 m-4"
         @click="showPopup = true"
       />
     </section>
 
     <section v-if="!readableDocs.length" class="flex flex-nowrap items-center justify-center h-64">
-      <q-card class="p-6 text-center shadow-md">
+      <q-card class="p-6 text-center shadow-md bg-primary">
         <q-card-section>
-          <div class="text-lg font-semibold text-gray-700">
+          <div class="text-lg text-text dark:!text-dark">
             Você não possui acesso a nenhum documento
           </div>
         </q-card-section>
@@ -24,28 +25,38 @@
     </section>
 
     <section v-else class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-stretch p-6">
-      <q-card v-for="doc in readableDocs" :key="doc.id" class="flex flex-col shadow-md relative">
-        <div
-          v-if="userStore.currentUser?.role === 'user'"
-          class="absolute-top-right q-ma-sm"
-          :style="{
-            width: '16px',
-            height: '16px',
-            borderRadius: '50%',
-            backgroundColor: statusColor(doc),
-          }"
-        ></div>
+      <q-card
+        v-for="doc in readableDocs"
+        :key="doc.id"
+        class="flex flex-col shadow-md relative bg-primary dark:!bg-secondary"
+      >
+        <q-card-section>
+          <div
+            v-if="userStore.currentUser?.role === 'user'"
+            class="absolute-top-right p-2 m-2"
+            :style="{
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              backgroundColor: statusColor(doc),
+            }"
+          >
+            <q-tooltip>
+              {{ statusLabel(doc) }}
+            </q-tooltip>
+          </div>
+        </q-card-section>
         <q-card-section class="flex-1">
-          <div class="text-h6">{{ doc.title }}</div>
-          <div class="text-subtitle2">{{ doc.text }}</div>
+          <div class="text-h6 text-text">{{ doc.title }}</div>
+          <div class="text-text">{{ doc.text }}</div>
         </q-card-section>
 
         <q-card-section>
-          <div v-for="a in doc.attachments" :key="a.id" class="q-mb-sm">
+          <div v-for="a in doc.attachments" :key="a.id">
             <q-img
               v-if="a.type === 'image'"
-              :src="a.url"
               style="max-height: 120px"
+              :src="a.url"
               :alt="`Anexo: ${a.id}`"
             />
             <q-btn
@@ -63,7 +74,7 @@
         <q-card-section>
           <q-btn
             flat
-            color="accent"
+            color="text"
             icon="comment"
             :label="$t('documents.comments')"
             @click="openComments(doc)"
@@ -76,7 +87,8 @@
           round
           dense
           icon="more_vert"
-          class="absolute-top-right q-ma-sm"
+          color="text"
+          class="absolute-top-right"
         >
           <q-menu>
             <q-list>
@@ -97,23 +109,25 @@
       </q-card>
     </section>
 
+    <section>
+      <q-dialog v-model="confirmDeletePopup" persistent>
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">Confirmar exclusão</div>
+            <div>Tem certeza que deseja excluir o documento "{{ selectedDoc?.title }}"?</div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="secondary" v-close-popup />
+            <q-btn label="Excluir" color="negative" @click="deleteDoc" />
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
+    </section>
+
     <new-document v-model="showPopup" />
     <new-document v-model="showEditPopup" :doc="editingDoc" edit-mode />
     <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc!" />
     <CommentsPopup v-model="showCommentsPopup" :doc="selectedDoc" />
-
-    <q-dialog v-model="confirmDeletePopup" persistent>
-      <q-card>
-        <q-card-section>
-          <div class="text-h6">Confirmar exclusão</div>
-          <div>Tem certeza que deseja excluir o documento "{{ selectedDoc?.title }}"?</div>
-        </q-card-section>
-        <q-card-actions align="right">
-          <q-btn flat label="Cancelar" color="secondary" v-close-popup />
-          <q-btn label="Excluir" color="negative" @click="deleteDoc" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -153,6 +167,14 @@ function statusColor(doc: Document) {
   if (status === 'yellow') return 'gold';
   if (status === 'green') return 'green';
   return 'grey';
+}
+
+function statusLabel(doc: Document): string {
+  const status = statusColor(doc);
+  if (status === 'red') return 'Expira menos de 1h';
+  if (status === 'gold') return 'Expira menos de 1 dia';
+  if (status === 'green') return 'Acesso liberado';
+  return 'Status indefinido';
 }
 
 function editPerms(doc: Document) {

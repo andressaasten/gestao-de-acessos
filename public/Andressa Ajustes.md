@@ -4,14 +4,8 @@
 
 ## Componentes visuais
 
-- [ ] Sidebar
-- [ ] Formulário
-
----
-
-## Codificação
-
-- [ ] Responsividade: Utilizar breakpoints, flex-box e/ou grid layout
+- [x] Separar em outro componente Sidebar
+- [x] Corrigir cores
 
 ---
 
@@ -23,10 +17,6 @@
 
 ## Bônus
 
-- [*] TailwindCSS
-- [ ] Tanstack (Vue-Query)
-- [ ] Técnicas de Acessibilidade
-- [ ] Gráficos
 - [ ] Utilizar alguma api pública para compor algum dos recursos
 
 ---
@@ -35,87 +25,35 @@
 
 ### Tela de login
 
-- [*] Não há transição de cor ao trocar a funcionalidade
 - [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header)
-- - [*] Não utilizou notificações próprias
-- - [*] Não validou senhas fortes
 - [ ] Não armazenou idioma e tema ao atualizar a página
-- - [*] Não há formulário `<q-form>` onde deveria
-- - [ ] No modo dark, os inputs ficam sem contraste
 
 ### Tela home User
 
-- - [*] Não há formulário `<q-form>` no editar
-- - [*] Tela muito simples, nada indicando pro usuário o porquê a tela está vazia
-- - [ ] Cards de recursos grudados sem gap entre eles
-- [ ] Pouco padding na seção main
-- [ ] O indicativo de expiração não possui legenda
-- - [ ] No editar, as informações de senha permanecem ao salvar ou cancelar
-- - [ ] Não há Sidebar
-- - [ ] Header quebra muito em telas menores
-- [ ] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
+- [x] O indicativo de expiração não possui legenda
 
 ### Tela home Admin
 
-- - [ ] A responsividade com os cards não fica legal em alguns momentos ao redimencionar a tela
-
-- - [ ] No modal de permissões não há indicativo para o usuário sobre o que a data e hora se referem
-
-- [ ] Modal de criação com pouco gap entre alguns elementos
-
-- - [ ] Funcionalidade de adicionar comentários poderia estar no modal de comentários. Não fica legal o usuário adicionar um comentário fora e ter que abrir o modal pra visualizar.
+- [x] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
 - [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy
-- [ ] O sistema permite colocar expiração em datas anteriores ao dia atual
 
 ### Gerenciamento de Permissões
 
 - [ ] A tabela fica quebrada quando 1 usuário tem muitas permissões
-- - [ ] No expirar quando são muitas horas poderia se transformar em dias, semanas, meses e anos
-- [ ] O expirar em 1 min ficou 0 min
-
-### Pasta Public
-
-- - [ ] Não alterou favicon
-
-### Pasta SRC
-
-#### Assets
-
-- [ ] Nenhuma logo encontrada
+- [x] O expirar em 1 min ficou 0 min
 
 #### Components
 
-- - [ ] `EditorPopup.vue` não utiliza `<q-form>` com submit
-- - [ ] `LoginRegister.vue` não utiliza `<q-form>` com submit
-
 - [ ] `isLargeScreen` utilizando v-show, o ideal é v-if para remover da DOM, mas tudo depende do caso, não está errado.
-- [ ] Não usou `defineOptions` em nenhum arquivo do projeto
-
-#### CSS
-
-- [ ] `app.scss` vazio, mas pelo visto não foi necessário
-- - [ ] `quasar.variables` não modificado
+- [x] Não usou `defineOptions` em nenhum arquivo do projeto
 
 #### Layouts
 
-- - [ ] uiStore pra dark mode é totalmente incorreto. O Quasar já fornece acesso se o tema está dark ou light com $dark.isActive. Além disso, ele deveria estar no localStorage.
-- - [ ] q-header e q-footer poderiam estar separados em outros componentes
-
-#### Pages
-
-- [ ] Os icones podem ser importados também
-- [ ] H4 não serve para título principal
-- [ ] O elemento `<section>` não foi utilizado para melhorar semântica
-- [ ] Não encontrado atributos de acessibilidade como `alt` e `aria-*`
-- [ ] `permissoesPage` não altera o idioma no header da tabela. Faltou tipar e deixar as colunas reativas.
+- [ ] Armazenar tema no LocalStorage
 
 #### Interfaces, Enums e Types
 
 - [ ] Não ficaram separados e sim dentro dos componentes
-
-#### Router
-
-- [*] `routes.ts` Repetindo o mesmo layout toda vez, deveria estar agrupando
 
 #### Stores
 
@@ -140,16 +78,17 @@ Se precisar cachear em memória e se não existir na memória puxar do Backend:
 
 Neste último caso o Tanstack poderia ser uma alternativa
 
-### Arquivos de configuração
+### Passos
 
-- - [*] Lendo `postcss.config.js` e `tailwind.config.ts` acredito que o Tailwind não funcione no projeto.
-- - [*] Em `quasar.config.ts` poderia utilizar `vueRouterMode: 'history'` para remover a hashtag da URL.
-
-- [ ] Responsividade e acessibilidade - popup em telas pequenas
-- [ ] Comments - nao esta abrindo o popup
-- [ ] Date - terminar de ajustar
-- [ ] legenda expiração para o user
+- [ ] Ajustar mascara de data no popup
+- [ ] Armazenar idioma e modo de leitura
+- [ ] Utilizar API
+- [ ] Ajustar tabela para não quebrar -> fazer popup para docs do usuario e um extensor para cada doc com suas permissões
+- [ ] Stores
+- [ ] erros do chrome
 
 - https://medium.com/@luismigueldev/zod-o-poder-de-valida%C3%A7%C3%A3o-e-transforma%C3%A7%C3%A3o-de-dados-365197d03e7f
 
-https://quasar.dev/vue-components/popup-edit#example--click-on-text
+- https://quasar.dev/vue-components/popup-edit#example--click-on-text
+
+- https://quasar.dev/vue-components/table - expanding rows

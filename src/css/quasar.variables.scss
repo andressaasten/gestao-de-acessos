@@ -13,20 +13,28 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 :root {
-  --primary: #ebebeb;
-  --secondary: #272023;
-  --accent: #3e84be;
-  --foreground: #38445a;
-  --background: #fff;
+  /* Cores principais */
+  --primary: #3a8fd9;
+  --secondary: #1e1e2f;
+  --accent: #5fa8f5;
 
-  --dark: #232420;
-  --dark-page: #242933;
+  /* Cores de fundo */
+  --background: #d9f0ff;
+  --foreground: #1f2937;
 
-  --text: #d1a325;
-  --positive: #21ba45;
-  --negative: #c10015;
-  --info: #aec8e2;
-  --warning: #f2c037;
+  /* Texto */
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+
+  /* Estado */
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --info: #60a5fa;
+  --warning: #facc15;
+
+  /* Dark específico */
+  --dark: #0f172a;
+  --dark-page: #1a2942;
 }
 
 $primary: var(--primary);
@@ -39,6 +47,7 @@ $dark: var(--dark);
 $dark-page: var(--dark-page);
 
 $text: var(--text);
+$muted: var(--text-muted);
 $positive: var(--positive);
 $negative: var(--negative);
 $info: var(--info);

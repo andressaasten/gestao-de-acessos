@@ -4,7 +4,7 @@
     <q-form
       v-show="isLargeScreen || isLoginActive"
       class="column q-pa-lg rounded-borders shadow-5 transition-all duration-300 w-[600px] h-[500px]"
-      :class="isLoginActive ? 'bg-dark text-primary' : 'bg-primary text-accent'"
+      :class="isLoginActive ? 'bg-dark text-primary' : 'bg-dark-page text-accent'"
       @submit="handleLogin"
     >
       <q-title class="text-center text-h2 q-mx-sm cursor-pointer" @click="isLoginActive = true">
@@ -16,8 +16,8 @@
         type="email"
         :label="$t('login.email')"
         :label-color="isLoginActive ? 'accent' : 'secondary'"
-        class="q-my-md"
-        :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
+        class="m-4"
+        :color="isLoginActive ? 'secondary bg-secondary' : 'accent'"
         :disable="!isLoginActive"
         lazy-rules
         :rules="[validateEmail]"
@@ -29,8 +29,8 @@
         v-model="loginForm.password"
         :label="$t('login.password')"
         :label-color="isLoginActive ? 'accent' : 'secondary'"
-        class="q-my-md"
-        :color="isLoginActive ? 'secondary bg-primary' : 'accent'"
+        class="m-4"
+        :color="isLoginActive ? 'secondary bg-secondary' : 'accent'"
         :disable="!isLoginActive"
         lazy-rules
         :rules="[validateSenha]"
@@ -58,7 +58,7 @@
       v-show="isLargeScreen || !isLoginActive"
       class="column q-pa-lg rounded-borders shadow-10 transition-all duration-300"
       style="width: 600px; height: 500px"
-      :class="!isLoginActive ? 'bg-secondary text-primary' : 'bg-primary text-accent'"
+      :class="!isLoginActive ? 'bg-dark text-primary' : 'bg-dark-page text-accent'"
     >
       <q-title class="text-center text-h2 q-mb-lg cursor-pointer" @click="isLoginActive = false">
         {{ $t('register.title') }}
@@ -71,7 +71,7 @@
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
         :disable="isLoginActive"
-        :color="!isLoginActive ? 'secondary bg-primary' : 'accent'"
+        :color="!isLoginActive ? 'secondary bg-secondary' : 'accent'"
       />
 
       <q-input
@@ -81,7 +81,7 @@
         :label="$t('login.email')"
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-md"
-        :color="!isLoginActive ? 'secondary bg-primary' : 'accent'"
+        :color="!isLoginActive ? 'secondary bg-secondary' : 'accent'"
         :disable="isLoginActive"
         lazy-rules
         :rules="[validateEmail]"
@@ -94,7 +94,7 @@
         :label="$t('login.password')"
         :label-color="!isLoginActive ? 'accent' : 'secondary'"
         class="q-mb-lg"
-        :color="!isLoginActive ? 'secondary bg-primary' : 'accent '"
+        :color="!isLoginActive ? 'secondary bg-secondary' : 'accent'"
         :disable="isLoginActive"
         lazy-rules
         :rules="[validateSenha]"

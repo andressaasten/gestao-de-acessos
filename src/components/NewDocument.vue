@@ -59,6 +59,8 @@
 import { ref, watch } from 'vue';
 import { useDocumentsStore, type Document, type Attachment } from 'src/stores/documents';
 
+defineOptions({ name: 'NewDocument' });
+
 const props = defineProps<{
   modelValue: boolean;
   editMode?: boolean;

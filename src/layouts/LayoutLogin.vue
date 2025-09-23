@@ -4,7 +4,7 @@
       <router-view />
     </q-page-container>
 
-    <q-footer :class="$q.dark.isActive ? 'bg-dark text-white' : 'bg-grey-9 text-white'">
+    <q-footer>
       <footer-component v-model="footercomponent" />
     </q-footer>
   </q-layout>

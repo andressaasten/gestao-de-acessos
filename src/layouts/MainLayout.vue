@@ -4,7 +4,7 @@
       <header-component v-model="headercomponent" />
     </q-header>
 
-    <q-page-container class="q-mt-lg">
+    <q-page-container>
       <router-view />
     </q-page-container>
 

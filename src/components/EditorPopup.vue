@@ -7,41 +7,32 @@
 
       <q-card-section>
         <q-form @submit="save">
-          <div class="text-subtitle2 q-mb-sm">{{ $t('register.data') }}</div>
-          <q-input
-            v-model="form.name"
-            :label="$t('register.name')"
-            label-color="accent"
-            outlined
-            class="q-mb-sm"
-          />
+          <div class="text-subtitle2">{{ $t('register.data') }}</div>
+          <q-input v-model="form.name" :label="$t('register.name')" label-color="accent" outlined />
 
           <q-input
             v-model="form.email"
             :label="$t('register.email')"
             label-color="accent"
             outlined
-            class="q-mb-md"
           />
 
-          <div class="text-subtitle2 q-mb-sm"></div>
+          <div class="text-subtitle2"></div>
           <q-input
             v-model="form.oldPassword"
             type="password"
             :label="$t('register.currentPassword')"
             label-color="accent"
             outlined
-            class="q-mb-md"
           />
 
-          <div class="text-subtitle2 q-mb-sm">{{ $t('register.change') }}</div>
+          <div class="text-subtitle2">{{ $t('register.change') }}</div>
           <q-input
             v-model="form.newPassword"
             type="password"
             :label="$t('register.newPassword')"
             label-color="accent"
             outlined
-            class="q-mb-sm"
             lazy-rules
             :rules="[validateSenha]"
           />
@@ -70,6 +61,8 @@ import { ref, watch } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import CryptoJS from 'crypto-js';
 import { Notify } from 'quasar';
+
+defineOptions({ name: 'EditorPopup' });
 
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();

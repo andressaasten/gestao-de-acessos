@@ -1,13 +1,22 @@
 <template>
-  <q-page :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
-    <div class="row items-center justify-between q-mb-lg">
-      <q-title class="text-lg q-ml-md">{{ $t('permission.title') }}</q-title>
+  <q-page class="bg-background dark:!bg-dark-page">
+    <div class="row items-center justify-between">
+      <q-title class="text-lg text-secondary dark:!text-text p-6">{{
+        $t('permission.title')
+      }}</q-title>
     </div>
 
-    <q-table :rows="userRows" :columns="columns" row-key="id" flat bordered>
+    <q-table
+      flat
+      bordered
+      row-key="id"
+      class="bg-background dark:!bg-dark-page m-3"
+      :rows="userRows"
+      :columns="columns"
+    >
       <template v-slot:body-cell-docs="props">
         <q-td :props="props">
-          <div v-for="perm in props.row.docs" :key="perm.docId" class="q-mb-md">
+          <div v-for="perm in props.row.docs" :key="perm.docId">
             <div class="text-bold">{{ perm.docTitle }}</div>
             <div class="text-caption">
               <span v-if="perm.isValid" :class="timeColor(perm)">
@@ -17,7 +26,7 @@
                 Expirado em {{ formatDate(perm.expiresAt) }}
               </span>
             </div>
-            <div class="q-mt-xs">
+            <div>
               <q-chip
                 v-if="perm.perms.includes('read')"
                 color="purple"
@@ -40,7 +49,7 @@
                 >{{ $t('permission.edit') }}</q-chip
               >
             </div>
-            <div class="q-mt-sm row q-gutter-sm">
+            <div class="row q-gutter-sm">
               <q-btn
                 dense
                 flat
@@ -114,7 +123,7 @@
           />
 
           <!-- Date / Time Picker -->
-          <div class="q-mt-md grid grid-cols-1 gap-2">
+          <div class="grid grid-cols-1 gap-2">
             <q-input
               filled
               v-model="editForm.expirationDateDisplay"
@@ -158,8 +167,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Cancelar" v-close-popup />
-          <q-btn color="secondary" label="Salvar" @click="savePermissionEdit" />
+          <q-btn flat color="negative" label="Cancelar" v-close-popup />
+          <q-btn flat color="positive" label="Salvar" @click="savePermissionEdit" />
         </q-card-actions>
       </q-card>
     </q-dialog>

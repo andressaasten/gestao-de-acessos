@@ -7,10 +7,10 @@
 
       <q-card-section>
         <q-input
+          outlined
+          label-color="accent"
           v-model="search"
           :label="$t('permission.searchUser')"
-          label-color="accent"
-          outlined
         />
         <q-list bordered>
           <q-item
@@ -24,45 +24,47 @@
           </q-item>
         </q-list>
 
-        <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
-        <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
-        <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" color="accent" />
+        <div v-if="selectedUser">
+          <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
+          <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
+          <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" color="accent" />
 
-        <div class="q-mt-md grid grid-cols-1 gap-2">
-          <q-input
-            filled
-            v-model="expirationDate"
-            :label="$t('permission.date')"
-            label-color="accent"
-          >
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date
-                    v-model="expirationDate"
-                    mask="YYYY-MM-DD"
-                    @input="expirationDate"
-                    color="accent"
-                  />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <div class="q-mt-md grid grid-cols-1 gap-2">
+            <q-input
+              filled
+              v-model="expirationDate"
+              :label="$t('permission.date')"
+              label-color="accent"
+            >
+              <template v-slot:append>
+                <q-icon name="event" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-date
+                      v-model="expirationDate"
+                      mask="YYYY-MM-DD"
+                      @input="expirationDate"
+                      color="accent"
+                    />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
 
-          <q-input
-            filled
-            v-model="expirationTime"
-            :label="$t('permission.time')"
-            label-color="accent"
-          >
-            <template v-slot:append>
-              <q-icon name="schedule" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-time v-model="expirationTime" mask="HH:mm" format24h color="accent" />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+            <q-input
+              filled
+              v-model="expirationTime"
+              :label="$t('permission.time')"
+              label-color="accent"
+            >
+              <template v-slot:append>
+                <q-icon name="schedule" class="cursor-pointer">
+                  <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                    <q-time v-model="expirationTime" mask="HH:mm" format24h color="accent" />
+                  </q-popup-proxy>
+                </q-icon>
+              </template>
+            </q-input>
+          </div>
         </div>
       </q-card-section>
 

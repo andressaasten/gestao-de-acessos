@@ -1,6 +1,6 @@
 <template>
-  <q-footer :class="$q.dark.isActive ? 'bg-secondary text-primary' : 'bg-accent text-primary'">
-    <q-btn flat dense round icon="language">
+  <q-footer class="bg-primary text-text dark:!bg-dark dark:!text-muted">
+    <q-btn flat dense round :icon="mdiTranslate">
       <q-menu>
         <q-list>
           <q-item clickable v-ripple @click="changeLang('pt')">
@@ -25,7 +25,9 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { Dark } from 'quasar';
-import { mdiWeatherNight, mdiWeatherSunny } from '@quasar/extras/mdi-v7';
+import { mdiTranslate, mdiWeatherNight, mdiWeatherSunny } from '@quasar/extras/mdi-v7';
+
+defineOptions({ name: 'FooterComponent' });
 
 const { locale } = useI18n();
 let darkMode = Dark.isActive;
