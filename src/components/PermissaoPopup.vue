@@ -32,7 +32,7 @@
           <div class="q-mt-md grid grid-cols-1 gap-2">
             <q-input
               filled
-              v-model="expirationDate"
+              v-model="expirationDate.expirationDateDisplay"
               :label="$t('permission.date')"
               label-color="accent"
             >
@@ -40,10 +40,10 @@
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                     <q-date
-                      v-model="expirationDate"
+                      v-model="expirationDate.expirationDateIso"
                       mask="YYYY-MM-DD"
-                      @input="expirationDate"
                       color="accent"
+                      @update:model-value="onDateChange"
                     />
                   </q-popup-proxy>
                 </q-icon>
@@ -101,8 +101,22 @@ const search = ref('');
 const selectedUser = ref<User | null>(null);
 const perms = ref({ canRead: true, canComment: false, canEdit: false });
 
-const expirationDate = ref('');
+const expirationDate = ref({
+  expirationDateIso: '',
+  expirationDateDisplay: '',
+});
+
 const expirationTime = ref('');
+
+function onDateChange(val: string) {
+  expirationDate.value.expirationDateIso = val;
+  if (val) {
+    const [y, m, d] = val.split('-');
+    expirationDate.value.expirationDateDisplay = `${d}/${m}/${y}`;
+  } else {
+    expirationDate.value.expirationDateDisplay = '';
+  }
+}
 
 const filteredUsers = computed(() =>
   userStore.users.filter(
@@ -114,9 +128,12 @@ function savePerms() {
   if (!props.doc || !selectedUser.value) return;
   if (!expirationDate.value || !expirationTime.value) return;
 
-  const expiresAt = new Date(`${expirationDate.value}T${expirationTime.value}:59`).getTime();
+  const expiresAt = new Date(
+    `${expirationDate.value.expirationDateIso}T${expirationTime.value}:59`,
+  ).getTime();
 
   const now = Date.now();
+  const iso = new Date(now).toISOString().slice(0, 10);
 
   if (expiresAt <= now) {
     console.warn('A data de expiração deve ser no futuro.');
@@ -135,7 +152,10 @@ function savePerms() {
   documentsStore.setPermission(props.doc.id, selectedUser.value.id, selectedPerms, expiresAt);
   selectedUser.value = null;
   perms.value = { canComment: false, canEdit: false, canRead: true };
-  expirationDate.value = '';
+  expirationDate.value.expirationDateIso = iso;
+  expirationDate.value.expirationDateDisplay = iso
+    ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}`
+    : '';
   expirationTime.value = '';
 
   internalModel.value = false;

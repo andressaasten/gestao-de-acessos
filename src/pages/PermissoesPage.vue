@@ -15,57 +15,16 @@
       :columns="columns"
     >
       <template v-slot:body-cell-docs="props">
-        <q-td :props="props">
-          <div v-for="perm in props.row.docs" :key="perm.docId">
-            <div class="text-bold">{{ perm.docTitle }}</div>
-            <div class="text-caption">
-              <span v-if="perm.isValid" :class="timeColor(perm)">
-                {{ perm.remaining }}
-              </span>
-              <span v-else class="text-negative">
-                Expirado em {{ formatDate(perm.expiresAt) }}
-              </span>
-            </div>
-            <div>
-              <q-chip
-                v-if="perm.perms.includes('read')"
-                color="purple"
-                text-color="white"
-                size="sm"
-                >{{ $t('permission.read') }}</q-chip
-              >
-              <q-chip
-                v-if="perm.perms.includes('comment')"
-                color="blue"
-                text-color="white"
-                size="sm"
-                >{{ $t('permission.comment') }}</q-chip
-              >
-              <q-chip
-                v-if="perm.perms.includes('edit')"
-                color="teal"
-                text-color="white"
-                size="sm"
-                >{{ $t('permission.edit') }}</q-chip
-              >
-            </div>
-            <div class="row q-gutter-sm">
-              <q-btn
-                dense
-                flat
-                color="accent"
-                :label="$t('permission.edit')"
-                @click="openEditPermission(props.row.id, perm)"
-              />
-              <q-btn
-                dense
-                flat
-                color="negative"
-                :label="$t('documents.delete')"
-                @click="confirmRescind(props.row.id, perm.docId)"
-              />
-            </div>
-          </div>
+        <q-td auto-width :props="props">
+          <q-btn
+            size="sm"
+            color="accent"
+            dense
+            @click="handleShow"
+            :icon="showDocsPopup ? 'close' : 'add'"
+            label="Visualizar"
+            class="p-2"
+          />
         </q-td>
       </template>
 
@@ -136,8 +95,8 @@
                     <q-date
                       v-model="editForm.expirationDateIso"
                       mask="YYYY-MM-DD"
-                      @input="onEditDate"
                       color="accent"
+                      @update:model-value="onEditDate"
                     />
                   </q-popup-proxy>
                 </q-icon>
@@ -172,6 +131,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <docs-popup v-model="showDocsPopup" />
   </q-page>
 </template>
 
@@ -181,12 +141,19 @@ import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore } from 'src/stores/documents';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import DocsPopup from 'src/components/DocsPopup.vue';
 
 const $q = useQuasar();
 const { t: $t } = useI18n();
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
+
+const showDocsPopup = ref(false);
+
+const handleShow = () => {
+  showDocsPopup.value = !showDocsPopup.value;
+};
 
 // CONFIRMAR RESCINDIR
 const confirmDialog = ref(false);
@@ -215,24 +182,6 @@ const editForm = ref({
   expirationDateDisplay: '',
   expirationTime: '',
 });
-
-function openEditPermission(userId: number, perm: PermissionDisplay) {
-  editUserId.value = userId;
-  editDoc.value = perm;
-  const iso = new Date(perm.expiresAt).toISOString().slice(0, 10); // YYYY-MM-DD
-  const time = new Date(perm.expiresAt).toISOString().slice(11, 16); // HH:mm
-  editForm.value = {
-    perms: {
-      canRead: perm.perms.includes('read'),
-      canComment: perm.perms.includes('comment'),
-      canEdit: perm.perms.includes('edit'),
-    },
-    expirationDateIso: iso,
-    expirationDateDisplay: iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : '',
-    expirationTime: time,
-  };
-  editDialog.value = true;
-}
 
 function onEditDate(val: string) {
   editForm.value.expirationDateIso = val;
@@ -271,12 +220,6 @@ function savePermissionEdit() {
 }
 
 // --------- EXISTENTES --------
-function confirmRescind(userId: number, docId: number) {
-  confirmMessage.value = 'Deseja realmente rescindir o acesso deste documento?';
-  confirmDialog.value = true;
-  pendingAction.value = () => documentsStore.removePermission(docId, userId);
-}
-
 function confirmRescindAll(userId: number) {
   confirmMessage.value = 'Deseja realmente rescindir todas as permissões deste usuário?';
   confirmDialog.value = true;
@@ -291,64 +234,14 @@ function rescindConfirmed() {
   confirmDialog.value = false;
 }
 
-function formatDate(ts: number) {
-  const d = new Date(ts);
-  // DD/MM/YYYY HH:mm
-  const ds = d.toLocaleDateString('pt-BR');
-  const tsPart = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  return `${ds} ${tsPart}`;
-}
-
-function formatRemaining(ms: number) {
-  if (ms <= 0) return 'Expirado';
-  const sec = Math.floor(ms / 1000);
-  if (ms < 60 * 1000) {
-    return `${sec} s`;
-  }
-  const min = Math.floor(ms / (60 * 1000));
-  if (ms < 60 * 60 * 1000) {
-    return `${min} min`;
-  }
-  const hrs = Math.floor(ms / (60 * 60 * 1000));
-  if (ms < 24 * 60 * 60 * 1000) {
-    return `${hrs} h`;
-  }
-  const days = Math.floor(ms / (24 * 60 * 60 * 1000));
-  if (days < 30) return `${days} D`;
-  const months = Math.floor(days / 30);
-  if (months < 12) return `${months} M`;
-  const years = Math.floor(days / 365);
-  return `${years} A`;
-}
-
-function timeColor(perm: PermissionDisplay) {
-  if (perm.remainingMs <= 0) return 'text-negative text-bold';
-  if (perm.remainingMs < 60 * 60 * 1000) return 'text-yellow-600 text-bold';
-  return 'text-positive';
-}
-
 const userRows = computed(() =>
   userStore.users
     .filter((u) => u.role === 'user')
     .map((u) => {
-      const docs: PermissionDisplay[] = documentsStore.getPermissionsByUser(u.id).map((p) => {
-        const now = Date.now();
-        const remainingMs = p.expiresAt - now;
-        return {
-          docId: p.docId,
-          docTitle: documentsStore.getDocTitle(p.docId),
-          perms: p.perms,
-          expiresAt: p.expiresAt,
-          isValid: remainingMs > 0,
-          remainingMs,
-          remaining: remainingMs > 0 ? formatRemaining(remainingMs) : 'Expirado',
-        };
-      });
       return {
         id: u.id,
         name: u.name,
         email: u.email,
-        docs,
       };
     }),
 );
@@ -357,7 +250,7 @@ const columns = computed(() => [
   { name: 'name', label: $t('user'), field: 'name', align: 'left' as const },
   { name: 'email', label: 'E-mail', field: 'email', align: 'left' as const },
   { name: 'docs', label: 'Documentos e Permissões', field: 'docs', align: 'left' as const },
-  { name: 'actions', label: 'Ações', field: 'actions', align: 'center' as const },
+  { name: 'actions', label: 'Revogar Acessos', field: 'actions', align: 'center' as const },
 ]);
 </script>
 

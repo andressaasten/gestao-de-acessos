@@ -35,7 +35,7 @@
 ### Tela home Admin
 
 - [x] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
-- [ ] No modal de permissões, a data não é no padrão dd/mm/yyyy
+- [x] No modal de permissões, a data não é no padrão dd/mm/yyyy
 
 ### Gerenciamento de Permissões
 
@@ -44,7 +44,8 @@
 
 #### Components
 
-- [ ] `isLargeScreen` utilizando v-show, o ideal é v-if para remover da DOM, mas tudo depende do caso, não está errado.
+- [x] `isLargeScreen` utilizando v-show, o ideal é v-if para remover da DOM, mas tudo depende do caso, não está errado.
+      => o docs quasar faz assim
 - [x] Não usou `defineOptions` em nenhum arquivo do projeto
 
 #### Layouts
@@ -80,15 +81,18 @@ Neste último caso o Tanstack poderia ser uma alternativa
 
 ### Passos
 
-- [ ] Ajustar mascara de data no popup
-- [ ] Armazenar idioma e modo de leitura
-- [ ] Utilizar API
 - [ ] Ajustar tabela para não quebrar -> fazer popup para docs do usuario e um extensor para cada doc com suas permissões
+- [ ] Utilizar API
 - [ ] Stores
+- [ ] Armazenar idioma e modo de leitura
+
 - [ ] erros do chrome
+  - - reclama q n pode iniciar doc com null
 
 - https://medium.com/@luismigueldev/zod-o-poder-de-valida%C3%A7%C3%A3o-e-transforma%C3%A7%C3%A3o-de-dados-365197d03e7f
 
 - https://quasar.dev/vue-components/popup-edit#example--click-on-text
 
 - https://quasar.dev/vue-components/table - expanding rows
+
+- https://quasar.dev/vue-components/date/#example--options
