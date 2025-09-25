@@ -13,13 +13,19 @@
           :label="$t('permission.searchUser')"
         />
         <q-list bordered>
+          <!-- Se um usuário foi selecionado, mostra apenas ele -->
           <q-item
-            v-for="u in filteredUsers"
-            :key="u.id"
+            v-if="selectedUser"
+            :key="selectedUser.id"
             clickable
-            @click="selectedUser = u"
-            :active="selectedUser?.id === u.id"
+            @click="selectedUser = null"
+            :active="true"
           >
+            <q-item-section>{{ selectedUser.name }}</q-item-section>
+          </q-item>
+
+          <!-- Se nenhum usuário foi selecionado -->
+          <q-item v-else v-for="u in filteredUsers" :key="u.id" clickable @click="selectedUser = u">
             <q-item-section>{{ u.name }}</q-item-section>
           </q-item>
         </q-list>

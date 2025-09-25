@@ -1,5 +1,11 @@
 <template>
   <q-layout class="bg-page">
+    <q-header reveal elevated class="flex flex-row bg-primary text-text dark:!bg-dark">
+      <q-avatar class="bg-background">
+        <q-img src="../assets/document-svgrepo-com.svg" class="m-2" />
+      </q-avatar>
+      <q-toolbar-title class="m-2">{{ $t('portal') }}</q-toolbar-title>
+    </q-header>
     <q-page-container>
       <router-view />
     </q-page-container>

@@ -10,11 +10,12 @@
     />
     <q-toolbar-title>{{ $t('documents.sistem') }}</q-toolbar-title>
 
-    <div v-if="$q.screen.gt.sm" class="p-2">
+    <div v-if="$q.screen.gt.sm">
       <q-list class="row">
         <q-item
           clickable
           active-class="bg-accent dark:!bg-dark-page"
+          class="mt-2"
           :to="{ name: 'main/documents' }"
           >{{ $t('documents.title') }}</q-item
         >
@@ -22,14 +23,17 @@
           v-if="userStore.currentUser?.role === 'admin' && $q.screen.gt.sm"
           clickable
           active-class="bg-accent dark:!bg-dark-page"
+          class="mt-2"
           to="/permissions"
           >{{ $t('permission.title') }}</q-item
         >
-        <q-item clickable @click="handleShow">{{ $t('register.edition') }} perfil</q-item>
+        <q-item clickable class="m-2" @click="handleShow"
+          >{{ $t('register.edition') }} perfil</q-item
+        >
       </q-list>
     </div>
 
-    <q-btn color="text bg-primary m-2" :label="$t('login.logout')" @click="logout" />
+    <q-btn color="text bg-primary" :label="$t('login.logout')" @click="logout" />
 
     <profile-popup v-model="showProfile" />
     <sidebar-component v-model="drawerRight" />

@@ -1,6 +1,7 @@
 export default {
   hello: 'Hello World',
   user: 'User',
+  portal: 'Document Portal',
   login: {
     title: 'Sign In',
     email: 'Email',

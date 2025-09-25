@@ -17,7 +17,7 @@
 
 ## Bônus
 
-- [ ] Utilizar alguma api pública para compor algum dos recursos
+- [x] Utilizar alguma api pública para compor algum dos recursos
 
 ---
 
@@ -25,8 +25,8 @@
 
 ### Tela de login
 
-- [ ] Não há logo, nem nome do sistema, não sei onde eu estou (ajustar no header)
-- [ ] Não armazenou idioma e tema ao atualizar a página
+- [x] Não há logo, nem nome do sistema, não sei onde eu estou
+- [x] Não armazenou idioma e tema ao atualizar a página
 
 ### Tela home User
 
@@ -50,7 +50,7 @@
 
 #### Layouts
 
-- [ ] Armazenar tema no LocalStorage
+- [x] Armazenar tema no LocalStorage
 
 #### Interfaces, Enums e Types
 
@@ -81,10 +81,8 @@ Neste último caso o Tanstack poderia ser uma alternativa
 
 ### Passos
 
-- [ ] Ajustar tabela para não quebrar -> fazer popup para docs do usuario e um extensor para cada doc com suas permissões
-- [ ] Utilizar API
+- [ ] Ajustar tabela para não quebrar -> retornar docs do user apenas
 - [ ] Stores
-- [ ] Armazenar idioma e modo de leitura
 
 - [ ] erros do chrome
   - - reclama q n pode iniciar doc com null

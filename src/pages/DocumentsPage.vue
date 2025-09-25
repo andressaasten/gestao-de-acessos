@@ -52,19 +52,20 @@
         </q-card-section>
 
         <q-card-section>
-          <div v-for="a in doc.attachments" :key="a.id">
+          <div v-for="a in doc.attachments" :key="a.id" class="p-2">
             <q-img
               v-if="a.type === 'image'"
-              style="max-height: 120px"
+              style="max-width: 90px; max-height: 90px"
               :src="a.url"
               :alt="`Anexo: ${a.id}`"
+              @click="openImage(a.url)"
             />
             <q-btn
               v-else
-              icon="picture_as_pdf"
+              flat
               label="Abrir PDF"
               aria-label="Abrir PDF"
-              flat
+              icon="picture_as_pdf"
               :href="a.url"
               target="_blank"
             />
@@ -128,6 +129,18 @@
     <new-document v-model="showEditPopup" :doc="editingDoc" edit-mode />
     <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc!" />
     <CommentsPopup v-model="showCommentsPopup" :doc="selectedDoc" />
+
+    <q-dialog v-model="imageDialog">
+      <q-card>
+        <q-img
+          :src="selectedImage"
+          style="min-width: 500px; max-width: 900px; min-height: 300px; max-height: 1100px"
+        />
+        <q-card-actions>
+          <q-btn flat label="Fechar" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -148,6 +161,14 @@ const showEditPopup = ref(false);
 const showPermissaoPopup = ref(false);
 const showCommentsPopup = ref(false);
 const confirmDeletePopup = ref(false);
+
+const imageDialog = ref(false);
+const selectedImage = ref('');
+
+function openImage(url: string) {
+  selectedImage.value = url;
+  imageDialog.value = true;
+}
 
 const selectedDoc = ref<Document | null>(null);
 const editingDoc = ref<Document | null>(null);

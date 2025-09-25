@@ -42,6 +42,34 @@
         </div>
       </q-card-section>
 
+      <q-card-section>
+        <!-- Buscar imagens da API Picsum -->
+        <div class="q-mt-md">
+          <q-btn
+            outline
+            dense
+            color="accent"
+            icon="photo"
+            label="Buscar imagens"
+            @click="loadImages"
+          />
+          <div v-if="imageResults.length" class="row q-col-gutter-sm q-mt-sm">
+            <div
+              v-for="img in imageResults"
+              :key="img.id"
+              class="col-4 cursor-pointer"
+              @click="addImageFromApi(img.download_url)"
+            >
+              <q-img :src="img.download_url" ratio="1" class="rounded-borders shadow-sm">
+                <div class="absolute-bottom text-white text-caption bg-black bg-opacity-50 q-pa-xs">
+                  {{ img.author }}
+                </div>
+              </q-img>
+            </div>
+          </div>
+        </div>
+      </q-card-section>
+
       <q-card-actions class="justify-end">
         <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
         <q-btn
@@ -99,6 +127,23 @@ watch(
   },
   { immediate: true },
 );
+
+// Lista de imagens da API
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const imageResults = ref<any[]>([]);
+
+async function loadImages() {
+  const res = await fetch(`https://picsum.photos/v2/list?page=1&limit=12`);
+  imageResults.value = await res.json();
+}
+
+function addImageFromApi(url: string) {
+  form.value.attachments.push({
+    id: Date.now() + Math.random(),
+    url,
+    type: 'image',
+  });
+}
 
 function save() {
   if (props.editMode && props.doc) {
