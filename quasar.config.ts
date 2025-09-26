@@ -65,7 +65,7 @@ export default defineConfig((ctx) => {
         dark: false,
       },
 
-      plugins: ['Dialog', 'Notify'],
+      plugins: ['Dialog', 'Notify', 'Loading'],
     },
 
     animations: [],

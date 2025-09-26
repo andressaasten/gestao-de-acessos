@@ -1,12 +1,15 @@
 <template>
   <q-drawer
+    v-model="drawerRight"
     side="left"
     no-swipe-backdrop
     bordered
     overlay
-    :width="200"
     class="bg-primary text-text dark:!bg-dark"
+    :width="200"
   >
+    <q-btn icon="close" @click="() => updateDrawer(false)" />
+
     <q-list>
       <q-item
         clickable
@@ -20,7 +23,7 @@
       <q-item clickable @click="handleShow">{{ $t('register.edition') }} perfil</q-item>
     </q-list>
 
-    <profile-popup v-model="showProfile" />
+    <ProfilePopup v-model="showProfile" />
   </q-drawer>
 </template>
 
@@ -29,8 +32,16 @@ import { ref } from 'vue';
 import ProfilePopup from 'src/components/EditorPopup.vue';
 
 defineOptions({ name: 'SidebarComponent' });
+const drawerRight = defineModel({
+  default: false,
+  required: true,
+});
 
 const showProfile = ref(false);
+
+const updateDrawer = (value: boolean) => {
+  drawerRight.value = value;
+};
 
 const handleShow = () => {
   showProfile.value = true;

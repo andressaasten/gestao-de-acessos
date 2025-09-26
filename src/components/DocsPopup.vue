@@ -1,84 +1,87 @@
 <template>
   <q-dialog>
-    <q-table
-      v-for="doc in getDocsByUser(selectedUserId)"
-      :key="doc.docId"
-      row-key="docId"
-      class="flex flex-nowrap bg-background dark:!bg-dark-page m-3"
-      :rows="userRows"
-      :columns="columns"
-    >
-      <!-- Nome do Documento -->
-      <template v-slot:body-cell-docTitle="props">
-        <q-td :props="props">
-          <div class="text-bold">{{ props.row.docTitle }}</div>
-        </q-td>
-      </template>
+    <q-card>
+      <q-btn icon="close" v-close-popup />
+      <q-table
+        row-key="docId"
+        class="flex flex-nowrap bg-background dark:!bg-dark-page m-3"
+        :rows="userRows"
+        :columns="columns"
+      >
+        <!-- Nome do Documento -->
+        <template v-slot:body-cell-docTitle="props">
+          <q-td :props="props">
+            <div class="text-bold">{{ props.row.docTitle }}</div>
+          </q-td>
+        </template>
 
-      <!-- Permissões -->
-      <template v-slot:body-cell-perms="props">
-        <q-td :props="props">
-          <div>
-            <q-chip
-              v-if="props.row.perms.includes('read')"
-              color="purple"
-              text-color="white"
-              size="sm"
-            >
-              {{ $t('permission.read') }}
-            </q-chip>
-            <q-chip
-              v-if="props.row.perms.includes('comment')"
-              color="blue"
-              text-color="white"
-              size="sm"
-            >
-              {{ $t('permission.comment') }}
-            </q-chip>
-            <q-chip
-              v-if="props.row.perms.includes('edit')"
-              color="teal"
-              text-color="white"
-              size="sm"
-            >
-              {{ $t('permission.edit') }}
-            </q-chip>
-          </div>
-        </q-td>
-      </template>
+        <!-- Permissões -->
+        <template v-slot:body-cell-perms="props">
+          <q-td :props="props">
+            <div>
+              <q-chip
+                v-if="props.row.perms.includes('read')"
+                color="purple"
+                text-color="white"
+                size="sm"
+              >
+                {{ $t('permission.read') }}
+              </q-chip>
+              <q-chip
+                v-if="props.row.perms.includes('comment')"
+                color="blue"
+                text-color="white"
+                size="sm"
+              >
+                {{ $t('permission.comment') }}
+              </q-chip>
+              <q-chip
+                v-if="props.row.perms.includes('edit')"
+                color="teal"
+                text-color="white"
+                size="sm"
+              >
+                {{ $t('permission.edit') }}
+              </q-chip>
+            </div>
+          </q-td>
+        </template>
 
-      <!-- Validade -->
-      <template v-slot:body-cell-remaining="props">
-        <q-td :props="props">
-          <span v-if="props.row.isValid" :class="timeColor(props.row)">
-            {{ props.row.remaining }}
-          </span>
-          <span v-else class="text-negative">
-            {{ formatDate(props.row.expiresAt) }}
-          </span>
-        </q-td>
-      </template>
+        <!-- Validade -->
+        <template v-slot:body-cell-remaining="props">
+          <q-td :props="props">
+            <span v-if="props.row.isValid" :class="timeColor(props.row)">
+              {{ props.row.remaining }}
+            </span>
+            <span v-else class="text-negative">
+              {{ formatDate(props.row.expiresAt) }}
+            </span>
+          </q-td>
+        </template>
 
-      <!-- Ações -->
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props" class="text-right">
-          <q-btn
-            dense
-            flat
-            color="accent"
-            icon="edit"
-            @click="openEditPermission(props.row.userId, props.row)"
-          />
-          <q-btn
-            dense
-            flat
-            color="negative"
-            icon="delete"
-            @click="confirmRescind(props.row.userId, props.row.docId)"
-          />
-        </q-td>
-      </template> </q-table
-    ><!-- EDITAR PERMISSÕES -->
+        <!-- Ações -->
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props" class="text-right">
+            <q-btn
+              dense
+              flat
+              color="accent"
+              icon="edit"
+              @click="openEditPermission(props.row.userId, props.row)"
+            />
+            <q-btn
+              dense
+              flat
+              color="negative"
+              icon="delete"
+              @click="confirmRescind(props.row.userId, props.row.docId)"
+            />
+          </q-td>
+        </template>
+      </q-table>
+    </q-card>
+
+    <!-- EDITAR PERMISSÕES -->
     <q-dialog v-model="editDialog">
       <q-card style="min-width: 450px">
         <q-card-section>
@@ -149,8 +152,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat color="negative" label="Cancelar" v-close-popup />
-          <q-btn flat color="positive" label="Salvar" @click="savePermissionEdit" />
+          <q-btn flat color="negative" :label="$t('common.cancel')" v-close-popup />
+          <q-btn flat color="positive" label="$t('common.cancel')" @click="savePermissionEdit" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -158,7 +161,7 @@
     <q-dialog v-model="confirmDialog">
       <q-card>
         <q-card-section>
-          <q-title class="text-h6">{{ $t('common.confirm') }}</q-title>
+          <p class="text-h6">{{ $t('common.confirm') }}</p>
           <div>{{ confirmMessage }}</div>
         </q-card-section>
         <q-card-actions align="right">
@@ -172,7 +175,6 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useUserStore } from 'src/stores/user';
 import { useDocumentsStore } from 'src/stores/documents';
 import { useQuasar } from 'quasar';
 
@@ -180,8 +182,10 @@ defineOptions({ name: 'DocsPopup' });
 
 const $q = useQuasar();
 
-const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const props = defineProps<{ user: any }>();
 
 // CONFIRMAR RESCINDIR
 const confirmDialog = ref(false);
@@ -293,39 +297,36 @@ function timeColor(perm: PermissionDisplay) {
   return 'text-positive';
 }
 
-function formatRemaining(ms: number) {
+function formatRemaining(ms: number): string {
   if (ms <= 0) return 'Expirado';
+
   const sec = Math.floor(ms / 1000);
-  if (ms < 60 * 1000) {
-    return `${sec} s`;
-  }
-  const min = Math.floor(ms / (60 * 1000));
-  if (ms < 60 * 60 * 1000) {
-    return `${min} min`;
-  }
-  const hrs = Math.floor(ms / (60 * 60 * 1000));
-  if (ms < 24 * 60 * 60 * 1000) {
-    return `${hrs} h`;
-  }
-  const days = Math.floor(ms / (24 * 60 * 60 * 1000));
-  if (days < 30) return `${days} D`;
+  if (sec < 60) return `${sec} segundo${sec === 1 ? '' : 's'}`;
+
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min} minuto${min === 1 ? '' : 's'}`;
+
+  const hrs = Math.floor(min / 60);
+  if (hrs < 24) return `${hrs} hora${hrs === 1 ? '' : 's'}`;
+
+  const days = Math.floor(hrs / 24);
+  if (days < 30) return `${days} dia${days === 1 ? '' : 's'}`;
+
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months} M`;
+  if (months < 12) return `${months} mês${months === 1 ? '' : 'es'}`;
+
   const years = Math.floor(days / 365);
-  return `${years} A`;
+  return `${years} ano${years === 1 ? '' : 's'}`;
 }
 
-const userId = 2;
-
 const userRows = computed(() => {
-  const user = userStore.users.find((u) => u.id === userId && u.role === 'user');
-  if (!user) return [];
+  if (!props.user) return [];
 
-  return documentsStore.getPermissionsByUser(user.id).map((p) => {
+  return documentsStore.getPermissionsByUser(props.user.id).map((p) => {
     const now = Date.now();
     const remainingMs = p.expiresAt - now;
     return {
-      userId: user.id,
+      userId: props.user.id,
       docId: p.docId,
       docTitle: documentsStore.getDocTitle(p.docId),
       perms: p.perms,
@@ -343,22 +344,4 @@ const columns = computed(() => [
   { name: 'remaining', label: 'Validade', field: 'remaining', align: 'left' as const },
   { name: 'actions', label: 'Ações', field: 'actions', align: 'right' as const },
 ]);
-
-function getDocsByUser(userId: null) {
-  if (!userId) return [];
-  const user = userStore.users.find((u) => u.id === userId);
-  if (!user) return [];
-
-  return documentsStore.getPermissionsByUser(userId).map((p) => {
-    const now = Date.now();
-    const remainingMs = p.expiresAt - now;
-    return {
-      docId: p.docId,
-      docTitle: documentsStore.getDocTitle(p.docId),
-      remaining: remainingMs > 0 ? formatRemaining(remainingMs) : 'Expirado',
-    };
-  });
-}
 </script>
-
-// retornar apenas do user selecionado //fullscreen

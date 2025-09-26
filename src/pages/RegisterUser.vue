@@ -1,9 +1,9 @@
 <template>
-  <q-page class="row items-center justify-evenly">
+  <main class="flex-auto flex flex-nowrap justify-center items-center p-4">
     <LoginRegister />
-  </q-page>
+  </main>
 </template>
 
 <script setup lang="ts">
-import LoginRegister from 'components/LoginRegister.vue'
+import LoginRegister from 'components/LoginRegister.vue';
 </script>

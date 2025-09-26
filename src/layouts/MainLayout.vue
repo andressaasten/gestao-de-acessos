@@ -1,29 +1,26 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header>
-      <header-component v-model="headercomponent" />
-    </q-header>
+    <HeaderComponent @update:drawer="updateDrawer" />
+
+    <SidebarComponent v-model="drawerRight" />
 
     <q-page-container>
       <router-view />
     </q-page-container>
 
-    <q-footer>
-      <footer-component v-model="footercomponent" />
-    </q-footer>
-
-    <profile-popup v-model="showProfile" />
+    <FooterComponent />
   </q-layout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import ProfilePopup from 'src/components/EditorPopup.vue';
 import FooterComponent from 'src/components/FooterComponent.vue';
 import HeaderComponent from 'src/components/HeaderComponent.vue';
+import SidebarComponent from 'src/components/SidebarComponent.vue';
 
-const footercomponent = ref(true);
-const headercomponent = ref(true);
+const drawerRight = ref(false);
 
-const showProfile = ref(false);
+const updateDrawer = (value: boolean) => {
+  drawerRight.value = value;
+};
 </script>

@@ -1,14 +1,5 @@
 # Candidato: Andressa Teixeira
 
----
-
-## Componentes visuais
-
-- [x] Separar em outro componente Sidebar
-- [x] Corrigir cores
-
----
-
 ## Critérios básicos de Avaliação
 
 - [ ] Código limpo e bem estruturado
@@ -17,46 +8,31 @@
 
 ## Bônus
 
-- [x] Utilizar alguma api pública para compor algum dos recursos
+- [ ] Tanstack (Vue-Query) (Não precisa)
+- [ ] Gráficos (Não precisa)
 
 ---
 
-## Telas
+## Tela home Admin
 
-### Tela de login
+- [ ] Modal do popup necessita de select -> selecionar user
+- [ ] Adicionar rules no modal de criação -> n permitir salvar vazio
 
-- [x] Não há logo, nem nome do sistema, não sei onde eu estou
-- [x] Não armazenou idioma e tema ao atualizar a página
-
-### Tela home User
-
-- [x] O indicativo de expiração não possui legenda
-
-### Tela home Admin
-
-- [x] No header, não há indicativo visual da tela que estou no momento, como o `Sair` é branco parece que eu estou em Sair e não em Documentos.
-- [x] No modal de permissões, a data não é no padrão dd/mm/yyyy
+---
 
 ### Gerenciamento de Permissões
 
-- [ ] A tabela fica quebrada quando 1 usuário tem muitas permissões
-- [x] O expirar em 1 min ficou 0 min
+- [ ] Tempo das permissões precisam revisão (41 seg apareceu pós expirar)
 
-#### Components
+---
 
-- [x] `isLargeScreen` utilizando v-show, o ideal é v-if para remover da DOM, mas tudo depende do caso, não está errado.
-      => o docs quasar faz assim
-- [x] Não usou `defineOptions` em nenhum arquivo do projeto
-
-#### Layouts
-
-- [x] Armazenar tema no LocalStorage
-
-#### Interfaces, Enums e Types
+## Interfaces, Enums e Types
 
 - [ ] Não ficaram separados e sim dentro dos componentes
 
-#### Stores
+---
+
+## Stores
 
 Os Stores contém toda a lógica de armazenamento de dados e não está totalmente errado mas:
 
@@ -79,13 +55,11 @@ Se precisar cachear em memória e se não existir na memória puxar do Backend:
 
 Neste último caso o Tanstack poderia ser uma alternativa
 
-### Passos
+## Passos
 
-- [ ] Ajustar tabela para não quebrar -> retornar docs do user apenas
 - [ ] Stores
 
 - [ ] erros do chrome
-  - - reclama q n pode iniciar doc com null
 
 - https://medium.com/@luismigueldev/zod-o-poder-de-valida%C3%A7%C3%A3o-e-transforma%C3%A7%C3%A3o-de-dados-365197d03e7f
 
@@ -94,3 +68,5 @@ Neste último caso o Tanstack poderia ser uma alternativa
 - https://quasar.dev/vue-components/table - expanding rows
 
 - https://quasar.dev/vue-components/date/#example--options
+
+- https://quasar.dev/vue-components/select#filtering-and-autocomplete

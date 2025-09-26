@@ -1,9 +1,7 @@
 <template>
   <q-page class="bg-background dark:!bg-dark-page">
     <div class="row items-center justify-between">
-      <q-title class="text-lg text-secondary dark:!text-text p-6">{{
-        $t('permission.title')
-      }}</q-title>
+      <p class="text-lg text-secondary dark:!text-text p-6">{{ $t('permission.title') }}</p>
     </div>
 
     <q-table
@@ -22,8 +20,8 @@
             size="sm"
             color="accent"
             class="p-2"
-            :icon="showDocsPopup ? 'close' : 'add'"
-            @click="handleShow(props.row.userId)"
+            :icon="showDocsPopup && props.row.id == selectedUser.id ? 'close' : 'add'"
+            @click="handleShow(props.row)"
           />
         </q-td>
       </template>
@@ -45,7 +43,7 @@
     <q-dialog v-model="confirmDialog">
       <q-card>
         <q-card-section>
-          <q-title class="text-h6">{{ $t('common.confirm') }}</q-title>
+          <p class="text-h6">{{ $t('common.confirm') }}</p>
           <div>{{ confirmMessage }}</div>
         </q-card-section>
         <q-card-actions align="right">
@@ -55,7 +53,7 @@
       </q-card>
     </q-dialog>
 
-    <docs-popup v-model="selectedUserId" />
+    <DocsPopup v-model="showDocsPopup" :user="selectedUser" />
   </q-page>
 </template>
 
@@ -72,10 +70,12 @@ const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
 
 const showDocsPopup = ref(false);
-const selectedUserId = ref<string | null>(null);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const selectedUser = ref<any>(null);
 
-const handleShow = (userId: null) => {
-  selectedUserId.value = userId;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const handleShow = (user: any) => {
+  selectedUser.value = user;
   showDocsPopup.value = !showDocsPopup.value;
 };
 

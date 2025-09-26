@@ -7,21 +7,14 @@
         </div>
       </q-card-section>
 
-      <q-card-section class="p-2">
-        <q-input
-          v-model="form.title"
-          :label="$t('common.title')"
-          label-color="accent"
-          outlined
-          class="p-1"
-        />
+      <q-card-section class="p-2 grid gap-4">
+        <q-input v-model="form.title" :label="$t('common.title')" label-color="accent" outlined />
         <q-input
           v-model="form.text"
           :label="$t('common.text')"
           label-color="accent"
           type="textarea"
           outlined
-          class="p-1"
         />
 
         <q-uploader
@@ -29,7 +22,6 @@
           multiple
           accept=".jpg,.jpeg,.png,.pdf"
           :auto-upload="false"
-          class="p-1"
           color="accent"
           @added="onFilesAdded"
         />
@@ -86,6 +78,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useDocumentsStore, type Document, type Attachment } from 'src/stores/documents';
+import { useQuasar } from 'quasar';
+import { findDocumentImages } from 'src/services/documentService';
 
 defineOptions({ name: 'NewDocument' });
 
@@ -96,6 +90,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>();
+
+const $q = useQuasar();
 
 const internalModel = ref(props.modelValue);
 watch(
@@ -133,8 +129,18 @@ watch(
 const imageResults = ref<any[]>([]);
 
 async function loadImages() {
-  const res = await fetch(`https://picsum.photos/v2/list?page=1&limit=12`);
-  imageResults.value = await res.json();
+  try {
+    $q.loading.show();
+    imageResults.value = await findDocumentImages();
+  } catch (error) {
+    console.error(error);
+    $q.notify({
+      message: 'Erro ao carregar imagens',
+      color: 'negative',
+    });
+  } finally {
+    $q.loading.hide();
+  }
 }
 
 function addImageFromApi(url: string) {
