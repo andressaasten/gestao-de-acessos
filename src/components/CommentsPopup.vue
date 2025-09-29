@@ -49,7 +49,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useUserStore } from 'src/stores/user';
-import { useDocumentsStore, type Document } from 'src/stores/documents';
+import { useDocumentsStore } from 'src/stores/documents';
+import type { Document } from 'src/types/interfaces/IDocuments';
 
 defineOptions({ name: 'CommentsPopup' });
 
@@ -59,7 +60,6 @@ defineProps<{
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
-documentsStore.init();
 
 const newComment = ref<Record<number, string>>({});
 

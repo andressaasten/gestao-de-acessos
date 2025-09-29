@@ -8,13 +8,22 @@
       </q-card-section>
 
       <q-card-section class="p-2 grid gap-4">
-        <q-input v-model="form.title" :label="$t('common.title')" label-color="accent" outlined />
+        <q-input
+          v-model="form.title"
+          outlined
+          label-color="accent"
+          :label="$t('common.title')"
+          lazy-rules
+          :rules="[validateTitle]"
+        />
         <q-input
           v-model="form.text"
-          :label="$t('common.text')"
-          label-color="accent"
-          type="textarea"
           outlined
+          type="textarea"
+          label-color="accent"
+          :label="$t('common.text')"
+          lazy-rules
+          :rules="[validateText]"
         />
 
         <q-uploader
@@ -77,9 +86,10 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useDocumentsStore, type Document, type Attachment } from 'src/stores/documents';
+import { useDocumentsStore } from 'src/stores/documents';
 import { useQuasar } from 'quasar';
 import { findDocumentImages } from 'src/services/documentService';
+import type { Document, Attachment } from 'src/types/interfaces/IDocuments';
 
 defineOptions({ name: 'NewDocument' });
 
@@ -159,7 +169,7 @@ function save() {
       attachments: form.value.attachments,
     });
   } else {
-    documentsStore.addDocument(form.value.title, form.value.text, form.value.attachments);
+    void documentsStore.addDocument(form.value.title, form.value.text, form.value.attachments);
     form.value = { title: '', text: '', attachments: [] };
   }
   internalModel.value = false;
@@ -176,6 +186,16 @@ function onFilesAdded(files: readonly File[]) {
     });
   }
 }
+
+const validateText = (val: string): true | string => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(val) || 'Inválido';
+};
+
+const validateTitle = (val: string): true | string => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(val) || 'Inválido';
+};
 
 function close() {
   internalModel.value = false;

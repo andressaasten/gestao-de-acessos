@@ -1,19 +1,6 @@
 import { defineStore } from 'pinia';
 import CryptoJS from 'crypto-js';
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  role: 'admin' | 'user';
-}
-
-interface UserState {
-  users: User[];
-  currentUser: User | null;
-  expiresAt: number | null;
-}
+import type { User, UserState } from '../types/interfaces/IUser';
 
 export const useUserStore = defineStore('user', {
   state: (): UserState => ({

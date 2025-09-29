@@ -153,7 +153,7 @@
 
         <q-card-actions align="right">
           <q-btn flat color="negative" :label="$t('common.cancel')" v-close-popup />
-          <q-btn flat color="positive" label="$t('common.cancel')" @click="savePermissionEdit" />
+          <q-btn flat color="positive" :label="$t('common.save')" @click="savePermissionEdit" />
         </q-card-actions>
       </q-card>
     </q-dialog>

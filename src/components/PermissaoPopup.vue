@@ -6,31 +6,25 @@
       </q-card-section>
 
       <q-card-section>
-        <q-input
-          outlined
-          label-color="accent"
-          v-model="search"
-          :label="$t('permission.searchUser')"
-        />
-        <q-list bordered>
-          <!-- Se um usuário foi selecionado, mostra apenas ele -->
-          <q-item
-            v-if="selectedUser"
-            :key="selectedUser.id"
-            clickable
-            @click="selectedUser = null"
-            :active="true"
-          >
-            <q-item-section>{{ selectedUser.name }}</q-item-section>
-          </q-item>
-
-          <!-- Se nenhum usuário foi selecionado -->
-          <q-item v-else v-for="u in filteredUsers" :key="u.id" clickable @click="selectedUser = u">
-            <q-item-section>{{ u.name }}</q-item-section>
-          </q-item>
-        </q-list>
-
-        <div v-if="selectedUser">
+        <card class="q-gutter-md row items-start">
+          <q-select
+            v-model="selectedUser"
+            filled
+            use-input
+            style="width: 250px"
+            option-label="name"
+            option-value="id"
+            :options="filteredUsers"
+            :label="$t('permission.searchUser')"
+            @filter="filterFn"
+          />
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey"> No results </q-item-section>
+            </q-item>
+          </template>
+        </card>
+        <div>
           <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
           <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
           <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" color="accent" />
@@ -83,10 +77,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue';
-import { useUserStore, type User } from 'src/stores/user';
-import { useDocumentsStore, type Document } from 'src/stores/documents';
+import { ref, watch } from 'vue';
+import { useDocumentsStore } from 'src/stores/documents';
 import { Notify } from 'quasar';
+import { useUserStore } from 'src/stores/user';
+import type { User } from 'src/types/interfaces/IUser';
+import type { Document } from 'src/types/interfaces/IDocuments';
 
 defineOptions({ name: 'PermissaoPopup' });
 
@@ -94,7 +90,23 @@ const props = defineProps<{ modelValue: boolean; doc: Document }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
 const userStore = useUserStore();
+const selectedUser = ref<User | null>(null);
 const documentsStore = useDocumentsStore();
+
+const filteredUsers = userStore.users.filter((u) => u.role === 'user');
+const filterOptions = ref(filteredUsers);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function filterFn(val: string, update: any) {
+  update(() => {
+    if (val === '') {
+      filterOptions.value = filteredUsers;
+    } else {
+      const needle = val.toLowerCase();
+      filterOptions.value = filteredUsers.filter((v) => v.name.toLowerCase().indexOf(needle) > -1);
+    }
+  });
+}
 
 const internalModel = ref(props.modelValue);
 watch(
@@ -103,8 +115,6 @@ watch(
 );
 watch(internalModel, (v) => emit('update:modelValue', v));
 
-const search = ref('');
-const selectedUser = ref<User | null>(null);
 const perms = ref({ canRead: true, canComment: false, canEdit: false });
 
 const expirationDate = ref({
@@ -123,12 +133,6 @@ function onDateChange(val: string) {
     expirationDate.value.expirationDateDisplay = '';
   }
 }
-
-const filteredUsers = computed(() =>
-  userStore.users.filter(
-    (u) => u.role === 'user' && u.name.toLowerCase().includes(search.value.toLowerCase()),
-  ),
-);
 
 function savePerms() {
   if (!props.doc || !selectedUser.value) return;
@@ -156,7 +160,6 @@ function savePerms() {
   if (perms.value.canEdit) selectedPerms.push('edit');
 
   documentsStore.setPermission(props.doc.id, selectedUser.value.id, selectedPerms, expiresAt);
-  selectedUser.value = null;
   perms.value = { canComment: false, canEdit: false, canRead: true };
   expirationDate.value.expirationDateIso = iso;
   expirationDate.value.expirationDateDisplay = iso

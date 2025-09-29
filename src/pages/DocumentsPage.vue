@@ -147,14 +147,14 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useUserStore } from 'src/stores/user';
-import { useDocumentsStore, type Document } from 'src/stores/documents';
+import { useDocumentsStore } from 'src/stores/documents';
 import NewDocument from 'src/components/NewDocument.vue';
 import PermissaoPopup from 'src/components/PermissaoPopup.vue';
 import CommentsPopup from 'src/components/CommentsPopup.vue';
+import type { Document } from 'src/types/interfaces/IDocuments';
 
 const userStore = useUserStore();
 const documentsStore = useDocumentsStore();
-documentsStore.init();
 
 const showPopup = ref(false);
 const showEditPopup = ref(false);

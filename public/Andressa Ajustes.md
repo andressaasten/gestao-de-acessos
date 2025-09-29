@@ -20,7 +20,7 @@
 
 ---
 
-### Gerenciamento de Permissões
+## Gerenciamento de Permissões
 
 - [ ] Tempo das permissões precisam revisão (41 seg apareceu pós expirar)
 
@@ -28,7 +28,7 @@
 
 ## Interfaces, Enums e Types
 
-- [ ] Não ficaram separados e sim dentro dos componentes
+- [x] Não ficaram separados e sim dentro dos componentes
 
 ---
 
@@ -57,7 +57,11 @@ Neste último caso o Tanstack poderia ser uma alternativa
 
 ## Passos
 
-- [ ] Stores
+- [ ] Service e Interface
+
+- [ ] @filter no selected
+
+- [ ] rules no criacao
 
 - [ ] erros do chrome
 
