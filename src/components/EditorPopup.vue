@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useUserStore } from 'src/stores/user';
+import { getCurrentUser, userService } from 'src/services/userServices';
 import CryptoJS from 'crypto-js';
 import { Notify } from 'quasar';
 
@@ -67,7 +67,7 @@ defineOptions({ name: 'EditorPopup' });
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
-const userStore = useUserStore();
+const userStore = userService;
 
 const internalModel = ref(props.modelValue);
 watch(
@@ -82,8 +82,8 @@ const validateSenha = (val: string): true | string => {
 };
 
 const form = ref({
-  name: userStore.currentUser?.name || '',
-  email: userStore.currentUser?.email || '',
+  name: getCurrentUser()?.name || '',
+  email: getCurrentUser()?.email || '',
   oldPassword: '',
   newPassword: '',
   confirmPassword: '',
@@ -97,7 +97,7 @@ function save() {
     }
 
     const oldHash = CryptoJS.SHA256(form.value.oldPassword).toString();
-    if (userStore.currentUser?.password !== oldHash) {
+    if (getCurrentUser()?.password !== oldHash) {
       Notify.create('Senha atual incorreta!');
       return;
     }

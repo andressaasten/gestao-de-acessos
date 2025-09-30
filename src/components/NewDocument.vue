@@ -1,94 +1,97 @@
 <template>
   <q-dialog v-model="internalModel" persistent>
     <q-card>
-      <q-card-section class="p-4">
-        <div class="text-h6">
-          {{ editMode ? $t('documents.edit') : $t('documents.new') }}
-        </div>
-      </q-card-section>
-
-      <q-card-section class="p-2 grid gap-4">
-        <q-input
-          v-model="form.title"
-          outlined
-          label-color="accent"
-          :label="$t('common.title')"
-          lazy-rules
-          :rules="[validateTitle]"
-        />
-        <q-input
-          v-model="form.text"
-          outlined
-          type="textarea"
-          label-color="accent"
-          :label="$t('common.text')"
-          lazy-rules
-          :rules="[validateText]"
-        />
-
-        <q-uploader
-          :label="$t('common.attached')"
-          multiple
-          accept=".jpg,.jpeg,.png,.pdf"
-          :auto-upload="false"
-          color="accent"
-          @added="onFilesAdded"
-        />
-
-        <div v-if="form.attachments.length">
-          <div v-for="a in form.attachments" :key="a.id">
-            <q-chip>{{ a.type.toUpperCase() }}</q-chip>
-            <span>{{ a.url }}</span>
+      <q-form ref="formRef" @submit.prevent="handleCreate">
+        <q-card-section class="p-4">
+          <div class="text-h6">
+            {{ editMode ? $t('documents.edit') : $t('documents.new') }}
           </div>
-        </div>
-      </q-card-section>
+        </q-card-section>
 
-      <q-card-section>
-        <!-- Buscar imagens da API Picsum -->
-        <div class="q-mt-md">
-          <q-btn
-            outline
-            dense
-            color="accent"
-            icon="photo"
-            label="Buscar imagens"
-            @click="loadImages"
+        <q-card-section class="p-2 grid gap-4">
+          <q-input
+            v-model="form.title"
+            outlined
+            label-color="accent"
+            :label="$t('common.title')"
+            lazy-rules
+            :rules="[validateTitle]"
           />
-          <div v-if="imageResults.length" class="row q-col-gutter-sm q-mt-sm">
-            <div
-              v-for="img in imageResults"
-              :key="img.id"
-              class="col-4 cursor-pointer"
-              @click="addImageFromApi(img.download_url)"
-            >
-              <q-img :src="img.download_url" ratio="1" class="rounded-borders shadow-sm">
-                <div class="absolute-bottom text-white text-caption bg-black bg-opacity-50 q-pa-xs">
-                  {{ img.author }}
-                </div>
-              </q-img>
+          <q-input
+            v-model="form.text"
+            outlined
+            type="textarea"
+            label-color="accent"
+            :label="$t('common.text')"
+            lazy-rules
+            :rules="[validateText]"
+          />
+
+          <q-uploader
+            :label="$t('common.attached')"
+            multiple
+            accept=".jpg,.jpeg,.png,.pdf"
+            :auto-upload="false"
+            color="accent"
+            @added="onFilesAdded"
+          />
+
+          <div v-if="form.attachments.length">
+            <div v-for="a in form.attachments" :key="a.id">
+              <q-chip>{{ a.type.toUpperCase() }}</q-chip>
+              <span>{{ a.url }}</span>
             </div>
           </div>
-        </div>
-      </q-card-section>
+        </q-card-section>
 
-      <q-card-actions class="justify-end">
-        <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
-        <q-btn
-          flat
-          :label="editMode ? $t('common.save') : $t('common.create')"
-          color="positive"
-          @click="save"
-        />
-      </q-card-actions>
+        <q-card-section>
+          <!-- Buscar imagens da API Picsum -->
+          <div class="q-mt-md">
+            <q-btn
+              outline
+              dense
+              color="accent"
+              icon="photo"
+              label="Buscar imagens"
+              @click="loadImages"
+            />
+            <div v-if="imageResults.length" class="row q-col-gutter-sm q-mt-sm">
+              <div
+                v-for="img in imageResults"
+                :key="img.id"
+                class="col-4 cursor-pointer"
+                @click="addImageFromApi(img.download_url)"
+              >
+                <q-img :src="img.download_url" ratio="1" class="rounded-borders shadow-sm">
+                  <div
+                    class="absolute-bottom text-white text-caption bg-black bg-opacity-50 q-pa-xs"
+                  >
+                    {{ img.author }}
+                  </div>
+                </q-img>
+              </div>
+            </div>
+          </div>
+        </q-card-section>
+
+        <q-card-actions class="justify-end">
+          <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
+          <q-btn
+            flat
+            :label="editMode ? $t('common.save') : $t('common.create')"
+            color="positive"
+            type="submit"
+          />
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useDocumentsStore } from 'src/stores/documents';
+import { addDocument, editDocument, findDocumentImages } from 'src/services/documentService';
 import { useQuasar } from 'quasar';
-import { findDocumentImages } from 'src/services/documentService';
 import type { Document, Attachment } from 'src/types/interfaces/IDocuments';
 
 defineOptions({ name: 'NewDocument' });
@@ -102,6 +105,7 @@ const props = defineProps<{
 const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>();
 
 const $q = useQuasar();
+const formRef = ref();
 
 const internalModel = ref(props.modelValue);
 watch(
@@ -109,8 +113,6 @@ watch(
   (v) => (internalModel.value = v),
 );
 watch(internalModel, (v) => emit('update:modelValue', v));
-
-const documentsStore = useDocumentsStore();
 
 const form = ref<{ title: string; text: string; attachments: Attachment[] }>({
   title: '',
@@ -163,17 +165,42 @@ function addImageFromApi(url: string) {
 
 function save() {
   if (props.editMode && props.doc) {
-    documentsStore.editDocument(props.doc.id, {
+    editDocument(props.doc.id, {
       title: form.value.title,
       text: form.value.text,
       attachments: form.value.attachments,
     });
   } else {
-    void documentsStore.addDocument(form.value.title, form.value.text, form.value.attachments);
+    void addDocument(form.value.title, form.value.text, form.value.attachments);
     form.value = { title: '', text: '', attachments: [] };
   }
   internalModel.value = false;
 }
+
+const handleCreate = async () => {
+  const valid = await formRef.value?.validate();
+  if (!valid) {
+    $q.notify({
+      type: 'negative',
+      message: 'Preencha todos os campos corretamente',
+    });
+    return;
+  }
+
+  try {
+    save();
+    $q.notify({
+      type: 'positive',
+      message: 'Documento criado com sucesso!',
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (err) {
+    $q.notify({
+      type: 'negative',
+      message: 'Erro ao criar documento',
+    });
+  }
+};
 
 function onFilesAdded(files: readonly File[]) {
   for (const f of files) {
@@ -187,14 +214,18 @@ function onFilesAdded(files: readonly File[]) {
   }
 }
 
-const validateText = (val: string): true | string => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(val) || 'Inválido';
+const validateTitle = (val: string): true | string => {
+  if (!val || val.trim().length === 0) {
+    return 'O título não pode estar vazio';
+  }
+  return true;
 };
 
-const validateTitle = (val: string): true | string => {
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(val) || 'Inválido';
+const validateText = (val: string): true | string => {
+  if (!val || val.trim().length === 0) {
+    return 'O texto não pode estar vazio';
+  }
+  return true;
 };
 
 function close() {

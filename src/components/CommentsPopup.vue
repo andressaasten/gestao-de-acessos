@@ -20,7 +20,7 @@
       </q-card-section>
 
       <q-card-section>
-        <div v-if="doc && documentsStore.canComment(doc)" class="flex flex-nowrap gap-4 mt-4">
+        <div v-if="doc && canComment(doc)" class="flex flex-nowrap gap-4 mt-4">
           <q-input
             dense
             hide-bottom-space
@@ -34,7 +34,7 @@
             noCaps
             :label="$t('permission.comment')"
             color="accent"
-            @click="addComment(doc)"
+            @click="addComments(doc)"
           />
         </div>
       </q-card-section>
@@ -48,9 +48,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { useUserStore } from 'src/stores/user';
-import { useDocumentsStore } from 'src/stores/documents';
+import { userService } from 'src/services/userServices';
 import type { Document } from 'src/types/interfaces/IDocuments';
+import { addComment, canComment } from 'src/services/documentService';
 
 defineOptions({ name: 'CommentsPopup' });
 
@@ -58,19 +58,16 @@ defineProps<{
   doc: Document | null;
 }>();
 
-const userStore = useUserStore();
-const documentsStore = useDocumentsStore();
-
 const newComment = ref<Record<number, string>>({});
 
-function addComment(doc: Document) {
+function addComments(doc: Document) {
   const text = newComment.value[doc.id];
   if (!text || !text.trim()) return;
-  documentsStore.addComment(doc.id, text);
+  addComment(doc.id, text);
   newComment.value[doc.id] = '';
 }
 
 function getUserById(id: number) {
-  return userStore.users.find((u) => u.id === id) || null;
+  return userService.getUsers().find((u) => u.id === id) || null;
 }
 </script>

@@ -8,23 +8,26 @@
       <q-card-section>
         <card class="q-gutter-md row items-start">
           <q-select
-            v-model="selectedUser"
             filled
+            v-model="selectedUser"
             use-input
-            style="width: 250px"
+            :input-debounce="300"
+            hide-selected
+            fill-input
             option-label="name"
             option-value="id"
-            :options="filteredUsers"
+            :options="filterOptions"
             :label="$t('permission.searchUser')"
             @filter="filterFn"
-          />
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey"> No results </q-item-section>
-            </q-item>
-          </template>
+          >
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey"> No results </q-item-section>
+              </q-item>
+            </template>
+          </q-select>
         </card>
-        <div>
+        <div class="q-mt-md gap-2">
           <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
           <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
           <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" color="accent" />
@@ -78,9 +81,9 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { useDocumentsStore } from 'src/stores/documents';
+import { setPermission } from 'src/services/documentService';
 import { Notify } from 'quasar';
-import { useUserStore } from 'src/stores/user';
+import { userService } from 'src/services/userServices';
 import type { User } from 'src/types/interfaces/IUser';
 import type { Document } from 'src/types/interfaces/IDocuments';
 
@@ -89,21 +92,20 @@ defineOptions({ name: 'PermissaoPopup' });
 const props = defineProps<{ modelValue: boolean; doc: Document }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
-const userStore = useUserStore();
+const userStore = userService;
 const selectedUser = ref<User | null>(null);
-const documentsStore = useDocumentsStore();
 
-const filteredUsers = userStore.users.filter((u) => u.role === 'user');
-const filterOptions = ref(filteredUsers);
+const allUsers = userStore.getUsers().filter((u) => u.role === 'user');
+const filterOptions = ref<User[]>([...allUsers]);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function filterFn(val: string, update: any) {
   update(() => {
     if (val === '') {
-      filterOptions.value = filteredUsers;
+      filterOptions.value = allUsers;
     } else {
       const needle = val.toLowerCase();
-      filterOptions.value = filteredUsers.filter((v) => v.name.toLowerCase().indexOf(needle) > -1);
+      filterOptions.value = allUsers.filter((v) => v.name.toLowerCase().indexOf(needle) > -1);
     }
   });
 }
@@ -139,7 +141,7 @@ function savePerms() {
   if (!expirationDate.value || !expirationTime.value) return;
 
   const expiresAt = new Date(
-    `${expirationDate.value.expirationDateIso}T${expirationTime.value}:59`,
+    `${expirationDate.value.expirationDateIso}T${expirationTime.value}:00`,
   ).getTime();
 
   const now = Date.now();
@@ -159,7 +161,7 @@ function savePerms() {
   if (perms.value.canComment) selectedPerms.push('comment');
   if (perms.value.canEdit) selectedPerms.push('edit');
 
-  documentsStore.setPermission(props.doc.id, selectedUser.value.id, selectedPerms, expiresAt);
+  setPermission(props.doc.id, selectedUser.value.id, selectedPerms, expiresAt);
   perms.value = { canComment: false, canEdit: false, canRead: true };
   expirationDate.value.expirationDateIso = iso;
   expirationDate.value.expirationDateDisplay = iso

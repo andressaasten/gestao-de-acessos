@@ -6,7 +6,7 @@
       </div>
 
       <q-btn
-        v-if="userStore.currentUser?.role === 'admin'"
+        v-if="getCurrentUser()?.role === 'admin'"
         :label="$t('documents.new')"
         color="primary dark:!bg-secondary"
         class="p-3 m-4"
@@ -32,7 +32,7 @@
       >
         <q-card-section>
           <div
-            v-if="userStore.currentUser?.role === 'user'"
+            v-if="getCurrentUser()?.role === 'user'"
             class="absolute-top-right p-2 m-2"
             :style="{
               width: '16px',
@@ -83,7 +83,7 @@
         </q-card-section>
 
         <q-btn
-          v-if="userStore.currentUser?.role === 'admin'"
+          v-if="getCurrentUser()?.role === 'admin'"
           flat
           round
           dense
@@ -146,15 +146,17 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useUserStore } from 'src/stores/user';
-import { useDocumentsStore } from 'src/stores/documents';
+import { getCurrentUser } from 'src/services/userServices';
+import {
+  getAllDocuments,
+  canComment,
+  getTimeStatus,
+  deleteDocument,
+} from 'src/services/documentService';
 import NewDocument from 'src/components/NewDocument.vue';
 import PermissaoPopup from 'src/components/PermissaoPopup.vue';
 import CommentsPopup from 'src/components/CommentsPopup.vue';
 import type { Document } from 'src/types/interfaces/IDocuments';
-
-const userStore = useUserStore();
-const documentsStore = useDocumentsStore();
 
 const showPopup = ref(false);
 const showEditPopup = ref(false);
@@ -173,9 +175,7 @@ function openImage(url: string) {
 const selectedDoc = ref<Document | null>(null);
 const editingDoc = ref<Document | null>(null);
 
-const readableDocs = computed(() =>
-  documentsStore.documents.filter((d) => documentsStore.canComment(d)),
-);
+const readableDocs = computed(() => getAllDocuments().filter((d) => canComment(d)));
 
 function openComments(doc: Document) {
   selectedDoc.value = doc;
@@ -183,7 +183,7 @@ function openComments(doc: Document) {
 }
 
 function statusColor(doc: Document) {
-  const status = documentsStore.getTimeStatus(doc);
+  const status = getTimeStatus(doc);
   if (status === 'red') return 'red';
   if (status === 'yellow') return 'gold';
   if (status === 'green') return 'green';
@@ -215,7 +215,7 @@ function confirmDelete(doc: Document) {
 
 function deleteDoc() {
   if (selectedDoc.value) {
-    documentsStore.deleteDocument(selectedDoc.value.id);
+    deleteDocument(selectedDoc.value.id);
     confirmDeletePopup.value = false;
   }
 }

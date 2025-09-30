@@ -21,7 +21,7 @@
             >{{ $t('documents.title') }}</q-item
           >
           <q-item
-            v-if="userStore.currentUser?.role === 'admin' && $q.screen.gt.sm"
+            v-if="getCurrentUser()?.role === 'admin' && $q.screen.gt.sm"
             clickable
             active-class="bg-accent dark:!bg-dark-page"
             class="mt-2 flex items-center justify-center"
@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUserStore } from 'src/stores/user';
+import { getCurrentUser, userService } from 'src/services/userServices';
 import { mdiMenu } from '@quasar/extras/mdi-v7';
 import ProfilePopup from 'src/components/EditorPopup.vue';
 
@@ -53,7 +53,6 @@ defineEmits<{
   (event: 'update:drawer', value: boolean): void;
 }>();
 const router = useRouter();
-const userStore = useUserStore();
 
 const showProfile = ref(false);
 
@@ -62,7 +61,7 @@ const handleShow = () => {
 };
 
 async function logout() {
-  userStore.logout();
+  userService.logout();
   await router.push('/');
 }
 </script>

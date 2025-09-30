@@ -109,11 +109,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Notify, useQuasar } from 'quasar';
-import { useUserStore } from 'src/stores/user';
+import { getCurrentUser, userService } from 'src/services/userServices';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
-const userStore = useUserStore();
+const userStore = userService;
 const router = useRouter();
 
 const isLoginActive = ref(true);
@@ -140,7 +140,7 @@ async function handleLogin() {
   }
 
   $q.notify({
-    message: `Bem-vindo ${userStore.currentUser?.name}! Acesso: ${userStore.currentUser?.role}`,
+    message: `Bem-vindo ${getCurrentUser()?.name}! Acesso: ${getCurrentUser()?.role}`,
     color: 'positive',
   });
   await router.push('/documents');

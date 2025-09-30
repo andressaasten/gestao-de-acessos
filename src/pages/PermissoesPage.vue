@@ -59,15 +59,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useUserStore } from 'src/stores/user';
-import { useDocumentsStore } from 'src/stores/documents';
+import { userService } from 'src/services/userServices';
+import { removeAllPermissions } from 'src/services/documentService';
 import { useI18n } from 'vue-i18n';
 import DocsPopup from 'src/components/DocsPopup.vue';
 
 const { t: $t } = useI18n();
-
-const userStore = useUserStore();
-const documentsStore = useDocumentsStore();
 
 const showDocsPopup = ref(false);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,7 +85,7 @@ const pendingAction = ref<null | (() => void)>(null);
 function confirmRescindAll(userId: number) {
   confirmMessage.value = 'Deseja realmente rescindir todas as permissões deste usuário?';
   confirmDialog.value = true;
-  pendingAction.value = () => documentsStore.removeAllPermissions(userId);
+  pendingAction.value = () => removeAllPermissions(userId);
 }
 
 function rescindConfirmed() {
@@ -100,7 +97,8 @@ function rescindConfirmed() {
 }
 
 const userRows = computed(() =>
-  userStore.users
+  userService
+    .getUsers()
     .filter((u) => u.role === 'user')
     .map((u) => {
       return {

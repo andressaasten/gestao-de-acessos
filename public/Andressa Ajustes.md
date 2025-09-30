@@ -13,22 +13,9 @@
 
 ---
 
-## Tela home Admin
-
-- [ ] Modal do popup necessita de select -> selecionar user
-- [ ] Adicionar rules no modal de criação -> n permitir salvar vazio
-
----
-
 ## Gerenciamento de Permissões
 
 - [ ] Tempo das permissões precisam revisão (41 seg apareceu pós expirar)
-
----
-
-## Interfaces, Enums e Types
-
-- [x] Não ficaram separados e sim dentro dos componentes
 
 ---
 
@@ -55,15 +42,17 @@ Se precisar cachear em memória e se não existir na memória puxar do Backend:
 
 Neste último caso o Tanstack poderia ser uma alternativa
 
+---
+
 ## Passos
 
-- [ ] Service e Interface
+- [ ] Service
 
-- [ ] @filter no selected
+- [ ] erros da expiracao
 
-- [ ] rules no criacao
+---
 
-- [ ] erros do chrome
+## Links
 
 - https://medium.com/@luismigueldev/zod-o-poder-de-valida%C3%A7%C3%A3o-e-transforma%C3%A7%C3%A3o-de-dados-365197d03e7f
 

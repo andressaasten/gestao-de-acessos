@@ -1,25 +1,8 @@
-import { useUserStore } from 'src/stores/user';
-import type { Document, Permission, Attachment } from '../types/interfaces/IDocuments';
+import { getCurrentUser, userService } from 'src/services/userServices';
+import type { Document, Attachment, Permission } from '../types/interfaces/IDocuments';
 
-const documents = 'documents';
-const permissions = 'permissions';
-
-export async function findDocumentImages() {
-  const res = await fetch('https://picsum.photos/v2/list?page=1&limit=12');
-  return await res.json();
-}
-
-function load<T>(key: string, fallback: T): T {
-  const raw = localStorage.getItem(key);
-  return raw ? JSON.parse(raw) : fallback;
-}
-
-function save<T>(key: string, value: T) {
-  localStorage.setItem(key, JSON.stringify(value));
-}
-
-export function getAllDocuments(): { document: Document[]; permission: Permission[] } {
-  const document = load<Document[]>(documents, [
+export function init() {
+  const documents = [
     {
       id: 1,
       title: 'Política da Empresa',
@@ -41,19 +24,51 @@ export function getAllDocuments(): { document: Document[]; permission: Permissio
       attachments: [],
       comments: [],
     },
-  ]);
-  const permission = load<Permission[]>(permissions, []);
-  return { document, permission };
+  ];
+
+  setAllDocuments(documents);
 }
 
-export function addComment(doc: Omit<Document, 'id' | 'comments'>): Document {
-  const { document, permission } = getAllDocuments();
-  const newDoc: Document = { ...doc, id: Date.now(), comments: [] };
-  documentsPush(newDoc);
-  save(documents, document);
-  save(permissions, permission);
+export function setAllDocuments(documents: Document[]) {
+  localStorage.setItem('documents', JSON.stringify(documents));
+}
 
-  return newDoc;
+export function getAllDocuments(): Document[] {
+  const documentsJson = localStorage.getItem('documents');
+
+  if (!documentsJson) {
+    return [];
+  }
+
+  return JSON.parse(documentsJson);
+}
+
+export function setAllPemissions(permissions: Permission[]) {
+  localStorage.setItem('permissions', JSON.stringify(permissions));
+}
+
+export function getAllPermissions(): Permission[] {
+  const permissionsJson = localStorage.getItem('permissions');
+
+  if (!permissionsJson) {
+    return [];
+  }
+
+  return JSON.parse(permissionsJson);
+}
+
+export function setAllComments(comments: Comment[]) {
+  localStorage.setItem('comments', JSON.stringify(comments));
+}
+
+export function getAllComments(): Document[] {
+  const commentsJson = localStorage.getItem('comments');
+
+  if (!commentsJson) {
+    return [];
+  }
+
+  return JSON.parse(commentsJson);
 }
 
 export function addDocument(title: string, text: string, attachments: Attachment[] = []) {
@@ -64,31 +79,53 @@ export function addDocument(title: string, text: string, attachments: Attachment
     attachments,
     comments: [],
   };
-  documentsPush(newDoc);
-  save();
+  const documents = getAllDocuments();
+  documents.push(newDoc);
+  setAllDocuments(documents);
+
+  return newDoc;
 }
 
 export function editDocument(docId: number, newData: Partial<Document>) {
+  const documents = getAllDocuments();
   const doc = documents.find((d) => d.id === docId);
   if (doc) {
     Object.assign(doc, newData);
-    save();
+    documents.push(doc);
+    setAllDocuments(documents);
   }
 }
 
 export function deleteDocument(docId: number) {
-  documents = documents.filter((d) => d.id !== docId);
-  permissions = permissions.filter((p) => p.docId !== docId);
-  save();
+  const doc = getAllDocuments().filter((d) => d.id !== docId);
+  const perm = getAllPermissions().filter((p) => p.docId !== docId);
+  setAllDocuments(doc);
+  setAllPemissions(perm);
 }
 
-// ----- PERMISSÕES -----
+export function addComment(docId: number, comment: string) {
+  const user = userService.getCurrentUser();
+  const documents = getAllDocuments();
+  if (!user) return;
+  const doc = documents.find((d) => d.id === docId);
+
+  if (doc) {
+    doc.comments.push({
+      userId: user.id,
+      text: comment,
+      date: Date.now(),
+    });
+    setAllComments([]);
+  }
+}
+
 export function setPermission(
   docId: number,
   userId: number,
   perms: ('read' | 'comment' | 'edit')[],
   expiresAt?: number,
 ) {
+  const permissions = getAllPermissions();
   const expiration = expiresAt ?? Date.now() + 24 * 60 * 60 * 1000;
 
   const existing = permissions.find((p) => p.docId === docId && p.userId === userId);
@@ -98,69 +135,69 @@ export function setPermission(
   } else {
     permissions.push({ docId, userId, perms, expiresAt: expiration });
   }
-  save();
+  setAllPemissions(permissions);
 }
 
 export function removePermission(docId: number, userId: number) {
-  permissions = permissions.filter((p) => !(p.docId === docId && p.userId === userId));
-  save();
+  const permissions = getAllPermissions().filter(
+    (p) => !(p.docId === docId && p.userId === userId),
+  );
+  setAllPemissions(permissions);
 }
 
 export function removeAllPermissions(userId: number) {
-  permissions = permissions.filter((p) => p.userId !== userId);
-  save();
+  const permissions = getAllPermissions().filter((p) => p.userId !== userId);
+  setAllPemissions(permissions);
 }
 
 export function extendPermission(docId: number, userId: number, durationMs: number) {
-  const p = permissions.find((p) => p.docId === docId && p.userId === userId);
+  const p = getAllPermissions().find((p) => p.docId === docId && p.userId === userId);
   if (p) {
     p.expiresAt += durationMs;
-    save();
+    setAllPemissions([]);
   }
 }
 
 export function getPermissionsByUser(userId: number) {
-  return permissions.filter((p) => p.userId === userId);
+  return getAllPermissions().filter((p) => p.userId === userId);
 }
 
 export function getDocTitle(docId: number) {
-  const doc = documents.find((d) => d.id === docId);
+  const doc = getAllDocuments().find((d) => d.id === docId);
   return doc ? doc.title : '';
 }
 
-// ----- ACESSO -----
 export function canRead(doc: Document) {
-  const userStore = useUserStore();
-  const user = userStore.currentUser;
+  const user = getCurrentUser();
   if (!user) return false;
   if (user.role === 'admin') return true;
-  const perm = permissions.find((p) => p.docId === doc.id && p.userId === user.id);
+  const perm = getAllPermissions().find((p) => p.docId === doc.id && p.userId === user.id);
   return !!perm && perm.perms.includes('read') && perm.expiresAt > Date.now();
 }
 
 export function canComment(doc: Document) {
-  const userStore = useUserStore();
-  const user = userStore.currentUser;
+  const user = getCurrentUser();
   if (!user) return false;
   if (user.role === 'admin') return true;
-  const perm = permissions.find((p) => p.docId === doc.id && p.userId === user.id);
+  const perm = getAllPermissions().find((p) => p.docId === doc.id && p.userId === user.id);
   return !!perm && perm.perms.includes('comment') && perm.expiresAt > Date.now();
 }
 
-// ----- STATUS DE TEMPO -----
 export function getTimeStatus(doc: Document): 'red' | 'yellow' | 'green' {
-  const userStore = useUserStore();
-  const user = userStore.currentUser;
+  const user = getCurrentUser();
   if (!user) return 'red';
 
-  const perm = permissions.find((p) => p.docId === doc.id && p.userId === user.id);
+  const perm = getAllPermissions().find((p) => p.docId === doc.id && p.userId === user.id);
   if (!perm) return 'red';
 
   const remaining = perm.expiresAt - Date.now();
   if (remaining <= 0) return 'red';
-  if (remaining < 60 * 60 * 1000) return 'red'; // < 1 hora
-  if (remaining < 24 * 60 * 60 * 1000) return 'yellow'; // < 1 dia
+  if (remaining < 60 * 60 * 1000) return 'red'; // < 1h
+  if (remaining < 24 * 60 * 60 * 1000) return 'yellow'; // < 1d
   return 'green';
 }
 
-function documentsPush(newDoc: Document) {}
+export async function findDocumentImages() {
+  const res = await fetch('https://picsum.photos/v2/list?page=1&limit=12');
+  return await res.json();
+}

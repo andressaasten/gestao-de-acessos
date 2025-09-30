@@ -175,14 +175,17 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { useDocumentsStore } from 'src/stores/documents';
+import {
+  removePermission,
+  getPermissionsByUser,
+  getDocTitle,
+  setPermission,
+} from 'src/services/documentService';
 import { useQuasar } from 'quasar';
 
 defineOptions({ name: 'DocsPopup' });
 
 const $q = useQuasar();
-
-const documentsStore = useDocumentsStore();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const props = defineProps<{ user: any }>();
@@ -250,7 +253,7 @@ function savePermissionEdit() {
       return;
     }
     const expiresAt = new Date(
-      `${editForm.value.expirationDateIso}T${editForm.value.expirationTime}:59`,
+      `${editForm.value.expirationDateIso}T${editForm.value.expirationTime}:00`,
     ).getTime();
 
     if (expiresAt <= Date.now()) {
@@ -263,7 +266,7 @@ function savePermissionEdit() {
     if (editForm.value.perms.canComment) selectedPerms.push('comment');
     if (editForm.value.perms.canEdit) selectedPerms.push('edit');
 
-    documentsStore.setPermission(editDoc.value.docId, editUserId.value, selectedPerms, expiresAt);
+    setPermission(editDoc.value.docId, editUserId.value, selectedPerms, expiresAt);
     $q.notify({ type: 'positive', message: 'Permissão atualizada' });
   }
   editDialog.value = false;
@@ -280,7 +283,7 @@ function rescindConfirmed() {
 function confirmRescind(userId: number, docId: number) {
   confirmMessage.value = 'Deseja realmente rescindir o acesso deste documento?';
   confirmDialog.value = true;
-  pendingAction.value = () => documentsStore.removePermission(docId, userId);
+  pendingAction.value = () => removePermission(docId, userId);
 }
 
 function formatDate(ts: number) {
@@ -322,13 +325,13 @@ function formatRemaining(ms: number): string {
 const userRows = computed(() => {
   if (!props.user) return [];
 
-  return documentsStore.getPermissionsByUser(props.user.id).map((p) => {
+  return getPermissionsByUser(props.user.id).map((p) => {
     const now = Date.now();
     const remainingMs = p.expiresAt - now;
     return {
       userId: props.user.id,
       docId: p.docId,
-      docTitle: documentsStore.getDocTitle(p.docId),
+      docTitle: getDocTitle(p.docId),
       perms: p.perms,
       expiresAt: p.expiresAt,
       isValid: remainingMs > 0,
