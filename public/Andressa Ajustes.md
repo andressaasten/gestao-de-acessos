@@ -13,17 +13,8 @@
 
 ---
 
-## Gerenciamento de Permissões
-
-- [x] Tempo das permissões precisam revisão (41 seg apareceu pós expirar)
-
----
-
 ## Stores
 
-Os Stores contém toda a lógica de armazenamento de dados e não está totalmente errado mas:
-
-- [ ] Não existe camada services. Muita lógica poderia ser movida para a camada services, onde seria feita a requisição pro Fake Backend.
 - [ ] Aplicar ajustes nas requisições e utilização dos Stores.
 
 Obs: Os stores servem principalmente para estados globais e cache em memória, ele pode consumir o localStorage, mas normalmente não faz.
@@ -41,14 +32,6 @@ Se precisar cachear em memória e se não existir na memória puxar do Backend:
 - Componente -> Pinia (Cache) -> UserService (Fake backend com Storage)
 
 Neste último caso o Tanstack poderia ser uma alternativa
-
----
-
-## Passos
-
-- [ ] Service
-
-- [ ] erros da expiracao
 
 ---
 
