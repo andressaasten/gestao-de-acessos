@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { getCurrentUser, userService } from 'src/services/userServices';
+import { getUserSession, updateProfile } from 'src/services/userServices';
 import CryptoJS from 'crypto-js';
 import { Notify } from 'quasar';
 
@@ -66,8 +66,6 @@ defineOptions({ name: 'EditorPopup' });
 
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
-
-const userStore = userService;
 
 const internalModel = ref(props.modelValue);
 watch(
@@ -82,8 +80,8 @@ const validateSenha = (val: string): true | string => {
 };
 
 const form = ref({
-  name: getCurrentUser()?.name || '',
-  email: getCurrentUser()?.email || '',
+  name: getUserSession()?.currentUser.name || '',
+  email: getUserSession()?.currentUser.email || '',
   oldPassword: '',
   newPassword: '',
   confirmPassword: '',
@@ -97,7 +95,7 @@ function save() {
     }
 
     const oldHash = CryptoJS.SHA256(form.value.oldPassword).toString();
-    if (getCurrentUser()?.password !== oldHash) {
+    if (getUserSession()?.currentUser.password !== oldHash) {
       Notify.create('Senha atual incorreta!');
       return;
     }
@@ -115,7 +113,7 @@ function save() {
       payload.password = form.value.newPassword;
     }
 
-    userStore.updateProfile(payload);
+    updateProfile(payload);
     internalModel.value = false;
     Notify.create('Perfil atualizado com sucesso!');
     form.value.confirmPassword = '';

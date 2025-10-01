@@ -3,11 +3,10 @@ export interface User {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'user';
+  role: string;
 }
 
 export interface UserState {
-  users: User[];
-  currentUser: User | null;
+  currentUser: User;
   expiresAt: number | null;
 }

@@ -21,7 +21,7 @@
             >{{ $t('documents.title') }}</q-item
           >
           <q-item
-            v-if="getCurrentUser()?.role === 'admin' && $q.screen.gt.sm"
+            v-if="getUserSession()?.currentUser.role === 'admin' && $q.screen.gt.sm"
             clickable
             active-class="bg-accent dark:!bg-dark-page"
             class="mt-2 flex items-center justify-center"
@@ -34,7 +34,7 @@
         </q-list>
       </div>
 
-      <q-btn color="text bg-primary" :label="$t('login.logout')" @click="logout" />
+      <q-btn color="text bg-primary" :label="$t('login.logout')" @click="logoutPage" />
 
       <profile-popup v-model="showProfile" />
     </q-toolbar>
@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getCurrentUser, userService } from 'src/services/userServices';
+import { getUserSession, logout } from 'src/services/userServices';
 import { mdiMenu } from '@quasar/extras/mdi-v7';
 import ProfilePopup from 'src/components/EditorPopup.vue';
 
@@ -60,8 +60,8 @@ const handleShow = () => {
   showProfile.value = true;
 };
 
-async function logout() {
-  userService.logout();
+async function logoutPage() {
+  logout();
   await router.push('/');
 }
 </script>

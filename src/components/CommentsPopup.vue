@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { userService } from 'src/services/userServices';
+import { getAllUsers } from 'src/services/userServices';
 import type { Document } from 'src/types/interfaces/IDocuments';
 import { addComment, canComment } from 'src/services/documentService';
 
@@ -68,6 +68,6 @@ function addComments(doc: Document) {
 }
 
 function getUserById(id: number) {
-  return userService.getUsers().find((u) => u.id === id) || null;
+  return getAllUsers().find((u) => u.id === id) || null;
 }
 </script>

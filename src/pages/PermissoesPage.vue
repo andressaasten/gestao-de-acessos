@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { userService } from 'src/services/userServices';
+import { getAllUsers } from 'src/services/userServices';
 import { removeAllPermissions } from 'src/services/documentService';
 import { useI18n } from 'vue-i18n';
 import DocsPopup from 'src/components/DocsPopup.vue';
@@ -97,8 +97,7 @@ function rescindConfirmed() {
 }
 
 const userRows = computed(() =>
-  userService
-    .getUsers()
+  getAllUsers()
     .filter((u) => u.role === 'user')
     .map((u) => {
       return {

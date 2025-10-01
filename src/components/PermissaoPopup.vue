@@ -83,7 +83,7 @@
 import { ref, watch } from 'vue';
 import { setPermission } from 'src/services/documentService';
 import { Notify } from 'quasar';
-import { userService } from 'src/services/userServices';
+import { getAllUsers } from 'src/services/userServices';
 import type { User } from 'src/types/interfaces/IUser';
 import type { Document } from 'src/types/interfaces/IDocuments';
 
@@ -92,10 +92,9 @@ defineOptions({ name: 'PermissaoPopup' });
 const props = defineProps<{ modelValue: boolean; doc: Document }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
-const userStore = userService;
 const selectedUser = ref<User | null>(null);
 
-const allUsers = userStore.getUsers().filter((u) => u.role === 'user');
+const allUsers = getAllUsers().filter((u) => u.role === 'user');
 const filterOptions = ref<User[]>([...allUsers]);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

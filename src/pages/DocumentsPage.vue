@@ -6,7 +6,7 @@
       </div>
 
       <q-btn
-        v-if="getCurrentUser()?.role === 'admin'"
+        v-if="getUserSession()?.currentUser.role === 'admin'"
         :label="$t('documents.new')"
         color="primary dark:!bg-secondary"
         class="p-3 m-4"
@@ -32,7 +32,7 @@
       >
         <q-card-section>
           <div
-            v-if="getCurrentUser()?.role === 'user'"
+            v-if="getUserSession()?.currentUser.role === 'user'"
             class="absolute-top-right p-2 m-2"
             :style="{
               width: '16px',
@@ -83,7 +83,7 @@
         </q-card-section>
 
         <q-btn
-          v-if="getCurrentUser()?.role === 'admin'"
+          v-if="getUserSession()?.currentUser.role === 'admin'"
           flat
           round
           dense
@@ -146,7 +146,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { getCurrentUser } from 'src/services/userServices';
+import { getUserSession } from 'src/services/userServices';
 import {
   getAllDocuments,
   canComment,

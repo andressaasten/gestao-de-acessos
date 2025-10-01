@@ -1,63 +1,71 @@
 import CryptoJS from 'crypto-js';
-import type { User } from '../types/interfaces/IUser';
+import type { User, UserState } from '../types/interfaces/IUser';
 
-let users: User[] = [];
-let currentUser: User | null = null;
-let expiresAt: number | null = null;
-
-function init() {
-  const savedUsers = localStorage.getItem('users');
-  if (savedUsers) {
-    users = JSON.parse(savedUsers);
-  } else {
-    users = [
-      {
-        id: 1,
-        name: 'Administrador',
-        email: 'admin@teste.com',
-        password: CryptoJS.SHA256('Teste@1').toString(),
-        role: 'admin',
-      },
-      {
-        id: 2,
-        name: 'Usuário',
-        email: 'user@teste.com',
-        password: CryptoJS.SHA256('Teste@1').toString(),
-        role: 'user',
-      },
-    ];
-    save();
-  }
-
-  const data = localStorage.getItem('user-session');
-  if (data) {
-    const parsed = JSON.parse(data);
-    if (parsed.expiresAt > Date.now()) {
-      currentUser = parsed.user;
-      expiresAt = parsed.expiresAt;
-    } else {
-      logout();
-    }
-  }
+export function initUser() {
+  const users = [
+    {
+      id: 1,
+      name: 'Administrador',
+      email: 'admin@teste.com',
+      password: CryptoJS.SHA256('Teste@1').toString(),
+      role: 'admin',
+    },
+    {
+      id: 2,
+      name: 'Usuário',
+      email: 'user@teste.com',
+      password: CryptoJS.SHA256('Teste@1').toString(),
+      role: 'user',
+    },
+  ];
+  setUsers(users);
 }
 
-function save() {
+export function setUsers(users: User[]) {
   localStorage.setItem('users', JSON.stringify(users));
 }
 
-function login(email: string, password: string): boolean {
+export function getAllUsers(): User[] {
+  const usersJson = localStorage.getItem('users');
+
+  if (!usersJson) {
+    return [];
+  }
+
+  return JSON.parse(usersJson);
+}
+
+export function setUserSession(userSession: UserState) {
+  localStorage.setItem('user-session', JSON.stringify(userSession));
+}
+
+export function getUserSession(): UserState | null {
+  const usersJson = localStorage.getItem('user-session');
+
+  if (!usersJson) {
+    return null;
+  }
+
+  return JSON.parse(usersJson);
+}
+
+export function login(email: string, password: string): boolean {
   const hashedPassword = CryptoJS.SHA256(password).toString();
+  const users = getAllUsers();
   const user = users.find((u) => u.email === email && u.password === hashedPassword);
   if (!user) return false;
 
-  currentUser = user;
-  expiresAt = Date.now() + 60 * 60 * 1000;
+  const session: UserState = {
+    currentUser: user,
+    expiresAt: Date.now() + 60 * 60 * 1000,
+  };
+  setUserSession(session);
 
-  localStorage.setItem('user-session', JSON.stringify({ user: currentUser, expiresAt }));
   return true;
 }
 
-function register(name: string, email: string, password: string) {
+export function register(name: string, email: string, password: string) {
+  const users = getAllUsers();
   if (users.some((u) => u.email === email)) {
     throw new Error('E-mail já cadastrado!');
   }
@@ -72,23 +80,27 @@ function register(name: string, email: string, password: string) {
     role: 'user',
   };
   users.push(newUser);
-  save();
+  setUsers(users);
 }
 
-function changeRole(userId: number, newRole: 'admin' | 'user') {
+export function changeRole(userId: number, newRole: 'admin' | 'user') {
+  const users = getAllUsers();
   const user = users.find((u) => u.id === userId);
   if (user) {
     user.role = newRole;
-    save();
+    setUsers(users);
   }
 }
 
-function updateProfile(newData: { name?: string; email?: string; password?: string }) {
-  if (!currentUser) return;
+export function updateProfile(newData: { name?: string; email?: string; password?: string }) {
+  const session = getUserSession();
+  if (!session?.currentUser) return;
 
-  const user = users.find((u) => u.id === currentUser!.id);
+  const users = getAllUsers();
+  const user = users.find((u) => u.id === session.currentUser.id);
   if (user) {
-    if (newData.name) user.name = newData.name;
+    user.name = newData.name || user.name;
+
     if (newData.email) {
       if (users.some((u) => u.email === newData.email && u.id !== user.id)) {
         throw new Error('E-mail já cadastrado!');
@@ -99,34 +111,10 @@ function updateProfile(newData: { name?: string; email?: string; password?: stri
       user.password = CryptoJS.SHA256(newData.password).toString();
     }
 
-    currentUser = { ...user };
-    save();
-    localStorage.setItem('user-session', JSON.stringify({ user: currentUser, expiresAt }));
+    setUsers(users);
   }
 }
 
-function logout() {
-  currentUser = null;
-  expiresAt = null;
+export function logout() {
   localStorage.removeItem('user-session');
 }
-
-export function getCurrentUser() {
-  return currentUser;
-}
-
-function getUsers() {
-  return users;
-}
-
-export const userService = {
-  init,
-  save,
-  login,
-  register,
-  changeRole,
-  updateProfile,
-  logout,
-  getCurrentUser,
-  getUsers,
-};

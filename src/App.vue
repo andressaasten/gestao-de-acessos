@@ -4,8 +4,8 @@
 
 <script setup lang="ts">
 import { init } from './services/documentService';
-import { userService } from './services/userServices';
+import { initUser } from './services/userServices';
 
+initUser();
 init();
-userService.init();
 </script>

@@ -109,11 +109,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Notify, useQuasar } from 'quasar';
-import { getCurrentUser, userService } from 'src/services/userServices';
+import { getUserSession, login, register } from 'src/services/userServices';
 import { useRouter } from 'vue-router';
 
 const $q = useQuasar();
-const userStore = userService;
 const router = useRouter();
 
 const isLoginActive = ref(true);
@@ -134,13 +133,13 @@ const validateSenha = (val: string): true | string => {
 };
 
 async function handleLogin() {
-  if (!userStore.login(loginForm.value.email, loginForm.value.password)) {
+  if (!login(loginForm.value.email, loginForm.value.password)) {
     Notify.create('Credenciais inválidas!');
     return;
   }
 
   $q.notify({
-    message: `Bem-vindo ${getCurrentUser()?.name}! Acesso: ${getCurrentUser()?.role}`,
+    message: `Bem-vindo ${getUserSession()?.currentUser.name}! Acesso: ${getUserSession()?.currentUser.role}`,
     color: 'positive',
   });
   await router.push('/documents');
@@ -148,11 +147,7 @@ async function handleLogin() {
 
 async function handleRegister() {
   try {
-    userStore.register(
-      registerForm.value.name,
-      registerForm.value.email,
-      registerForm.value.password,
-    );
+    register(registerForm.value.name, registerForm.value.email, registerForm.value.password);
     Notify.create('Conta criada com sucesso!');
     isLoginActive.value = true;
     await router.push('/documents');

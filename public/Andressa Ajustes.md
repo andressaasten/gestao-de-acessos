@@ -15,7 +15,7 @@
 
 ## Gerenciamento de Permissões
 
-- [ ] Tempo das permissões precisam revisão (41 seg apareceu pós expirar)
+- [x] Tempo das permissões precisam revisão (41 seg apareceu pós expirar)
 
 ---
 
