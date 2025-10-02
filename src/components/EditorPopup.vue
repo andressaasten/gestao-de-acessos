@@ -8,42 +8,42 @@
       <q-card-section>
         <q-form @submit="save">
           <div class="text-subtitle2">{{ $t('register.data') }}</div>
-          <q-input v-model="form.name" :label="$t('register.name')" label-color="accent" outlined />
+          <q-input v-model="form.name" outlined label-color="accent" :label="$t('register.name')" />
 
-          <q-input v-model="form.email" :label="$t('login.email')" label-color="accent" outlined />
+          <q-input v-model="form.email" outlined label-color="accent" :label="$t('login.email')" />
 
           <div class="text-subtitle2"></div>
           <q-input
             v-model="form.oldPassword"
+            outlined
+            label-color="accent"
             type="password"
             :label="$t('register.currentPassword')"
-            label-color="accent"
-            outlined
           />
 
           <div class="text-subtitle2">{{ $t('register.change') }}</div>
           <q-input
             v-model="form.newPassword"
-            type="password"
-            :label="$t('register.newPassword')"
-            label-color="accent"
             outlined
             lazy-rules
+            label-color="accent"
+            type="password"
+            :label="$t('register.newPassword')"
             :rules="[validateSenha]"
           />
           <q-input
             v-model="form.confirmPassword"
-            type="password"
-            :label="$t('register.confirmPassword')"
-            label-color="accent"
             outlined
             lazy-rules
+            label-color="accent"
+            type="password"
+            :label="$t('register.confirmPassword')"
             :rules="[validateSenha]"
           />
 
           <q-card-actions align="right">
-            <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
-            <q-btn flat :label="$t('common.save')" color="positive" type="submit" />
+            <q-btn flat color="negative" :label="$t('common.cancel')" @click="close" />
+            <q-btn flat color="positive" type="submit" :label="$t('common.save')" />
           </q-card-actions>
         </q-form>
       </q-card-section>

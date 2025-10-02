@@ -8,16 +8,16 @@
       <q-card-section>
         <div class="q-gutter-md row items-start">
           <q-select
-            filled
             v-model="selectedUser"
+            filled
             use-input
-            :input-debounce="300"
-            hide-selected
             fill-input
+            hide-selected
             option-label="name"
             option-value="id"
-            :options="filterOptions"
             :label="$t('permission.searchUser')"
+            :input-debounce="300"
+            :options="filterOptions"
             @filter="filterFn"
           >
             <template v-slot:no-option>
@@ -28,16 +28,16 @@
           </q-select>
         </div>
         <div class="q-mt-md gap-2">
-          <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
-          <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
-          <q-checkbox v-model="perms.canEdit" :label="$t('documents.edit')" color="accent" />
+          <q-checkbox v-model="perms.canRead" color="accent" :label="$t('permission.read')" />
+          <q-checkbox v-model="perms.canComment" color="accent" :label="$t('permission.comment')" />
+          <q-checkbox v-model="perms.canEdit" color="accent" :label="$t('documents.edit')" />
 
           <div class="q-mt-md grid grid-cols-1 gap-2">
             <q-input
-              filled
               v-model="expirationDate.expirationDateDisplay"
-              :label="$t('permission.date')"
+              filled
               label-color="accent"
+              :label="$t('permission.date')"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -54,10 +54,10 @@
             </q-input>
 
             <q-input
-              filled
               v-model="expirationTime"
-              :label="$t('permission.time')"
+              filled
               label-color="accent"
+              :label="$t('permission.time')"
             >
               <template v-slot:append>
                 <q-icon name="schedule" class="cursor-pointer">
@@ -72,8 +72,8 @@
       </q-card-section>
 
       <q-card-actions align="right">
-        <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
-        <q-btn flat :label="$t('common.save')" color="positive" @click="savePerms" />
+        <q-btn flat color="negative" :label="$t('common.cancel')" @click="close" />
+        <q-btn flat color="positive" :label="$t('common.save')" @click="savePerms" />
       </q-card-actions>
     </q-card>
   </q-dialog>

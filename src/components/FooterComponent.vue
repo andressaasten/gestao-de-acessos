@@ -1,20 +1,18 @@
 <template>
   <q-footer class="bg-primary text-text dark:!bg-dark dark:!text-muted">
-    <!-- Botão de idioma -->
     <q-btn flat dense round :icon="mdiTranslate">
       <q-menu>
         <q-list>
-          <q-item clickable v-ripple @click="changeLang('pt')">
+          <q-item v-ripple clickable @click="changeLang('pt')">
             <q-item-section>🇧🇷 Português</q-item-section>
           </q-item>
-          <q-item clickable v-ripple @click="changeLang('en')">
+          <q-item v-ripple clickable @click="changeLang('en')">
             <q-item-section>🇺🇸 English</q-item-section>
           </q-item>
         </q-list>
       </q-menu>
     </q-btn>
 
-    <!-- Botão de tema -->
     <q-btn
       flat
       dense

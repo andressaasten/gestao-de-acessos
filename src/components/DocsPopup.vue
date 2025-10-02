@@ -8,7 +8,6 @@
         :rows="userRows"
         :columns="columns"
       >
-        <!-- Nome do Documento -->
         <template v-slot:body-cell-docTitle="props">
           <q-td :props="props">
             <div class="text-bold">{{ props.row.docTitle }}</div>
@@ -63,15 +62,15 @@
         <template v-slot:body-cell-actions="props">
           <q-td :props="props" class="text-right">
             <q-btn
-              dense
               flat
+              dense
               color="accent"
               icon="edit"
               @click="openEditPermission(props.row.userId, props.row)"
             />
             <q-btn
-              dense
               flat
+              dense
               color="negative"
               icon="delete"
               @click="confirmRescind(props.row.userId, props.row.docId)"
@@ -93,27 +92,27 @@
           <!-- Checkboxes -->
           <q-checkbox
             v-model="editForm.perms.canRead"
-            :label="$t('permission.read')"
             color="accent"
+            :label="$t('permission.read')"
           />
           <q-checkbox
             v-model="editForm.perms.canComment"
-            :label="$t('permission.comment')"
             color="accent"
+            :label="$t('permission.comment')"
           />
           <q-checkbox
             v-model="editForm.perms.canEdit"
-            :label="$t('documents.edit')"
             color="accent"
+            :label="$t('documents.edit')"
           />
 
           <!-- Date / Time Picker -->
           <div class="grid grid-cols-1 gap-2">
             <q-input
-              filled
               v-model="editForm.expirationDateDisplay"
-              :label="$t('permission.date')"
+              filled
               label-color="accent"
+              :label="$t('permission.date')"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -121,8 +120,8 @@
                     <q-date
                       v-model="editForm.expirationDateIso"
                       mask="YYYY-MM-DD"
-                      @input="onEditDate"
                       color="accent"
+                      @input="onEditDate"
                     />
                   </q-popup-proxy>
                 </q-icon>
@@ -130,10 +129,10 @@
             </q-input>
 
             <q-input
-              filled
               v-model="editForm.expirationTime"
-              :label="$t('permission.time')"
+              filled
               label-color="accent"
+              :label="$t('permission.time')"
             >
               <template v-slot:append>
                 <q-icon name="schedule" class="cursor-pointer">
@@ -166,7 +165,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat :label="$t('documents.delete')" v-close-popup />
-          <q-btn flat :label="$t('common.confirm')" color="negative" @click="rescindConfirmed" />
+          <q-btn flat color="negative" :label="$t('common.confirm')" @click="rescindConfirmed" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -182,20 +181,17 @@ import {
   setPermission,
 } from 'src/services/documentService';
 import { useQuasar } from 'quasar';
+import type { User } from 'src/types/interfaces/IUser';
 
 defineOptions({ name: 'DocsPopup' });
 
 const $q = useQuasar();
+const props = defineProps<{ user: User }>();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const props = defineProps<{ user: any }>();
-
-// CONFIRMAR RESCINDIR
 const confirmDialog = ref(false);
 const confirmMessage = ref('');
 const pendingAction = ref<null | (() => void)>(null);
 
-// ---- INTERFACES ----
 export interface PermissionDisplay {
   docId: number;
   docTitle: string;
@@ -206,7 +202,6 @@ export interface PermissionDisplay {
   remaining: string;
 }
 
-// EDITAR PERMISSÃO
 const editDialog = ref(false);
 const editDoc = ref<PermissionDisplay | null>(null);
 const editUserId = ref<number | null>(null);
@@ -323,7 +318,7 @@ function formatRemaining(ms: number): string {
 }
 
 const userRows = computed(() => {
-  if (!props.user) return [];
+  if (!props.user || props.user.id == null) return [];
 
   return getPermissionsByUser(props.user.id).map((p) => {
     const now = Date.now();

@@ -5,8 +5,8 @@
         v-if="!$q.screen.gt.sm"
         flat
         rounded-borders
-        :icon="mdiMenu"
         aria-label="Menu"
+        :icon="mdiMenu"
         @click="() => $emit('update:drawer', true)"
       />
       <q-toolbar-title>{{ $t('documents.sistem') }}</q-toolbar-title>
@@ -15,16 +15,16 @@
         <q-list class="row">
           <q-item
             clickable
-            active-class="bg-accent dark:!bg-dark-page"
             class="mt-2 flex items-center justify-center"
+            active-class="bg-accent dark:!bg-dark-page"
             :to="{ name: 'main/documents' }"
             >{{ $t('documents.title') }}</q-item
           >
           <q-item
             v-if="user?.role === 'admin' && $q.screen.gt.sm"
             clickable
-            active-class="bg-accent dark:!bg-dark-page"
             class="mt-2 flex items-center justify-center"
+            active-class="bg-accent dark:!bg-dark-page"
             to="/permissions"
             >{{ $t('permission.title') }}</q-item
           >

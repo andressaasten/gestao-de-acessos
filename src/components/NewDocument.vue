@@ -12,27 +12,27 @@
           <q-input
             v-model="form.title"
             outlined
+            lazy-rules
             label-color="accent"
             :label="$t('common.title')"
-            lazy-rules
             :rules="[validateTitle]"
           />
           <q-input
             v-model="form.text"
             outlined
-            type="textarea"
-            label-color="accent"
-            :label="$t('common.text')"
             lazy-rules
+            label-color="accent"
+            type="textarea"
+            :label="$t('common.text')"
             :rules="[validateText]"
           />
 
           <q-uploader
-            :label="$t('common.attached')"
             multiple
-            accept=".jpg,.jpeg,.png,.pdf"
-            :auto-upload="false"
             color="accent"
+            accept=".jpg,.jpeg,.png,.pdf"
+            :label="$t('common.attached')"
+            :auto-upload="false"
             @added="onFilesAdded"
           />
 
@@ -58,11 +58,11 @@
             <div v-if="imageResults.length" class="row q-col-gutter-sm q-mt-sm">
               <div
                 v-for="img in imageResults"
-                :key="img.id"
                 class="col-4 cursor-pointer"
+                :key="img.id"
                 @click="addImageFromApi(img.download_url)"
               >
-                <q-img :src="img.download_url" ratio="1" class="rounded-borders shadow-sm">
+                <q-img ratio="1" class="rounded-borders shadow-sm" :src="img.download_url">
                   <div
                     class="absolute-bottom text-white text-caption bg-black bg-opacity-50 q-pa-xs"
                   >
@@ -75,12 +75,12 @@
         </q-card-section>
 
         <q-card-actions class="justify-end">
-          <q-btn flat :label="$t('common.cancel')" color="negative" @click="close" />
+          <q-btn flat color="negative" :label="$t('common.cancel')" @click="close" />
           <q-btn
             flat
-            :label="editMode ? $t('common.save') : $t('common.create')"
             color="positive"
             type="submit"
+            :label="editMode ? $t('common.save') : $t('common.create')"
           />
         </q-card-actions>
       </q-form>

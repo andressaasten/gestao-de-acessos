@@ -13,27 +13,10 @@
 
 ---
 
-## Stores
+## Ver
 
-- [ ] userStore
-
-- [ ] Aplicar ajustes nas requisições e utilização dos Stores.
-
-Obs: Os stores servem principalmente para estados globais e cache em memória, ele pode consumir o localStorage, mas normalmente não faz.
-
-O fluxo poderia ser o seguinte:
-
-- Componente -> UserService (Fake backend com Storage)
-
-Se precisar de estados globais:
-
-- Componente -> Pinia (Estado global)
-
-Se precisar cachear em memória e se não existir na memória puxar do Backend:
-
-- Componente -> Pinia (Cache) -> UserService (Fake backend com Storage)
-
-Neste último caso o Tanstack poderia ser uma alternativa
+- [ ] Logout/Login não esta atualizando o userStore, fica o menos role se não der f5
+- [ ] Card-section title so funciona para pt
 
 ---
 

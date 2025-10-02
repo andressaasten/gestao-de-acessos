@@ -47,8 +47,8 @@
           <div>{{ confirmMessage }}</div>
         </q-card-section>
         <q-card-actions align="right">
-          <q-btn flat :label="$t('documents.delete')" v-close-popup />
-          <q-btn flat :label="$t('common.confirm')" color="negative" @click="rescindConfirmed" />
+          <q-btn v-close-popup flat :label="$t('documents.delete')" />
+          <q-btn flat color="negative" :label="$t('common.confirm')" @click="rescindConfirmed" />
         </q-card-actions>
       </q-card>
     </q-dialog>

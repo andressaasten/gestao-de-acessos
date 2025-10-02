@@ -1,10 +1,10 @@
 <template>
   <q-drawer
     v-model="drawerRight"
-    side="left"
-    no-swipe-backdrop
-    bordered
     overlay
+    bordered
+    no-swipe-backdrop
+    side="left"
     class="bg-primary text-text dark:!bg-dark"
     :width="200"
   >

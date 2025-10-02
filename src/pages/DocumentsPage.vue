@@ -7,9 +7,9 @@
 
       <q-btn
         v-if="user?.role === 'admin'"
-        :label="$t('documents.new')"
         color="primary dark:!bg-secondary"
         class="p-3 m-4"
+        :label="$t('documents.new')"
         @click="showPopup = true"
       />
     </section>
@@ -27,8 +27,8 @@
     <section v-else class="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-stretch p-6">
       <q-card
         v-for="doc in readableDocs"
-        :key="doc.id"
         class="flex flex-col shadow-md relative bg-primary dark:!bg-secondary"
+        :key="doc.id"
       >
         <q-card-section>
           <div
@@ -52,7 +52,7 @@
         </q-card-section>
 
         <q-card-section>
-          <div v-for="a in doc.attachments" :key="a.id" class="p-2">
+          <div v-for="a in doc.attachments" class="p-2" :key="a.id">
             <q-img
               v-if="a.type === 'image'"
               style="max-width: 90px; max-height: 90px"
@@ -66,8 +66,8 @@
               label="Abrir PDF"
               aria-label="Abrir PDF"
               icon="picture_as_pdf"
-              :href="a.url"
               target="_blank"
+              :href="a.url"
             />
           </div>
         </q-card-section>
@@ -87,21 +87,21 @@
           flat
           round
           dense
-          icon="more_vert"
           color="text"
+          icon="more_vert"
           class="absolute-top-right"
         >
           <q-menu>
             <q-list>
-              <q-item clickable v-ripple @click="editPerms(doc)">
+              <q-item v-ripple clickable @click="editPerms(doc)">
                 <q-item-section>{{ $t('permission.manage') }}</q-item-section>
               </q-item>
 
-              <q-item clickable v-ripple @click="openEditDoc(doc)">
+              <q-item v-ripple clickable @click="openEditDoc(doc)">
                 <q-item-section>{{ $t('documents.edit') }}</q-item-section>
               </q-item>
 
-              <q-item clickable v-ripple class="text-negative" @click="confirmDelete(doc)">
+              <q-item v-ripple clickable class="text-negative" @click="confirmDelete(doc)">
                 <q-item-section>{{ $t('documents.delete') }}</q-item-section>
               </q-item>
             </q-list>
@@ -126,18 +126,18 @@
     </section>
 
     <new-document v-model="showPopup" />
-    <new-document v-model="showEditPopup" :doc="editingDoc" edit-mode />
+    <new-document v-model="showEditPopup" edit-mode :doc="editingDoc" />
     <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc" />
     <CommentsPopup v-model="showCommentsPopup" :doc="selectedDoc" />
 
     <q-dialog v-model="imageDialog">
       <q-card>
         <q-img
-          :src="selectedImage"
           style="min-width: 500px; max-width: 900px; min-height: 300px; max-height: 1100px"
+          :src="selectedImage"
         />
         <q-card-actions>
-          <q-btn flat label="Fechar" color="primary" v-close-popup />
+          <q-btn v-close-popup flat label="Fechar" color="primary" />
         </q-card-actions>
       </q-card>
     </q-dialog>

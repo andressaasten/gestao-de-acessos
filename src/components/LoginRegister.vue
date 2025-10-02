@@ -10,99 +10,99 @@
       {{ $t('login.title') }}
     </p>
     <q-input
-      filled
       v-model="loginForm.email"
+      filled
+      lazy-rules
       type="email"
+      class="m-4"
       :label="$t('login.email')"
       :label-color="isLoginActive ? 'accent' : 'secondary'"
-      class="m-4"
       :color="isLoginActive ? 'secondary bg-secondary' : 'accent'"
       :disable="!isLoginActive"
-      lazy-rules
       :rules="[validateEmail]"
     />
 
     <q-input
-      filled
-      type="password"
       v-model="loginForm.password"
+      filled
+      lazy-rules
+      type="password"
+      class="m-4"
       :label="$t('login.password')"
       :label-color="isLoginActive ? 'accent' : 'secondary'"
-      class="m-4"
       :color="isLoginActive ? 'secondary bg-secondary' : 'accent'"
       :disable="!isLoginActive"
-      lazy-rules
       :rules="[validateSenha]"
     />
 
     <q-btn
+      type="submit"
+      class="full-width q-my-md"
       :label="$t('login.title')"
       :color="isLoginActive ? 'primary bg-accent' : 'secondary'"
-      class="full-width q-my-md"
       :disable="!isLoginActive"
-      type="submit"
     />
-    <q-btn flat :label="$t('register.button')" class="full-width" @click="isLoginActive = false" />
+    <q-btn flat class="full-width" :label="$t('register.button')" @click="isLoginActive = false" />
   </q-form>
 
   <!-- REGISTER -->
   <q-form
     ref="form"
-    @submit.prevent="handleRegister"
     v-show="isLargeScreen || !isLoginActive"
     class="column q-pa-lg rounded-borders shadow-10 transition-all duration-300"
     style="width: 600px; height: 500px"
     :class="!isLoginActive ? 'bg-dark text-primary' : 'bg-dark-page text-accent'"
+    @submit.prevent="handleRegister"
   >
     <p class="text-center text-h2 q-mb-lg cursor-pointer" @click="isLoginActive = false">
       {{ $t('register.title') }}
     </p>
 
     <q-input
-      filled
       v-model="registerForm.name"
+      filled
+      class="q-mb-md"
       :label="$t('register.name')"
       :label-color="!isLoginActive ? 'accent' : 'secondary'"
-      class="q-mb-md"
-      :disable="isLoginActive"
       :color="!isLoginActive ? 'secondary bg-secondary' : 'accent'"
+      :disable="isLoginActive"
     />
 
     <q-input
-      filled
       v-model="registerForm.email"
+      filled
+      lazy-rules
       type="email"
+      class="q-mb-md"
       :label="$t('login.email')"
       :label-color="!isLoginActive ? 'accent' : 'secondary'"
-      class="q-mb-md"
       :color="!isLoginActive ? 'secondary bg-secondary' : 'accent'"
       :disable="isLoginActive"
-      lazy-rules
       :rules="[validateEmail]"
     />
 
     <q-input
-      filled
-      type="password"
       v-model="registerForm.password"
+      filled
+      lazy-rules
+      type="password"
+      class="q-mb-lg"
       :label="$t('login.password')"
       :label-color="!isLoginActive ? 'accent' : 'secondary'"
-      class="q-mb-lg"
       :color="!isLoginActive ? 'secondary bg-secondary' : 'accent'"
       :disable="isLoginActive"
-      lazy-rules
       :rules="[validateSenha]"
     />
 
     <q-btn
-      :label="$t('register.title')"
       type="submit"
-      :color="!isLoginActive ? 'primary bg-accent' : 'secondary'"
       class="full-width q-mb-md"
+      :label="$t('register.title')"
+      :color="!isLoginActive ? 'primary bg-accent' : 'secondary'"
       :disable="isLoginActive"
     />
 
-    <q-btn flat :label="$t('register.register')" class="full-width" @click="isLoginActive = true" />
+    <q-btn flat class="full-width" :label="$t('register.register')" @click="isLoginActive = true" />
   </q-form>
 </template>
 

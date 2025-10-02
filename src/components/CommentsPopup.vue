@@ -8,9 +8,9 @@
       <q-card-section>
         <div v-for="c in doc?.comments" :key="c.date">
           <q-chip
-            :color="getUserById(c.userId)?.role === 'admin' ? 'negative' : 'positive'"
-            text-color="secondary"
             square
+            text-color="secondary"
+            :color="getUserById(c.userId)?.role === 'admin' ? 'negative' : 'positive'"
           >
             {{ getUserById(c.userId)?.name }}
             <span class="text-caption"> ({{ new Date(c.date).toLocaleString() }}) </span>
@@ -22,18 +22,18 @@
       <q-card-section>
         <div v-if="doc && canComment(doc)" class="flex flex-nowrap gap-4 mt-4">
           <q-input
-            dense
-            hide-bottom-space
-            outlined
             v-model="newComment[doc.id]"
+            dense
+            outlined
+            hide-bottom-space
             placeholder="Escreva um comentário"
             class="flex-auto"
           />
           <q-btn
-            outline
             noCaps
-            :label="$t('permission.comment')"
+            outline
             color="accent"
+            :label="$t('permission.comment')"
             @click="addComments(doc)"
           />
         </div>
@@ -53,16 +53,17 @@ import type { Document } from 'src/types/interfaces/IDocuments';
 import { addComment, canComment } from 'src/services/documentService';
 
 defineOptions({ name: 'CommentsPopup' });
-
-defineProps<{
-  doc: Document | null;
-}>();
+defineProps<{ doc: Document | null }>();
 
 const newComment = ref<Record<number, string>>({});
 
 function addComments(doc: Document) {
   const text = newComment.value[doc.id];
-  if (!text || !text.trim()) return;
+
+  if (!text || !text.trim()) {
+    return;
+  }
+
   addComment(doc.id, text);
   newComment.value[doc.id] = '';
 }
