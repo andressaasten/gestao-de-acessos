@@ -59,8 +59,8 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { getAllUsers } from 'src/services/userServices';
 import { removeAllPermissions } from 'src/services/documentService';
+import { getAllUsers } from 'src/services/userServices';
 import { useI18n } from 'vue-i18n';
 import DocsPopup from 'src/components/DocsPopup.vue';
 

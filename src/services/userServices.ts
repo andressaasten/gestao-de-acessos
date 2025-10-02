@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js';
 import type { User, UserState } from '../types/interfaces/IUser';
 
-export function initUser() {
+export function initUser(): User[] | null {
   const users = [
     {
       id: 1,
@@ -19,6 +19,7 @@ export function initUser() {
     },
   ];
   setUsers(users);
+  return users;
 }
 
 export function setUsers(users: User[]) {
@@ -29,7 +30,7 @@ export function getAllUsers(): User[] {
   const usersJson = localStorage.getItem('users');
 
   if (!usersJson) {
-    return [];
+    return initUser() ?? [];
   }
 
   return JSON.parse(usersJson);
@@ -56,6 +57,7 @@ export function login(email: string, password: string): boolean {
   if (!user) return false;
 
   const session: UserState = {
+    users: getAllUsers(),
     currentUser: user,
     expiresAt: Date.now() + 60 * 60 * 1000,
   };
@@ -97,7 +99,7 @@ export function updateProfile(newData: { name?: string; email?: string; password
   if (!session?.currentUser) return;
 
   const users = getAllUsers();
-  const user = users.find((u) => u.id === session.currentUser.id);
+  const user = users.find((u) => u.id === session.currentUser?.id);
   if (user) {
     user.name = newData.name || user.name;
 

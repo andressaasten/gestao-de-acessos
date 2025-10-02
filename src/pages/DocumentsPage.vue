@@ -6,7 +6,7 @@
       </div>
 
       <q-btn
-        v-if="getUserSession()?.currentUser.role === 'admin'"
+        v-if="user?.role === 'admin'"
         :label="$t('documents.new')"
         color="primary dark:!bg-secondary"
         class="p-3 m-4"
@@ -32,7 +32,7 @@
       >
         <q-card-section>
           <div
-            v-if="getUserSession()?.currentUser.role === 'user'"
+            v-if="user?.role === 'user'"
             class="absolute-top-right p-2 m-2"
             :style="{
               width: '16px',
@@ -83,7 +83,7 @@
         </q-card-section>
 
         <q-btn
-          v-if="getUserSession()?.currentUser.role === 'admin'"
+          v-if="user?.role === 'admin'"
           flat
           round
           dense
@@ -127,7 +127,7 @@
 
     <new-document v-model="showPopup" />
     <new-document v-model="showEditPopup" :doc="editingDoc" edit-mode />
-    <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc!" />
+    <permissao-popup v-model="showPermissaoPopup" :doc="selectedDoc" />
     <CommentsPopup v-model="showCommentsPopup" :doc="selectedDoc" />
 
     <q-dialog v-model="imageDialog">
@@ -145,8 +145,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { getUserSession } from 'src/services/userServices';
+import { ref, computed, onMounted } from 'vue';
+import { useUserStore } from 'src/stores/userStore';
 import {
   getAllDocuments,
   canComment,
@@ -157,6 +157,10 @@ import NewDocument from 'src/components/NewDocument.vue';
 import PermissaoPopup from 'src/components/PermissaoPopup.vue';
 import CommentsPopup from 'src/components/CommentsPopup.vue';
 import type { Document } from 'src/types/interfaces/IDocuments';
+import type { User } from 'src/types/interfaces/IUser';
+
+const userStore = useUserStore();
+const user = ref<User | null>(null);
 
 const showPopup = ref(false);
 const showEditPopup = ref(false);
@@ -166,6 +170,10 @@ const confirmDeletePopup = ref(false);
 
 const imageDialog = ref(false);
 const selectedImage = ref('');
+
+onMounted(() => {
+  user.value = userStore.getUser();
+});
 
 function openImage(url: string) {
   selectedImage.value = url;

@@ -15,6 +15,8 @@
 
 ## Stores
 
+- [ ] userStore
+
 - [ ] Aplicar ajustes nas requisições e utilização dos Stores.
 
 Obs: Os stores servem principalmente para estados globais e cache em memória, ele pode consumir o localStorage, mas normalmente não faz.

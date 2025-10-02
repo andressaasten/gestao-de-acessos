@@ -109,11 +109,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { Notify, useQuasar } from 'quasar';
-import { getUserSession, login, register } from 'src/services/userServices';
+import { useUserStore } from 'src/stores/userStore';
 import { useRouter } from 'vue-router';
+import { login, register } from 'src/services/userServices';
 
 const $q = useQuasar();
 const router = useRouter();
+const userStore = useUserStore();
 
 const isLoginActive = ref(true);
 const isLargeScreen = ref(window.innerWidth >= 800);
@@ -139,7 +141,7 @@ async function handleLogin() {
   }
 
   $q.notify({
-    message: `Bem-vindo ${getUserSession()?.currentUser.name}! Acesso: ${getUserSession()?.currentUser.role}`,
+    message: `Bem-vindo ${userStore.getUser()?.name}! Acesso: ${userStore.getUser()?.role}`,
     color: 'positive',
   });
   await router.push('/documents');

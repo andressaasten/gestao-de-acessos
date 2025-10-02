@@ -10,12 +10,7 @@
           <div class="text-subtitle2">{{ $t('register.data') }}</div>
           <q-input v-model="form.name" :label="$t('register.name')" label-color="accent" outlined />
 
-          <q-input
-            v-model="form.email"
-            :label="$t('register.email')"
-            label-color="accent"
-            outlined
-          />
+          <q-input v-model="form.email" :label="$t('login.email')" label-color="accent" outlined />
 
           <div class="text-subtitle2"></div>
           <q-input
@@ -57,15 +52,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { getUserSession, updateProfile } from 'src/services/userServices';
+import { onMounted, ref, watch } from 'vue';
+import { updateProfile } from 'src/services/userServices';
 import CryptoJS from 'crypto-js';
 import { Notify } from 'quasar';
+import { useUserStore } from 'src/stores/userStore';
+import type { User } from 'src/types/interfaces/IUser';
 
 defineOptions({ name: 'EditorPopup' });
 
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
+
+const userStore = useUserStore();
+const user = ref<User | null>(null);
 
 const internalModel = ref(props.modelValue);
 watch(
@@ -74,14 +74,18 @@ watch(
 );
 watch(internalModel, (val) => emit('update:modelValue', val));
 
+onMounted(() => {
+  user.value = userStore.getUser();
+});
+
 const validateSenha = (val: string): true | string => {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{5,}$/;
   return regex.test(val) || 'Senha inválida';
 };
 
 const form = ref({
-  name: getUserSession()?.currentUser.name || '',
-  email: getUserSession()?.currentUser.email || '',
+  name: user.value?.name || '',
+  email: user.value?.email || '',
   oldPassword: '',
   newPassword: '',
   confirmPassword: '',
@@ -95,7 +99,7 @@ function save() {
     }
 
     const oldHash = CryptoJS.SHA256(form.value.oldPassword).toString();
-    if (getUserSession()?.currentUser.password !== oldHash) {
+    if (user.value?.password !== oldHash) {
       Notify.create('Senha atual incorreta!');
       return;
     }

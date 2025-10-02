@@ -1,5 +1,5 @@
 export interface User {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   password: string;
@@ -7,6 +7,7 @@ export interface User {
 }
 
 export interface UserState {
-  currentUser: User;
+  users: User[];
+  currentUser: User | null;
   expiresAt: number | null;
 }

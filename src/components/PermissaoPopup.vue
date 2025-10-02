@@ -6,7 +6,7 @@
       </q-card-section>
 
       <q-card-section>
-        <card class="q-gutter-md row items-start">
+        <div class="q-gutter-md row items-start">
           <q-select
             filled
             v-model="selectedUser"
@@ -26,7 +26,7 @@
               </q-item>
             </template>
           </q-select>
-        </card>
+        </div>
         <div class="q-mt-md gap-2">
           <q-checkbox v-model="perms.canRead" :label="$t('permission.read')" color="accent" />
           <q-checkbox v-model="perms.canComment" :label="$t('permission.comment')" color="accent" />
@@ -89,7 +89,7 @@ import type { Document } from 'src/types/interfaces/IDocuments';
 
 defineOptions({ name: 'PermissaoPopup' });
 
-const props = defineProps<{ modelValue: boolean; doc: Document }>();
+const props = defineProps<{ modelValue: boolean; doc: Document | null }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
 const selectedUser = ref<User | null>(null);
@@ -136,7 +136,7 @@ function onDateChange(val: string) {
 }
 
 function savePerms() {
-  if (!props.doc || !selectedUser.value) return;
+  if (!props.doc || !selectedUser.value || selectedUser.value.id == null) return;
   if (!expirationDate.value || !expirationTime.value) return;
 
   const expiresAt = new Date(

@@ -1,88 +1,43 @@
-// stores/userStore.ts
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import type { User } from '../types/interfaces/IUser';
-import {
-  login as loginService,
-  logout as logoutService,
-  register as registerService,
-  updateProfile as updateProfileService,
-  getUserSession,
-  getAllUsers,
-  changeRole as changeRoleService,
-  initUser as initUserService,
-} from '../services/userServices';
+import { getUserSession } from 'src/services/userServices';
+import type { User } from 'src/types/interfaces/IUser';
+import { ref } from 'vue';
 
-export const useUserStore = defineStore('user', () => {
-  const currentUser = ref<User | null>(getUserSession()?.currentUser || null);
-  const expiresAt = ref<number | null>(getUserSession()?.expiresAt || null);
-  const users = ref<User[]>(getAllUsers());
+export const useUserStore = defineStore('userStore', () => {
+  const user = ref<User | null>(null);
 
-  const isAuthenticated = computed(() => {
-    return !!currentUser.value && (expiresAt.value || 0) > Date.now();
-  });
-
-  function init() {
-    const alreadyInitialized = localStorage.getItem('users');
-    if (!alreadyInitialized) {
-      initUserService();
-      users.value = getAllUsers();
+  const getUser = () => {
+    if (user.value) {
+      return user.value;
     }
-  }
 
-  function login(email: string, password: string): boolean {
-    const success = loginService(email, password);
-    if (success) {
-      const session = getUserSession();
-      if (session) {
-        currentUser.value = session.currentUser;
-        expiresAt.value = session.expiresAt;
-      }
-    }
-    return success;
-  }
+    return refreshUser();
+  };
 
-  function logout() {
-    logoutService();
-    currentUser.value = null;
-    expiresAt.value = null;
-  }
+  const setUser = (newUser: User) => {
+    user.value = newUser;
+  };
 
-  function register(name: string, email: string, password: string) {
-    registerService(name, email, password);
-    users.value = getAllUsers();
-  }
-
-  function updateProfile(newData: { name?: string; email?: string; password?: string }) {
-    updateProfileService(newData);
+  const refreshUser = () => {
     const session = getUserSession();
-    if (session) {
-      currentUser.value = session.currentUser;
-      expiresAt.value = session.expiresAt;
+
+    if (!session) {
+      return null;
     }
-    users.value = getAllUsers();
-  }
 
-  function changeRole(userId: number, newRole: 'admin' | 'user') {
-    changeRoleService(userId, newRole);
-    users.value = getAllUsers();
-  }
+    user.value = session.currentUser;
 
-  function refreshUsers() {
-    users.value = getAllUsers();
-  }
+    return user.value;
+  };
+
+  const clear = () => {
+    user.value = null;
+  };
 
   return {
-    currentUser,
-    expiresAt,
-    users,
-    isAuthenticated,
-    login,
-    logout,
-    register,
-    updateProfile,
-    changeRole,
-    refreshUsers,
-    init,
+    getUser,
+    setUser,
+    refreshUser,
+    clear,
   };
 });
