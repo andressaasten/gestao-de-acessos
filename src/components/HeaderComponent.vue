@@ -15,8 +15,8 @@
         <q-list class="row">
           <q-item
             clickable
-            class="mt-2 flex items-center justify-center"
             active-class="bg-accent dark:!bg-dark-page"
+            class="mt-2 flex items-center justify-center"
             :to="{ name: 'main/documents' }"
             >{{ $t('documents.title') }}</q-item
           >

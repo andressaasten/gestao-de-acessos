@@ -26,8 +26,8 @@
           dense
           outlined
           hide-bottom-space
-          :placeholder="$t('labelcomment')"
           class="flex-auto"
+          :placeholder="$t('labelcomment')"
         />
         <q-btn
           noCaps
@@ -52,6 +52,7 @@ import type { Document } from 'src/types/interfaces/IDocuments';
 import { addComment, canComment } from 'src/services/documentService';
 
 defineOptions({ name: 'CommentsPopup' });
+
 defineProps<{ doc: Document | null }>();
 
 const newComment = ref<Record<number, string>>({});

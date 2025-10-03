@@ -181,7 +181,7 @@ import type { User } from 'src/types/interfaces/IUser';
 defineOptions({ name: 'DocsPopup' });
 
 const $q = useQuasar();
-const props = defineProps<{ user: User }>();
+const props = defineProps<{ user: User | null }>();
 
 const confirmDialog = ref(false);
 const confirmMessage = ref('');
@@ -356,7 +356,7 @@ const userRows = computed(() => {
     const remainingMs = p.expiresAt - now;
 
     return {
-      userId: props.user.id,
+      userId: props.user?.id,
       docId: p.docId,
       docTitle: getDocTitle(p.docId),
       perms: p.perms,

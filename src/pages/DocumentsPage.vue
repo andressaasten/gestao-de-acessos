@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 import {
   getAllDocuments,
@@ -171,8 +171,21 @@ const confirmDeletePopup = ref(false);
 const imageDialog = ref(false);
 const selectedImage = ref('');
 
+watch(showPopup, (val) => {
+  if (!val) fetchDocs();
+});
+
+watch(showEditPopup, (val) => {
+  if (!val) fetchDocs();
+});
+
 onMounted(() => {
   user.value = userStore.getUser();
+});
+
+onMounted(() => {
+  user.value = userStore.getUser();
+  fetchDocs();
 });
 
 function openImage(url: string) {
@@ -183,7 +196,12 @@ function openImage(url: string) {
 const selectedDoc = ref<Document | null>(null);
 const editingDoc = ref<Document | null>(null);
 
-const readableDocs = computed(() => getAllDocuments().filter((d) => canRead(d)));
+const allDocs = ref<Document[]>([]);
+const readableDocs = computed(() => allDocs.value.filter((d) => canRead(d)));
+
+function fetchDocs() {
+  allDocs.value = getAllDocuments();
+}
 
 function openComments(doc: Document) {
   selectedDoc.value = doc;
@@ -225,6 +243,7 @@ function deleteDoc() {
   if (selectedDoc.value) {
     deleteDocument(selectedDoc.value.id);
     confirmDeletePopup.value = false;
+    fetchDocs(); // Recarrega os documentos
   }
 }
 </script>

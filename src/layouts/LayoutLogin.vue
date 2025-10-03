@@ -2,7 +2,7 @@
   <q-layout style="min-height: 100dvh" class="bg-page flex flex-col flex-nowrap">
     <q-header reveal elevated class="flex flex-row bg-primary text-text dark:!bg-dark">
       <q-avatar class="bg-background">
-        <q-img src="../assets/document-svgrepo-com.svg" class="m-2" />
+        <q-img src="../assets/document-svgrepo-com.svg" class="m-2" loading="eager" />
       </q-avatar>
       <q-toolbar-title class="m-2">{{ $t('portal') }}</q-toolbar-title>
     </q-header>
@@ -24,7 +24,7 @@ const footercomponent = ref(true);
 
 <style>
 .bg-page {
-  background: url('/public/images/wallpaper-login.png') no-repeat center center;
+  background: url('/images/wallpaper-login.png') no-repeat center;
   background-size: cover;
   min-height: 100vh;
   display: flex;
