@@ -74,6 +74,7 @@
 
         <q-card-section>
           <q-btn
+            v-if="canComment(doc)"
             flat
             color="text"
             icon="comment"
@@ -132,13 +133,11 @@
 
     <q-dialog v-model="imageDialog">
       <q-card>
+        <q-btn v-close-popup flat icon="close" />
         <q-img
           style="min-width: 500px; max-width: 900px; min-height: 300px; max-height: 1100px"
           :src="selectedImage"
         />
-        <q-card-actions>
-          <q-btn v-close-popup flat label="Fechar" color="primary" />
-        </q-card-actions>
       </q-card>
     </q-dialog>
   </q-page>
@@ -149,9 +148,10 @@ import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from 'src/stores/userStore';
 import {
   getAllDocuments,
-  canComment,
   getTimeStatus,
   deleteDocument,
+  canRead,
+  canComment,
 } from 'src/services/documentService';
 import NewDocument from 'src/components/NewDocument.vue';
 import PermissaoPopup from 'src/components/PermissaoPopup.vue';
@@ -183,7 +183,7 @@ function openImage(url: string) {
 const selectedDoc = ref<Document | null>(null);
 const editingDoc = ref<Document | null>(null);
 
-const readableDocs = computed(() => getAllDocuments().filter((d) => canComment(d)));
+const readableDocs = computed(() => getAllDocuments().filter((d) => canRead(d)));
 
 function openComments(doc: Document) {
   selectedDoc.value = doc;

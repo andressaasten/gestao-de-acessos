@@ -54,8 +54,10 @@ export function login(email: string, password: string): boolean {
   const hashedPassword = CryptoJS.SHA256(password).toString();
   const users = getAllUsers();
   const user = users.find((u) => u.email === email && u.password === hashedPassword);
-  if (!user) return false;
 
+  if (!user) {
+    return false;
+  }
   const session: UserState = {
     users: getAllUsers(),
     currentUser: user,
@@ -68,6 +70,7 @@ export function login(email: string, password: string): boolean {
 
 export function register(name: string, email: string, password: string) {
   const users = getAllUsers();
+
   if (users.some((u) => u.email === email)) {
     throw new Error('E-mail já cadastrado!');
   }
@@ -81,6 +84,7 @@ export function register(name: string, email: string, password: string) {
     password: hashedPassword,
     role: 'user',
   };
+
   users.push(newUser);
   setUsers(users);
 }
@@ -88,6 +92,7 @@ export function register(name: string, email: string, password: string) {
 export function changeRole(userId: number, newRole: 'admin' | 'user') {
   const users = getAllUsers();
   const user = users.find((u) => u.id === userId);
+
   if (user) {
     user.role = newRole;
     setUsers(users);
@@ -96,10 +101,14 @@ export function changeRole(userId: number, newRole: 'admin' | 'user') {
 
 export function updateProfile(newData: { name?: string; email?: string; password?: string }) {
   const session = getUserSession();
-  if (!session?.currentUser) return;
+
+  if (!session?.currentUser) {
+    return;
+  }
 
   const users = getAllUsers();
   const user = users.find((u) => u.id === session.currentUser?.id);
+
   if (user) {
     user.name = newData.name || user.name;
 
@@ -107,8 +116,10 @@ export function updateProfile(newData: { name?: string; email?: string; password
       if (users.some((u) => u.email === newData.email && u.id !== user.id)) {
         throw new Error('E-mail já cadastrado!');
       }
+
       user.email = newData.email;
     }
+
     if (newData.password) {
       user.password = CryptoJS.SHA256(newData.password).toString();
     }

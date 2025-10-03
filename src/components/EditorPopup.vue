@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
-import { updateProfile } from 'src/services/userServices';
+import { getUserSession, updateProfile } from 'src/services/userServices';
 import CryptoJS from 'crypto-js';
 import { Notify } from 'quasar';
 import { useUserStore } from 'src/stores/userStore';
@@ -68,28 +68,31 @@ const userStore = useUserStore();
 const user = ref<User | null>(null);
 
 const internalModel = ref(props.modelValue);
+
 watch(
   () => props.modelValue,
   (val) => (internalModel.value = val),
 );
+
 watch(internalModel, (val) => emit('update:modelValue', val));
 
 onMounted(() => {
   user.value = userStore.getUser();
 });
 
-const validateSenha = (val: string): true | string => {
-  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{5,}$/;
-  return regex.test(val) || 'Senha inválida';
-};
-
 const form = ref({
-  name: user.value?.name || '',
-  email: user.value?.email || '',
+  name: getUserSession()?.currentUser?.name || '',
+  email: getUserSession()?.currentUser?.email || '',
   oldPassword: '',
   newPassword: '',
   confirmPassword: '',
 });
+
+const validateSenha = (val: string): true | string => {
+  const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{5,}$/;
+
+  return regex.test(val) || 'Senha inválida';
+};
 
 function save() {
   try {
@@ -120,6 +123,7 @@ function save() {
     updateProfile(payload);
     internalModel.value = false;
     Notify.create('Perfil atualizado com sucesso!');
+
     form.value.confirmPassword = '';
     form.value.newPassword = '';
     form.value.oldPassword = '';

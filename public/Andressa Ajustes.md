@@ -15,8 +15,9 @@
 
 ## Ver
 
-- [ ] Logout/Login não esta atualizando o userStore, fica o menos role se não der f5
-- [ ] Card-section title so funciona para pt
+- [ ] nao puxa automaticamente ao criar novo doc ou editar
+
+- [ ] usos de any
 
 ---
 

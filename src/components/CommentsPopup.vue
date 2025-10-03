@@ -1,8 +1,9 @@
 <template>
   <q-dialog>
     <q-card style="min-width: 500px">
+      <q-btn icon="close" v-close-popup />
       <q-card-section>
-        <div class="text-h6">Comentários de {{ doc?.title }}</div>
+        <div class="text-h6">{{ $t('documents.comments') }} : {{ doc?.title }}</div>
       </q-card-section>
 
       <q-card-section>
@@ -19,24 +20,22 @@
         </div>
       </q-card-section>
 
-      <q-card-section>
-        <div v-if="doc && canComment(doc)" class="flex flex-nowrap gap-4 mt-4">
-          <q-input
-            v-model="newComment[doc.id]"
-            dense
-            outlined
-            hide-bottom-space
-            placeholder="Escreva um comentário"
-            class="flex-auto"
-          />
-          <q-btn
-            noCaps
-            outline
-            color="accent"
-            :label="$t('permission.comment')"
-            @click="addComments(doc)"
-          />
-        </div>
+      <q-card-section v-if="doc && canComment(doc)" class="flex flex-nowrap gap-4 mt-4">
+        <q-input
+          v-model="newComment[doc.id]"
+          dense
+          outlined
+          hide-bottom-space
+          :placeholder="$t('labelcomment')"
+          class="flex-auto"
+        />
+        <q-btn
+          noCaps
+          outline
+          color="accent"
+          :label="$t('permission.comment')"
+          @click="addComments(doc)"
+        />
       </q-card-section>
 
       <q-card-actions align="right">

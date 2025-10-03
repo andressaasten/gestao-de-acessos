@@ -106,19 +106,13 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: boolean): void }>();
 
 const $q = useQuasar();
 const formRef = ref();
-
 const internalModel = ref(props.modelValue);
+
 watch(
   () => props.modelValue,
   (v) => (internalModel.value = v),
 );
 watch(internalModel, (v) => emit('update:modelValue', v));
-
-const form = ref<{ title: string; text: string; attachments: Attachment[] }>({
-  title: '',
-  text: '',
-  attachments: [],
-});
 
 watch(
   () => props.doc,
@@ -135,6 +129,12 @@ watch(
   },
   { immediate: true },
 );
+
+const form = ref<{ title: string; text: string; attachments: Attachment[] }>({
+  title: '',
+  text: '',
+  attachments: [],
+});
 
 // Lista de imagens da API
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -174,16 +174,19 @@ function save() {
     void addDocument(form.value.title, form.value.text, form.value.attachments);
     form.value = { title: '', text: '', attachments: [] };
   }
+
   internalModel.value = false;
 }
 
 const handleCreate = async () => {
   const valid = await formRef.value?.validate();
+
   if (!valid) {
     $q.notify({
       type: 'negative',
       message: 'Preencha todos os campos corretamente',
     });
+
     return;
   }
 
@@ -206,6 +209,7 @@ function onFilesAdded(files: readonly File[]) {
   for (const f of files) {
     const url = URL.createObjectURL(f);
     const type = f.type.includes('pdf') ? 'pdf' : 'image';
+
     form.value.attachments.push({
       id: Date.now() + Math.random(),
       url,

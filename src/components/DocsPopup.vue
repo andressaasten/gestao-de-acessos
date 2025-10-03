@@ -14,7 +14,6 @@
           </q-td>
         </template>
 
-        <!-- Permissões -->
         <template v-slot:body-cell-perms="props">
           <q-td :props="props">
             <div>
@@ -46,7 +45,6 @@
           </q-td>
         </template>
 
-        <!-- Validade -->
         <template v-slot:body-cell-remaining="props">
           <q-td :props="props">
             <span v-if="props.row.isValid" :class="timeColor(props.row)">
@@ -58,7 +56,6 @@
           </q-td>
         </template>
 
-        <!-- Ações -->
         <template v-slot:body-cell-actions="props">
           <q-td :props="props" class="text-right">
             <q-btn
@@ -80,7 +77,6 @@
       </q-table>
     </q-card>
 
-    <!-- EDITAR PERMISSÕES -->
     <q-dialog v-model="editDialog">
       <q-card style="min-width: 450px">
         <q-card-section>
@@ -89,7 +85,6 @@
         </q-card-section>
 
         <q-card-section>
-          <!-- Checkboxes -->
           <q-checkbox
             v-model="editForm.perms.canRead"
             color="accent"
@@ -156,7 +151,7 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <!-- CONFIRMAÇÃO -->
+
     <q-dialog v-model="confirmDialog">
       <q-card>
         <q-card-section>
@@ -214,10 +209,12 @@ const editForm = ref({
 });
 
 function openEditPermission(userId: number, perm: PermissionDisplay) {
-  editUserId.value = userId;
-  editDoc.value = perm;
   const iso = new Date(perm.expiresAt).toISOString().slice(0, 10); // YYYY-MM-DD
   const time = new Date(perm.expiresAt).toISOString().slice(11, 16); // HH:mm
+
+  editUserId.value = userId;
+  editDoc.value = perm;
+
   editForm.value = {
     perms: {
       canRead: perm.perms.includes('read'),
@@ -228,11 +225,13 @@ function openEditPermission(userId: number, perm: PermissionDisplay) {
     expirationDateDisplay: iso ? `${iso.slice(8, 10)}/${iso.slice(5, 7)}/${iso.slice(0, 4)}` : '',
     expirationTime: time,
   };
+
   editDialog.value = true;
 }
 
 function onEditDate(val: string) {
   editForm.value.expirationDateIso = val;
+
   if (val) {
     const [y, m, d] = val.split('-');
     editForm.value.expirationDateDisplay = `${d}/${m}/${y}`;
@@ -247,6 +246,7 @@ function savePermissionEdit() {
       $q.notify({ type: 'negative', message: 'Preencha data e hora' });
       return;
     }
+
     const expiresAt = new Date(
       `${editForm.value.expirationDateIso}T${editForm.value.expirationTime}:00`,
     ).getTime();
@@ -257,9 +257,18 @@ function savePermissionEdit() {
     }
 
     const selectedPerms: ('read' | 'comment' | 'edit')[] = [];
-    if (editForm.value.perms.canRead) selectedPerms.push('read');
-    if (editForm.value.perms.canComment) selectedPerms.push('comment');
-    if (editForm.value.perms.canEdit) selectedPerms.push('edit');
+
+    if (editForm.value.perms.canRead) {
+      selectedPerms.push('read');
+    }
+
+    if (editForm.value.perms.canComment) {
+      selectedPerms.push('comment');
+    }
+
+    if (editForm.value.perms.canEdit) {
+      selectedPerms.push('edit');
+    }
 
     setPermission(editDoc.value.docId, editUserId.value, selectedPerms, expiresAt);
     $q.notify({ type: 'positive', message: 'Permissão atualizada' });
@@ -272,6 +281,7 @@ function rescindConfirmed() {
     pendingAction.value();
     pendingAction.value = null;
   }
+
   confirmDialog.value = false;
 }
 
@@ -286,43 +296,65 @@ function formatDate(ts: number) {
   // DD/MM/YYYY HH:mm
   const ds = d.toLocaleDateString('pt-BR');
   const tsPart = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
   return `${ds} ${tsPart}`;
 }
 
 function timeColor(perm: PermissionDisplay) {
-  if (perm.remainingMs <= 0) return 'text-negative text-bold';
-  if (perm.remainingMs < 60 * 60 * 1000) return 'text-yellow-600 text-bold';
+  if (perm.remainingMs <= 0) {
+    return 'text-negative text-bold';
+  }
+
+  if (perm.remainingMs < 60 * 60 * 1000) {
+    return 'text-yellow-600 text-bold';
+  }
+
   return 'text-positive';
 }
 
 function formatRemaining(ms: number): string {
-  if (ms <= 0) return 'Expirado';
+  if (ms <= 0) {
+    return 'Expirado';
+  }
 
   const sec = Math.floor(ms / 1000);
-  if (sec < 60) return `${sec} segundo${sec === 1 ? '' : 's'}`;
+  if (sec < 60) {
+    return `${sec} segundo${sec === 1 ? '' : 's'}`;
+  }
 
   const min = Math.floor(sec / 60);
-  if (min < 60) return `${min} minuto${min === 1 ? '' : 's'}`;
+  if (min < 60) {
+    return `${min} minuto${min === 1 ? '' : 's'}`;
+  }
 
   const hrs = Math.floor(min / 60);
-  if (hrs < 24) return `${hrs} hora${hrs === 1 ? '' : 's'}`;
+  if (hrs < 24) {
+    return `${hrs} hora${hrs === 1 ? '' : 's'}`;
+  }
 
   const days = Math.floor(hrs / 24);
-  if (days < 30) return `${days} dia${days === 1 ? '' : 's'}`;
+  if (days < 30) {
+    return `${days} dia${days === 1 ? '' : 's'}`;
+  }
 
   const months = Math.floor(days / 30);
-  if (months < 12) return `${months} mês${months === 1 ? '' : 'es'}`;
+  if (months < 12) {
+    return `${months} mês${months === 1 ? '' : 'es'}`;
+  }
 
   const years = Math.floor(days / 365);
   return `${years} ano${years === 1 ? '' : 's'}`;
 }
 
 const userRows = computed(() => {
-  if (!props.user || props.user.id == null) return [];
+  if (!props.user || props.user.id == null) {
+    return [];
+  }
 
   return getPermissionsByUser(props.user.id).map((p) => {
     const now = Date.now();
     const remainingMs = p.expiresAt - now;
+
     return {
       userId: props.user.id,
       docId: p.docId,

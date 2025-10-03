@@ -1,5 +1,5 @@
 export default {
-  hello: 'Hello World',
+  labelcomment: 'Write a comment',
   user: 'User',
   portal: 'Document Portal',
   login: {
@@ -28,7 +28,7 @@ export default {
     edit: 'Edit Document',
     save: 'Save',
     cancel: 'Cancel',
-    comments: 'See Comments',
+    comments: 'Comments',
     delete: 'Delete',
   },
   permission: {

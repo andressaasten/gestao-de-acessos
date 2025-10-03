@@ -85,6 +85,7 @@ const pendingAction = ref<null | (() => void)>(null);
 function confirmRescindAll(userId: number) {
   confirmMessage.value = 'Deseja realmente rescindir todas as permissões deste usuário?';
   confirmDialog.value = true;
+
   pendingAction.value = () => removeAllPermissions(userId);
 }
 
@@ -93,6 +94,7 @@ function rescindConfirmed() {
     pendingAction.value();
     pendingAction.value = null;
   }
+
   confirmDialog.value = false;
 }
 

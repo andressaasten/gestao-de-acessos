@@ -1,5 +1,5 @@
 export default {
-  hello: 'Olá Mundo',
+  labelcomment: 'Escreva um comentário',
   user: 'Usuário',
   portal: 'Portal de Documentos',
   login: {
@@ -28,7 +28,7 @@ export default {
     edit: 'Editar Documento',
     save: 'Salvar',
     cancel: 'Cancelar',
-    comments: 'Ver Comentários',
+    comments: 'Comentários',
     delete: 'Excluir',
   },
   permission: {

@@ -51,9 +51,11 @@ import { logout } from 'src/services/userServices';
 import type { User } from 'src/types/interfaces/IUser';
 
 defineOptions({ name: 'HeaderComponent' });
+
 defineEmits<{
   (event: 'update:drawer', value: boolean): void;
 }>();
+
 const router = useRouter();
 const userStore = useUserStore();
 const user = ref<User | null>(null);
@@ -70,6 +72,7 @@ onMounted(() => {
 
 async function logoutPage() {
   logout();
+  userStore.clear();
   await router.push('/');
 }
 </script>

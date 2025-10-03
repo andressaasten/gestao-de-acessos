@@ -92,10 +92,16 @@ defineOptions({ name: 'PermissaoPopup' });
 const props = defineProps<{ modelValue: boolean; doc: Document | null }>();
 const emit = defineEmits<{ (e: 'update:modelValue', value: boolean): void }>();
 
-const selectedUser = ref<User | null>(null);
-
 const allUsers = getAllUsers().filter((u) => u.role === 'user');
 const filterOptions = ref<User[]>([...allUsers]);
+const selectedUser = ref<User | null>(null);
+const perms = ref({ canRead: true, canComment: false, canEdit: false });
+
+const expirationTime = ref('');
+const expirationDate = ref({
+  expirationDateIso: '',
+  expirationDateDisplay: '',
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function filterFn(val: string, update: any) {
@@ -110,20 +116,12 @@ function filterFn(val: string, update: any) {
 }
 
 const internalModel = ref(props.modelValue);
+
 watch(
   () => props.modelValue,
   (v) => (internalModel.value = v),
 );
 watch(internalModel, (v) => emit('update:modelValue', v));
-
-const perms = ref({ canRead: true, canComment: false, canEdit: false });
-
-const expirationDate = ref({
-  expirationDateIso: '',
-  expirationDateDisplay: '',
-});
-
-const expirationTime = ref('');
 
 function onDateChange(val: string) {
   expirationDate.value.expirationDateIso = val;
@@ -136,8 +134,13 @@ function onDateChange(val: string) {
 }
 
 function savePerms() {
-  if (!props.doc || !selectedUser.value || selectedUser.value.id == null) return;
-  if (!expirationDate.value || !expirationTime.value) return;
+  if (!props.doc || !selectedUser.value || selectedUser.value.id == null) {
+    return;
+  }
+
+  if (!expirationDate.value || !expirationTime.value) {
+    return;
+  }
 
   const expiresAt = new Date(
     `${expirationDate.value.expirationDateIso}T${expirationTime.value}:00`,
@@ -148,19 +151,30 @@ function savePerms() {
 
   if (expiresAt <= now) {
     console.warn('A data de expiração deve ser no futuro.');
+
     Notify.create({
       type: 'negative',
       message: 'A data de expiração deve ser no futuro.',
     });
+
     return;
   }
 
   const selectedPerms: ('read' | 'comment' | 'edit')[] = [];
-  if (perms.value.canRead) selectedPerms.push('read');
-  if (perms.value.canComment) selectedPerms.push('comment');
-  if (perms.value.canEdit) selectedPerms.push('edit');
+  if (perms.value.canRead) {
+    selectedPerms.push('read');
+  }
+
+  if (perms.value.canComment) {
+    selectedPerms.push('comment');
+  }
+
+  if (perms.value.canEdit) {
+    selectedPerms.push('edit');
+  }
 
   setPermission(props.doc.id, selectedUser.value.id, selectedPerms, expiresAt);
+
   perms.value = { canComment: false, canEdit: false, canRead: true };
   expirationDate.value.expirationDateIso = iso;
   expirationDate.value.expirationDateDisplay = iso

@@ -76,6 +76,7 @@ export function addDocument(title: string, text: string, attachments: Attachment
 export function editDocument(docId: number, newData: Partial<Document>) {
   const documents = getAllDocuments();
   const doc = documents.find((d) => d.id === docId);
+
   if (doc) {
     Object.assign(doc, newData);
     setAllDocuments(documents);
@@ -119,12 +120,14 @@ export function setPermission(
   const expiration = expiresAt ?? Date.now() + 24 * 60 * 60 * 1000;
 
   const existing = permissions.find((p) => p.docId === docId && p.userId === userId);
+
   if (existing) {
     existing.perms = perms;
     existing.expiresAt = expiration;
   } else {
     permissions.push({ docId, userId, perms, expiresAt: expiration });
   }
+
   setAllPemissions(permissions);
 }
 
@@ -142,6 +145,7 @@ export function removeAllPermissions(userId: number) {
 
 export function extendPermission(docId: number, userId: number, durationMs: number) {
   const p = getAllPermissions().find((p) => p.docId === docId && p.userId === userId);
+
   if (p) {
     p.expiresAt += durationMs;
     setAllPemissions([]);
@@ -154,42 +158,75 @@ export function getPermissionsByUser(userId: number) {
 
 export function getDocTitle(docId: number) {
   const doc = getAllDocuments().find((d) => d.id === docId);
+
   return doc ? doc.title : '';
 }
 
 export function canRead(doc: Document) {
   const user = getUserSession();
-  if (!user) return false;
-  if (user.currentUser?.role === 'admin') return true;
+
+  if (!user) {
+    return false;
+  }
+
+  if (user.currentUser?.role === 'admin') {
+    return true;
+  }
+
   const perm = getAllPermissions().find(
     (p) => p.docId === doc.id && p.userId === user.currentUser?.id,
   );
+
   return !!perm && perm.perms.includes('read') && perm.expiresAt > Date.now();
 }
 
 export function canComment(doc: Document) {
   const user = getUserSession();
-  if (!user) return false;
-  if (user.currentUser?.role === 'admin') return true;
+
+  if (!user) {
+    return false;
+  }
+
+  if (user.currentUser?.role === 'admin') {
+    return true;
+  }
+
   const perm = getAllPermissions().find(
     (p) => p.docId === doc.id && p.userId === user.currentUser?.id,
   );
+
   return !!perm && perm.perms.includes('comment') && perm.expiresAt > Date.now();
 }
 
 export function getTimeStatus(doc: Document): 'red' | 'yellow' | 'green' {
   const user = getUserSession();
-  if (!user) return 'red';
+
+  if (!user) {
+    return 'red';
+  }
 
   const perm = getAllPermissions().find(
     (p) => p.docId === doc.id && p.userId === user.currentUser?.id,
   );
-  if (!perm) return 'red';
+
+  if (!perm) {
+    return 'red';
+  }
 
   const remaining = perm.expiresAt - Date.now();
-  if (remaining <= 0) return 'red';
-  if (remaining < 60 * 60 * 1000) return 'red'; // < 1h
-  if (remaining < 24 * 60 * 60 * 1000) return 'yellow'; // < 1d
+
+  if (remaining <= 0) {
+    return 'red';
+  }
+
+  if (remaining < 60 * 60 * 1000) {
+    return 'red'; // < 1h
+  }
+
+  if (remaining < 24 * 60 * 60 * 1000) {
+    return 'yellow'; // < 1d
+  }
+
   return 'green';
 }
 

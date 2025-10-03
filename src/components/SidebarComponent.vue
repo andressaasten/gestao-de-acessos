@@ -32,12 +32,13 @@ import { ref } from 'vue';
 import ProfilePopup from 'src/components/EditorPopup.vue';
 
 defineOptions({ name: 'SidebarComponent' });
+
+const showProfile = ref(false);
+
 const drawerRight = defineModel({
   default: false,
   required: true,
 });
-
-const showProfile = ref(false);
 
 const updateDrawer = (value: boolean) => {
   drawerRight.value = value;

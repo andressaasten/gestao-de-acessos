@@ -126,17 +126,20 @@ const registerForm = ref({ name: '', email: '', password: '' });
 
 const validateEmail = (val: string): true | string => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   return regex.test(val) || 'E-mail inválido';
 };
 
 const validateSenha = (val: string): true | string => {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{5,}$/;
+
   return regex.test(val) || 'Senha inválida';
 };
 
 async function handleLogin() {
   if (!login(loginForm.value.email, loginForm.value.password)) {
-    Notify.create('Credenciais inválidas!');
+    $q.notify({ message: `Credenciais inválidas!` });
+
     return;
   }
 
@@ -144,6 +147,7 @@ async function handleLogin() {
     message: `Bem-vindo ${userStore.getUser()?.name}! Acesso: ${userStore.getUser()?.role}`,
     color: 'positive',
   });
+
   await router.push('/documents');
 }
 
@@ -152,12 +156,13 @@ async function handleRegister() {
     register(registerForm.value.name, registerForm.value.email, registerForm.value.password);
     Notify.create('Conta criada com sucesso!');
     isLoginActive.value = true;
+
     await router.push('/documents');
   } catch (e: unknown) {
     if (e instanceof Error) {
-      Notify.create(e.message);
+      $q.notify(e.message);
     } else {
-      Notify.create('Ocorreu um erro inesperado');
+      $q.notify('Ocorreu um erro inesperado');
     }
   }
 }
